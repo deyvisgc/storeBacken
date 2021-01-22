@@ -13,9 +13,9 @@ date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 | Create The Application
 |--------------------------------------------------------------------------
 |
-| Here we will load the environment and create the application instance
+| Here we will load the environment and create the Application instance
 | that serves as the central piece of this framework. We'll use this
-| application as an "IoC" container and router for this framework.
+| Application as an "IoC" container and router for this framework.
 |
 */
 
@@ -66,7 +66,7 @@ $app->configure('app');
 | Register Middleware
 |--------------------------------------------------------------------------
 |
-| Next, we will register the middleware with the application. These can
+| Next, we will register the middleware with the Application. These can
 | be global middleware that run before and after each request into a
 | route or middleware that'll be assigned to some specific routes.
 |
@@ -85,7 +85,7 @@ $app->configure('app');
 | Register Service Providers
 |--------------------------------------------------------------------------
 |
-| Here we will register all of the application's service providers which
+| Here we will register all of the Application's service providers which
 | are used to bind services into the container. Service providers are
 | totally optional, so you are not required to uncomment this line.
 |
@@ -101,7 +101,7 @@ $app->configure('app');
 |--------------------------------------------------------------------------
 |
 | Next we will include the routes file so that they can all be added to
-| the application. This will provide all of the URLs the application
+| the Application. This will provide all of the URLs the Application
 | can respond to, as well as the controllers that may handle them.
 |
 */

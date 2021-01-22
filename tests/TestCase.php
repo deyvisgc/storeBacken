@@ -5,7 +5,7 @@ use Laravel\Lumen\Testing\TestCase as BaseTestCase;
 abstract class TestCase extends BaseTestCase
 {
     /**
-     * Creates the application.
+     * Creates the Application.
      *
      * @return \Laravel\Lumen\Application
      */
