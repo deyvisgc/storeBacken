@@ -11,6 +11,6 @@ interface RegistroSanitarioRepository
 {
     public function crearRegistroSanitario(RegistroSanitarioEntity $registroSanitarioEntity);
     public function updateRegistroSanitario(RegistroSanitarioEntity $registroSanitarioEntity);
-    public function deleteRegistroSanitario(IdRegistroSanitario $idRegistroSanitario);
+    public function deleteRegistroSanitario(int $idRegistroSanitario);
     public function listarRegistroSanitario();
 }

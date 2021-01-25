@@ -113,6 +113,7 @@ $app->router->group([
     require __DIR__.'/../routes/web.php';
     require __DIR__.'/../routes/PrivilegesRoutes.php';
     require __DIR__.'/../routes/RolRoutes.php';
+    require __DIR__.'/../routes/RegistroSanitario.php';
 });
 
 return $app;
