@@ -4,9 +4,10 @@
 namespace App\Http\Controllers\Privileges;
 
 
+use App\Http\Controllers\Controller;
 use Core\Privilegio\Infraestructura\AdapterBridge\ListPrivilegesAdapter;
 
-class PrivilegesController
+class PrivilegesController extends Controller
 {
     /**
      * @var ListPrivilegesAdapter
