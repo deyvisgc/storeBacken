@@ -7,6 +7,8 @@ namespace Core\RegistroSanitario\Infraestructura\Database;
 use Core\RegistroSanitario\Domain\Entity\RegistroSanitarioEntity;
 use Core\RegistroSanitario\Domain\Repositories\RegistroSanitarioRepository;
 use Core\RegistroSanitario\Domain\ValueObjects\IdRegistroSanitario;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class RegistroSanitarioRepositoryImpl implements RegistroSanitarioRepository
 {
@@ -21,13 +23,18 @@ class RegistroSanitarioRepositoryImpl implements RegistroSanitarioRepository
         // TODO: Implement updateRegistroSanitario() method.
     }
 
-    public function deleteRegistroSanitario(IdRegistroSanitario $idRegistroSanitario)
+    public function deleteRegistroSanitario(int $idRegistroSanitario)
     {
         // TODO: Implement deleteRegistroSanitario() method.
     }
 
     public function listarRegistroSanitario()
     {
+        try {
+            return DB::table('registro_sanitario')->get();
+        } catch (QueryException $exception){
+            return $exception->getMessage();
+        }
         // TODO: Implement listarRegistroSanitario() method.
     }
 }

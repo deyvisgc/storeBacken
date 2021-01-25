@@ -14,21 +14,21 @@ class RegistroSanitarioEntity
     /**
      * @var IdRegistroSanitario
      */
-    private IdRegistroSanitario $idRegistroSanitario;
+    private int $idRegistroSanitario;
     /**
      * @var Codigo
      */
-    private Codigo $codigo;
+    private string $codigo;
     /**
      * @var FechaVencimiento
      */
-    private $fechaVencimiento;
+    private string $fechaVencimiento;
     /**
      * @var Description
      */
-    private $description;
+    private string $description;
 
-    public function __construct(IdRegistroSanitario $idRegistroSanitario, Codigo $codigo, FechaVencimiento $fechaVencimiento, Description $description)
+    public function __construct(int $idRegistroSanitario, string $codigo, string $fechaVencimiento, string $description)
     {
         $this->idRegistroSanitario = $idRegistroSanitario;
         $this->codigo = $codigo;
@@ -39,41 +39,76 @@ class RegistroSanitarioEntity
     /**
      * @return IdRegistroSanitario
      */
-    public function getIdRegistroSanitario(): IdRegistroSanitario
+    public function getIdRegistroSanitario()
     {
         return $this->idRegistroSanitario;
     }
 
     /**
+     * @param IdRegistroSanitario $idRegistroSanitario
+     */
+    public function setIdRegistroSanitario($idRegistroSanitario): void
+    {
+        $this->idRegistroSanitario = $idRegistroSanitario;
+    }
+
+    /**
      * @return Codigo
      */
-    public function getCodigo(): Codigo
+    public function getCodigo()
     {
         return $this->codigo;
     }
 
     /**
+     * @param Codigo $codigo
+     */
+    public function setCodigo($codigo): void
+    {
+        $this->codigo = $codigo;
+    }
+
+    /**
      * @return FechaVencimiento
      */
-    public function getFechaVencimiento(): FechaVencimiento
+    public function getFechaVencimiento()
     {
         return $this->fechaVencimiento;
     }
 
     /**
+     * @param FechaVencimiento $fechaVencimiento
+     */
+    public function setFechaVencimiento($fechaVencimiento): void
+    {
+        $this->fechaVencimiento = $fechaVencimiento;
+    }
+
+    /**
      * @return Description
      */
-    public function getDescription(): Description
+    public function getDescription()
     {
         return $this->description;
     }
 
+    /**
+     * @param Description $description
+     */
+    public function setDescription($description): void
+    {
+        $this->description = $description;
+    }
+
+
+
     public function toArray():array
     {
         return [
-            'rs_codigo' => $this->codigo->getCodigo(),
-            'rs_fecha_vencimiento' => $this->fechaVencimiento->getFechaVencimiento(),
-            'rs_description' => $this->description->getDescription(),
+            'id_registro_sanitario' => $this->idRegistroSanitario,
+            'rs_codigo' => $this->codigo,
+            'rs_fecha_vencimiento' => $this->fechaVencimiento,
+            'rs_description' => $this->description,
         ];
     }
 }

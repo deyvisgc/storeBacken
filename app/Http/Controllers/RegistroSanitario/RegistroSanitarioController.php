@@ -13,48 +13,17 @@ use Illuminate\Http\Request;
 class RegistroSanitarioController extends Controller
 {
     /**
-     * @var CreateRegistroSanitarioAdapter
-     */
-    private CreateRegistroSanitarioAdapter $createRegistroSanitarioAdapter;
-    /**
-     * @var DeleteRegistroSanitarioAdapter
-     */
-    private DeleteRegistroSanitarioAdapter $deleteRegistroSanitarioAdapter;
-    /**
      * @var ListarRegistroSanitarioAdapter
      */
     private ListarRegistroSanitarioAdapter $listarRegistroSanitarioAdapter;
-    /**
-     * @var UpdateRegistroSanitarioAdapter
-     */
-    private UpdateRegistroSanitarioAdapter $updateRegistroSanitarioAdapter;
 
-    public function __construct(
-        CreateRegistroSanitarioAdapter $createRegistroSanitarioAdapter,
-        DeleteRegistroSanitarioAdapter $deleteRegistroSanitarioAdapter,
-        ListarRegistroSanitarioAdapter $listarRegistroSanitarioAdapter,
-        UpdateRegistroSanitarioAdapter $updateRegistroSanitarioAdapter,
-    )
+    public function __construct(ListarRegistroSanitarioAdapter $listarRegistroSanitarioAdapter)
     {
-        $this->createRegistroSanitarioAdapter = $createRegistroSanitarioAdapter;
-        $this->deleteRegistroSanitarioAdapter = $deleteRegistroSanitarioAdapter;
+
         $this->listarRegistroSanitarioAdapter = $listarRegistroSanitarioAdapter;
-        $this->updateRegistroSanitarioAdapter = $updateRegistroSanitarioAdapter;
     }
-
-    public function crearRegistroSanitario(Request $data){
-
-    }
-
-    public function listarRegistroSanitario(){
-
-    }
-
-    public function updateRegistroSanitario() {
-
-    }
-
-    public function deleteRegistroSanitario() {
-
+    public function listarRegistroSanitario()
+    {
+        return response()->json($this->listarRegistroSanitarioAdapter->listRegistroSanitario());
     }
 }
