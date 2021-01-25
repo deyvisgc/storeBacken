@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\Http\Controllers\ModulosInfraestructura\Privilegios;
+namespace App\Http\Controllers\Privileges;
 
 
 use Core\Privilegio\Infraestructura\AdapterBridge\ListPrivilegesAdapter;
 
-class PrivilegiosController
+class PrivilegesController
 {
     /**
      * @var ListPrivilegesAdapter
@@ -16,7 +16,7 @@ class PrivilegiosController
     /**
      * Create a new controller instance.
      *
-     * @return void
+     * @param ListPrivilegesAdapter $listPrivilegesAdapter
      */
     public function __construct(ListPrivilegesAdapter $listPrivilegesAdapter)
     {

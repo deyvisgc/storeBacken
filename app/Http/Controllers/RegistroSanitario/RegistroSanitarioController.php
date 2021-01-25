@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Http\Controllers\ModuloInfraestructura\RegistroSanitario;
+namespace App\Http\Controllers\RegistroSanitario;
 
 use App\Http\Controllers\Controller;
 use Core\RegistroSanitario\Infraestructura\AdaptersBridge\CreateRegistroSanitarioAdapter;
