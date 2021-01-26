@@ -15,17 +15,48 @@ class RegistroSanitarioRepositoryImpl implements RegistroSanitarioRepository
 
     public function crearRegistroSanitario(RegistroSanitarioEntity $registroSanitarioEntity)
     {
-        // TODO: Implement crearRegistroSanitario() method.
+        try {
+            $create = DB::table('registro_sanitario')->insert([
+                'rs_codigo' => $registroSanitarioEntity->getCodigo(),
+                'rs_fecha_vencimiento' => $registroSanitarioEntity->getFechaVencimiento(),
+                'rs_descripcion' => $registroSanitarioEntity->getDescription()
+            ]);
+            if ($create === true) {
+                return response()->json(['status' => true, 'code' => 200, 'message' => 'Registro sanitario creado']);
+            } else {
+                return response()->json(['status' => false, 'code' => 400, 'message' => 'Registro sanitario no creado']);
+            }
+        }   catch
+            (QueryException $exception){
+                return $exception->getMessage();
+            }
     }
 
     public function updateRegistroSanitario(RegistroSanitarioEntity $registroSanitarioEntity)
     {
-        // TODO: Implement updateRegistroSanitario() method.
+        try {
+            return $edit = DB::table('registro_sanitario')
+                ->where('id_registro_sanitario', $registroSanitarioEntity->getIdRegistroSanitario())
+                ->update([
+                    'rs_codigo' => $registroSanitarioEntity->getCodigo(),
+                    'rs_fecha_vencimiento' => $registroSanitarioEntity->getFechaVencimiento(),
+                    'rs_descripcion' => $registroSanitarioEntity->getDescription()
+                ]);
+        }catch (QueryException $exception){
+             return $exception->getMessage();
+        }
     }
 
     public function deleteRegistroSanitario(int $idRegistroSanitario)
     {
-        // TODO: Implement deleteRegistroSanitario() method.
+        try {
+            return DB::table('registro_sanitario')
+                ->where('id_registro_sanitario','=',$idRegistroSanitario)
+                ->delete();
+        }catch (QueryException $exception){
+            return $exception->getMessage();
+        }
+
     }
 
     public function listarRegistroSanitario()
@@ -35,6 +66,5 @@ class RegistroSanitarioRepositoryImpl implements RegistroSanitarioRepository
         } catch (QueryException $exception){
             return $exception->getMessage();
         }
-        // TODO: Implement listarRegistroSanitario() method.
     }
 }
