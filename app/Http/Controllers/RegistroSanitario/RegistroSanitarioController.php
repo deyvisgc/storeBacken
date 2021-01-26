@@ -42,21 +42,21 @@ class RegistroSanitarioController extends Controller
         return response()->json($this->listarRegistroSanitarioAdapter->listRegistroSanitario());
     }
     public function createRegistro(Request $request){
-        $codigo = $request ['rsCodigo'];
-        $fecha = $request['rsFecha'];
-        $descripcion = $request['rsDescripcion'];
-        $registroEntity = new RegistroSanitarioEntity(0, $codigo, $fecha,$descripcion );
+        $codigo = $request ['rs_codigo'];
+        $fechaVencimiento = $request['rs_fecha_vencimiento'];
+        $descripcion = $request['rs_descripcion'];
+        $registroEntity = new RegistroSanitarioEntity(0, $codigo, $fechaVencimiento,$descripcion );
 
         return response()->json($this->createRegistroSanitarioAdapter->createRegistro($registroEntity));
     }
     public function updateRegistro (Request $request)
     {
-        $id = $request->input('idRegistro');
-        $codigo = $request->input('rsCodigo');
-        $fecha = $request->input('rsFecha');
-        $descripcion = $request->input('rsDescripcion');
+        $id = $request->input('id_registro_sanitario');
+        $codigo = $request->input('rs_codigo');
+        $fechaVencimiento = $request->input('rs_fecha_vencimiento');
+        $descripcion = $request->input('rs_descripcion');
 
-        $registroEntity = new RegistroSanitarioEntity($id, $codigo, $fecha, $descripcion);
+        $registroEntity = new RegistroSanitarioEntity($id, $codigo, $fechaVencimiento, $descripcion);
 
         return response()->json($this->updateRegistroSanitarioAdapter->updateRegistro($registroEntity));
     }
