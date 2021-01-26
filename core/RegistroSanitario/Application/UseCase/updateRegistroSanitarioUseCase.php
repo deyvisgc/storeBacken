@@ -4,6 +4,7 @@
 namespace Core\RegistroSanitario\Application\UseCase;
 
 
+use Core\RegistroSanitario\Domain\Entity\RegistroSanitarioEntity;
 use Core\RegistroSanitario\Domain\Repositories\RegistroSanitarioRepository;
 
 class updateRegistroSanitarioUseCase
@@ -14,7 +15,7 @@ public function __construct( RegistroSanitarioRepository $registroSanitarioRepos
 {
     $this->registroSanitarioRepository = $registroSanitarioRepository;
 }
-public function updateRegistro(RegistroSanitarioRepository $registroSanitarioRepository){
-    return $this->registroSanitarioRepository->updateRegistroSanitario($registroSanitarioRepository);
+public function updateRegistro(RegistroSanitarioEntity $registroSanitarioEntity){
+    return $this->registroSanitarioRepository->updateRegistroSanitario($registroSanitarioEntity);
 }
 }

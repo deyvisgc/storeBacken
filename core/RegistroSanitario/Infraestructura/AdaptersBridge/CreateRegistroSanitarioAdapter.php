@@ -16,7 +16,7 @@ class CreateRegistroSanitarioAdapter
      */
     private RegistroSanitarioRepositoryImpl $registroSanitarioRepositoryImpl;
 
-    public function __construct(RegistroSanitarioRepository $registroSanitarioRepositoryImpl)
+    public function __construct(RegistroSanitarioRepositoryImpl $registroSanitarioRepositoryImpl)
     {
         $this->registroSanitarioRepositoryImpl = $registroSanitarioRepositoryImpl;
     }

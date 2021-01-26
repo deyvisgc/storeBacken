@@ -17,9 +17,9 @@ class RegistroSanitarioController extends Controller
      * @var ListarRegistroSanitarioAdapter
      */
     private ListarRegistroSanitarioAdapter $listarRegistroSanitarioAdapter;
-    private CreateRegistroSanitarioAdapter $createRegistroSanitarioAdapter;
+    /**private CreateRegistroSanitarioAdapter $createRegistroSanitarioAdapter;
     private DeleteRegistroSanitarioAdapter $deleteRegistroSanitarioAdapter;
-    private UpdateRegistroSanitarioAdapter $updateRegistroSanitarioAdapter;
+    private UpdateRegistroSanitarioAdapter $updateRegistroSanitarioAdapter;*/
 
 
 
@@ -55,6 +55,7 @@ class RegistroSanitarioController extends Controller
         $codigo = $request->input('rs_codigo');
         $fechaVencimiento = $request->input('rs_fecha_vencimiento');
         $descripcion = $request->input('rs_descripcion');
+
 
         $registroEntity = new RegistroSanitarioEntity($id, $codigo, $fechaVencimiento, $descripcion);
 

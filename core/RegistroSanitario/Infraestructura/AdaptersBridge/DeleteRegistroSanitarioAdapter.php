@@ -4,16 +4,20 @@
 namespace Core\RegistroSanitario\Infraestructura\AdaptersBridge;
 
 
+use Core\RegistroSanitario\Application\UseCase\deleteRegistroSanitarioUseCase;
 use Core\RegistroSanitario\Domain\Repositories\RegistroSanitarioRepository;
+use Core\RegistroSanitario\Infraestructura\Database\RegistroSanitarioRepositoryImpl;
 
 class DeleteRegistroSanitarioAdapter
 {
-    private RegistroSanitarioRepository $registroSanitarioRepository;
-    public function __construct(RegistroSanitarioRepository $registroSanitarioRepository)
+    private RegistroSanitarioRepositoryImpl $registroSanitarioRepositoryImpl;
+
+    public function __construct(RegistroSanitarioRepositoryImpl $registroSanitarioRepositoryImpl)
     {
-        $this->registroSanitarioRepository = $registroSanitarioRepository;
+        $this->registroSanitarioRepositoryImpl = $registroSanitarioRepositoryImpl;
     }
     public function deleteRegistro($idRegistroSanitario){
-        return $this->registroSanitarioRepository->deleteRegistroSanitario($idRegistroSanitario);
+        $deleteRegistro = new deleteRegistroSanitarioUseCase($this->registroSanitarioRepositoryImpl);
+        return $deleteRegistro->deleteRegistro($idRegistroSanitario);
     }
 }

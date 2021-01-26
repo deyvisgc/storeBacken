@@ -19,7 +19,7 @@ class RegistroSanitarioRepositoryImpl implements RegistroSanitarioRepository
             $create = DB::table('registro_sanitario')->insert([
                 'rs_codigo' => $registroSanitarioEntity->getCodigo(),
                 'rs_fecha_vencimiento' => $registroSanitarioEntity->getFechaVencimiento(),
-                'rs_descripcion' => $registroSanitarioEntity->getDescription()
+                'rs_description' => $registroSanitarioEntity->getDescription()
             ]);
             if ($create === true) {
                 return response()->json(['status' => true, 'code' => 200, 'message' => 'Registro sanitario creado']);
@@ -40,7 +40,7 @@ class RegistroSanitarioRepositoryImpl implements RegistroSanitarioRepository
                 ->update([
                     'rs_codigo' => $registroSanitarioEntity->getCodigo(),
                     'rs_fecha_vencimiento' => $registroSanitarioEntity->getFechaVencimiento(),
-                    'rs_descripcion' => $registroSanitarioEntity->getDescription()
+                    'rs_description' => $registroSanitarioEntity->getDescription()
                 ]);
         }catch (QueryException $exception){
              return $exception->getMessage();
