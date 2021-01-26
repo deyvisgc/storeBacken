@@ -23,16 +23,54 @@ class RolRepositoryImpl implements RolRepository
 
     public function editRol(RolEntity $rolEntity)
     {
-        // TODO: Implement editRol() method.
+        try {
+            return $edit = DB::table('rol')
+                ->where('id_rol',$rolEntity->getIdRol())
+                ->update([
+                    'rol_name' => $rolEntity->getRolName(),
+                    'rol_status' => $rolEntity->getRolStatus()
+                ]);
+        } catch (QueryException $exception) {
+            return $exception->getMessage();
+        }
     }
 
     public function createRol(RolEntity $rolEntity)
     {
-        // TODO: Implement createRol() method.
+        try {
+            $create = DB::table('rol')->insert([
+                'rol_name' => $rolEntity->getRolName(),
+                'rol_status' => 'ACTIVE'
+            ]);
+            if ($create === true) {
+                return response()->json(['status' => true, 'code' => 200, 'message' => 'Rol creado']);
+            } else {
+                return response()->json(['status' => false, 'code' => 400, 'message' => 'Rol no creado']);
+            }
+        } catch (QueryException $exception) {
+            return $exception->getMessage();
+        }
     }
 
     public function deleteRol(int $idRol)
     {
-        // TODO: Implement deleteRol() method.
+        try {
+            return DB::table('rol')
+                ->where('id_rol', '=', $idRol)
+                ->delete();
+        } catch (QueryException $exception) {
+            return $exception->getMessage();
+        }
+    }
+
+    public function listRolById(int $idRol)
+    {
+        try {
+            return DB::table('rol')
+                ->where('id_rol', '=', $idRol)
+                ->get();
+        } catch (QueryException $exception) {
+            return $exception->getMessage();
+        }
     }
 }

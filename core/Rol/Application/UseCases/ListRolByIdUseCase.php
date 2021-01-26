@@ -6,7 +6,7 @@ namespace Core\Rol\Application\UseCases;
 
 use Core\Rol\Domain\Repositories\RolRepository;
 
-class DeleteRolUseCase
+class ListRolByIdUseCase
 {
     /**
      * @var RolRepository
@@ -18,7 +18,7 @@ class DeleteRolUseCase
         $this->rolRepository = $rolRepository;
     }
 
-    public function deleteRol($idRol) {
-        return $this->rolRepository->deleteRol($idRol);
+    public function listRolById(int $idRol) {
+        return $this->rolRepository->listRolById($idRol);
     }
 }
