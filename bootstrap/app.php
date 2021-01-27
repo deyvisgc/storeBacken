@@ -115,6 +115,7 @@ $app->router->group([
     require __DIR__.'/../routes/RolRoutes.php';
     require __DIR__.'/../routes/CajaRoutes.php';
     require __DIR__.'/../routes/RegistroSanitario.php';
+    require __DIR__.'/../routes/SangriaRoutes.php';
 });
 
 return $app;
