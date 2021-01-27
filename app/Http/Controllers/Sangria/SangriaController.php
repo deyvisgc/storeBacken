@@ -51,4 +51,16 @@ class SangriaController
         $sangriaEntity = new SangriaEntity(0,$sanMonto,$sanFecha,$sanTipo,$sanMotivo,$idCaja,$idUser);
         return response()->json($this->createSangriaAdapter->createSangria($sangriaEntity));
     }
+    public function updateSangria(Request $request){
+
+        $id=$request->input('id');
+        $sanMonto = $request->input('sanMonto');
+        $sanFecha= Carbon::now('America/Lima')->toDateTimeString();
+        $sanTipo= $request->input('sanTipo');
+        $sanMotivo= $request->input('sanMotivo');
+        $idCaja= $request->input('idCaja');
+        $idUser= $request->input('idUser');
+        $sangriaEntity = new SangriaEntity($id,$sanMonto,$sanFecha,$sanTipo,$sanMotivo,$idCaja,$idUser);
+        return response()->json($this->editSangriaAdapter->editSangria($sangriaEntity));
+    }
 }

@@ -34,6 +34,11 @@ class SangriaRepositoryImpl implements SagriaRepository
                     'id_caja'=>$sangriaEntity->getIdCaja(),
                     'id_user'=>$sangriaEntity->getIdUser()
                 ]);
+            if ($edit ===true){
+                return response()->json(['status' => true, 'code' => 200, 'message' => 'Sangria editada']);
+            } else{
+                return response()->json(['status' => false, 'code' => 400, 'message' => 'Sangria no editada']);
+            }
         }catch (QueryException $exception){
             return $exception->getMessage();
         }
