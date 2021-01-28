@@ -45,7 +45,7 @@ class RegistroSanitarioController extends Controller
         $codigo = $request ['rs_codigo'];
         $fechaVencimiento = $request['rs_fecha_vencimiento'];
         $descripcion = $request['rs_descripcion'];
-        $registroEntity = new RegistroSanitarioEntity(0, $codigo, $fechaVencimiento,$descripcion );
+        $registroEntity = new RegistroSanitarioEntity(0, $codigo, $fechaVencimiento,$descripcion  );
 
         return response()->json($this->createRegistroSanitarioAdapter->createRegistro($registroEntity));
     }
@@ -55,6 +55,7 @@ class RegistroSanitarioController extends Controller
         $codigo = $request->input('rs_codigo');
         $fechaVencimiento = $request->input('rs_fecha_vencimiento');
         $descripcion = $request->input('rs_descripcion');
+
 
         $registroEntity = new RegistroSanitarioEntity($id, $codigo, $fechaVencimiento, $descripcion);
 

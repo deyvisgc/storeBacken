@@ -6,7 +6,6 @@ namespace Core\RegistroSanitario\Infraestructura\Database;
 
 use Core\RegistroSanitario\Domain\Entity\RegistroSanitarioEntity;
 use Core\RegistroSanitario\Domain\Repositories\RegistroSanitarioRepository;
-use Core\RegistroSanitario\Domain\ValueObjects\IdRegistroSanitario;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +18,7 @@ class RegistroSanitarioRepositoryImpl implements RegistroSanitarioRepository
             $create = DB::table('registro_sanitario')->insert([
                 'rs_codigo' => $registroSanitarioEntity->getCodigo(),
                 'rs_fecha_vencimiento' => $registroSanitarioEntity->getFechaVencimiento(),
-                'rs_descripcion' => $registroSanitarioEntity->getDescription()
+                'rs_description' => $registroSanitarioEntity->getDescription()
             ]);
             if ($create === true) {
                 return response()->json(['status' => true, 'code' => 200, 'message' => 'Registro sanitario creado']);
@@ -40,7 +39,7 @@ class RegistroSanitarioRepositoryImpl implements RegistroSanitarioRepository
                 ->update([
                     'rs_codigo' => $registroSanitarioEntity->getCodigo(),
                     'rs_fecha_vencimiento' => $registroSanitarioEntity->getFechaVencimiento(),
-                    'rs_descripcion' => $registroSanitarioEntity->getDescription()
+                    'rs_description' => $registroSanitarioEntity->getDescription()
                 ]);
         }catch (QueryException $exception){
              return $exception->getMessage();

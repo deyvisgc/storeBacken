@@ -15,7 +15,7 @@ class deleteRegistroSanitarioUseCase
         $this->registroSanitarioRepository= $registroSanitarioRepository;
     }
     Public function deleteRegistro($idRegistroSanitario){
-        return $this->registroSanitarioRepository->deleteRegistroSanitario(@$idRegistroSanitario);
+        return $this->registroSanitarioRepository->deleteRegistroSanitario($idRegistroSanitario);
     }
 }
 

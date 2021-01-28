@@ -113,10 +113,13 @@ $app->router->group([
     require __DIR__.'/../routes/web.php';
     require __DIR__.'/../routes/PrivilegesRoutes.php';
     require __DIR__.'/../routes/RolRoutes.php';
+    require __DIR__.'/../routes/CajaRoutes.php';
     require __DIR__.'/../routes/RegistroSanitario.php';
     require __DIR__.'/../routes/PersonRoutes.php';
     require __DIR__.'/../routes/UserRoutes.php';
     require __DIR__.'/../routes/AuthenticationRoutes.php';
+    require __DIR__.'/../routes/SangriaRoutes.php';
+    require __DIR__.'/../routes/HistorialCajaRoutes.php';
 });
 
 return $app;

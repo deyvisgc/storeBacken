@@ -5,7 +5,6 @@ namespace Core\RegistroSanitario\Domain\Repositories;
 
 
 use Core\RegistroSanitario\Domain\Entity\RegistroSanitarioEntity;
-use Core\RegistroSanitario\Domain\ValueObjects\IdRegistroSanitario;
 
 interface RegistroSanitarioRepository
 {

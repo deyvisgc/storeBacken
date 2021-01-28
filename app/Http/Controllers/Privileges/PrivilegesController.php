@@ -27,4 +27,5 @@ class PrivilegesController extends Controller
     public function listPrivileges() {
         return response()->json($this->listPrivilegesAdapter->listPrivileges());
     }
+
 }
