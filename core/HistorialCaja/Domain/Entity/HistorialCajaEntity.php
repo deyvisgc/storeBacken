@@ -10,7 +10,6 @@ class HistorialCajaEntity
     private string $chDate;
     private string $chTypeOperation;
     private float $chTotal;
-    private int $idUser;
     private int $idCaja;
 
     public function __construct(
@@ -18,7 +17,6 @@ class HistorialCajaEntity
         string $chDate,
         string $chTypeOperation,
         float $chTotal,
-        int $idUser,
         int $idCaja
     )
     {
@@ -26,7 +24,6 @@ class HistorialCajaEntity
         $this->chDate=$chDate;
         $this->chTypeOperation =$chTypeOperation;
         $this->chTotal=$chTotal;
-        $this->idUser=$idUser;
         $this->idCaja=$idCaja;
     }
 
@@ -97,22 +94,6 @@ class HistorialCajaEntity
     /**
      * @return int
      */
-    public function getIdUser(): int
-    {
-        return $this->idUser;
-    }
-
-    /**
-     * @param int $idUser
-     */
-    public function setIdUser(int $idUser): void
-    {
-        $this->idUser = $idUser;
-    }
-
-    /**
-     * @return int
-     */
     public function getIdCaja(): int
     {
         return $this->idCaja;
@@ -133,7 +114,6 @@ class HistorialCajaEntity
             'ch_fecha_operacion'=>$this->chDate,
             'ch_tipo_operacion'=>$this->chTypeOperation,
             'ch_total_dinero'=>$this->chTotal,
-            'id_user'=>$this->idUser,
             'id_caja'=>$this->idCaja
         ];
     }

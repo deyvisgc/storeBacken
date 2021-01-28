@@ -45,9 +45,8 @@ class HistorialCajaController extends Controller
         $fechaOperacion =Carbon::now('America/Lima')->toDateTimeString();
         $tipoOperacion = $request['tipoOperacion'];
         $totalDinero =$request['totalDinero'];
-        $idUser =$request['idUser'];
         $idCaja =$request['idCaja'];
-        $HistorialEntity = new HistorialCajaEntity(0,$fechaOperacion,$tipoOperacion,$totalDinero,$idUser,$idCaja);
+        $HistorialEntity = new HistorialCajaEntity(0,$fechaOperacion,$tipoOperacion,0,$idCaja);
         return response()->json($this->createHistorialCajaAdapter->createHistorialCaja($HistorialEntity));
     }
     public function updateHistorial(Request $request){
@@ -55,9 +54,8 @@ class HistorialCajaController extends Controller
         $fechaOperacion =Carbon::now('America/Lima')->toDateTimeString();
         $tipoOperacion = $request->input('tipoOperacion');
         $totalDinero =$request->input('totalDinero');
-        $idUser =$request->input('idUser');
         $idCaja =$request->input('idCaja');
-        $HistorialEntity = new  HistorialCajaEntity($id,$fechaOperacion,$tipoOperacion,$totalDinero,$idUser,$idCaja);
+        $HistorialEntity = new  HistorialCajaEntity($id,$fechaOperacion,$tipoOperacion,$totalDinero,$idCaja);
         return response()->json($this->updateHistorialCajaAdapter->updateHistorial($HistorialEntity));
     }
 

@@ -32,7 +32,6 @@ class HistorialCajaRepositoryImpl implements HistorialCajaRepository
                     'ch_fecha_operacion'=>$historialCajaEntity->getChDate(),
                     'ch_tipo_operacion'=>$historialCajaEntity->getChTypeOperation(),
                     'ch_total_dinero'=>$historialCajaEntity->getChTotal(),
-                    'id_user'=>$historialCajaEntity->getIdUser(),
                     'id_caja'=>$historialCajaEntity->getIdCaja()
                 ]);
             if ($edit === true) {
@@ -54,7 +53,6 @@ class HistorialCajaRepositoryImpl implements HistorialCajaRepository
                     'ch_fecha_operacion'=>$historialCajaEntity->getChDate(),
                     'ch_tipo_operacion'=>$historialCajaEntity->getChTypeOperation(),
                     'ch_total_dinero'=>$historialCajaEntity->getChTotal(),
-                    'id_user'=>$historialCajaEntity->getIdUser(),
                     'id_caja'=>$historialCajaEntity->getIdCaja()
                 ]);
             if ($create === true) {
