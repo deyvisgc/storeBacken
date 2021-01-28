@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\Sangria;
 
 
+use App\Http\Controllers\Controller;
 use Core\Sangria\Domain\Entity\SangriaEntity;
 use Core\Sangria\Infraestructura\AdapterBridge\CreateSangriaAdapter;
 use Core\Sangria\Infraestructura\AdapterBridge\DeleteSangriaAdapter;
@@ -13,7 +14,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 
-class SangriaController
+class SangriaController extends Controller
 {
     private ListSangriaAdapter $listSangriaAdapter;
     private CreateSangriaAdapter $createSangriaAdapter;

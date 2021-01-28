@@ -40,7 +40,6 @@ class CajaRepositoryImpl implements CajaRepository
                     'ca_description'=>$cajaEntity->getCajaDescription(),
                     'ca_status'=>$cajaEntity->getCajaStatus(),
                     'id_user'=>$cajaEntity->getIdUser()
-
                 ]);
         }catch (QueryException $exception){
             return $exception->getMessage();
