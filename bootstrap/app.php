@@ -92,9 +92,10 @@ $app->configure('app');
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
-// $app->register(App\Providers\EventServiceProvider::class);
+ $app->register(App\Providers\AppServiceProvider::class);
+ $app->register(App\Providers\AuthServiceProvider::class);
+ $app->register(App\Providers\EventServiceProvider::class);
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -114,6 +115,7 @@ $app->router->group([
     require __DIR__.'/../routes/PrivilegesRoutes.php';
     require __DIR__.'/../routes/RolRoutes.php';
     require __DIR__.'/../routes/RegistroSanitario.php';
+    require __DIR__.'/../routes/Almacen.php';
 });
 
 return $app;

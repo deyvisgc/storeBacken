@@ -6,7 +6,7 @@ namespace Core\RegistroSanitario\Infraestructura\Database;
 
 use Core\RegistroSanitario\Domain\Entity\RegistroSanitarioEntity;
 use Core\RegistroSanitario\Domain\Repositories\RegistroSanitarioRepository;
-use Core\RegistroSanitario\Domain\ValueObjects\IdRegistroSanitario;
+use Core\RegistroSanitario\Domain\ValueObjects\ProCantidad;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
