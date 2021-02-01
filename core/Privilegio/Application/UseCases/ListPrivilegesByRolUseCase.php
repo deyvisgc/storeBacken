@@ -3,11 +3,13 @@
 
 namespace Core\Privilegio\Application\UseCases;
 
-
+define('KEY_PASSWORD_TO_DECRYPT','K56QSxGeKImwBRmiYoP');
 use Core\Privilegio\Domain\Repositories\PrivilegioRepository;
+use Core\Traits\EncryptTrait;
 
 class ListPrivilegesByRolUseCase
 {
+    use EncryptTrait;
     /**
      * @var PrivilegioRepository
      */
@@ -15,7 +17,11 @@ class ListPrivilegesByRolUseCase
 
     public function __construct(PrivilegioRepository $privilegioRepository)
     {
-
         $this->privilegioRepository = $privilegioRepository;
+    }
+
+    public function listPrivilegesByRol($idRol) {
+        $idRolDecrypt = $this->CryptoJSAesDecrypt(KEY_PASSWORD_TO_DECRYPT, $idRol);
+        return $this->privilegioRepository->listPrivilegesByRol($idRolDecrypt);
     }
 }

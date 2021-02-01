@@ -23,8 +23,17 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository
         }
     }
 
-    public function logoutUser($tokenUser, $user)
+    public function logoutUser($oldTokenUser, $idPersona, $newTokenUser)
     {
-        // TODO: Implement logoutUser() method.
+        try {
+            return DB::table('user')
+                ->where('id_persona', '=', $idPersona)
+                ->where('us_token', '=', $oldTokenUser)
+                ->update([
+                    'us_token' => $newTokenUser
+                ]);
+        } catch (QueryException $exception) {
+            return $exception->getMessage();
+        }
     }
 }
