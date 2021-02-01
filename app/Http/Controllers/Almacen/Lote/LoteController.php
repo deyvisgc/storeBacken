@@ -39,4 +39,5 @@ class LoteController extends Controller
     public function Read() {
         return response()->json($this->readBridge->__invoke());
     }
+
 }

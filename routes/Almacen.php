@@ -23,6 +23,9 @@ $router->get('api/v1/Almacen/Producto','Almacen\Producto\ProductoController@Read
 $router->get('api/v1/Almacen/Producto/{id}','Almacen\Producto\ProductoController@Readxid');
 $router->delete('api/v1/Almacen/Producto/{id}','Almacen\Producto\ProductoController@delete');
 
+//SEARCHTRAITS
+$router->post('api/v1/Almacen/Producto/SearchxType','Almacen\Producto\ProductoController@SearchxType');
+
 //Lote
 $router->get('api/v1/Almacen/Lote','Almacen\Lote\LoteController@Read');
 

@@ -4,11 +4,8 @@
 namespace Core\Producto\Infraestructure\AdapterBridge;
 
 
-use Core\Producto\Aplication\UseCases\CreateCase;
 use Core\Producto\Aplication\UseCases\DeleteCase;
-use Core\Producto\Aplication\UseCases\ReadCase;
 use Core\Producto\Infraestructure\DataBase\ProductoSql;
-use Illuminate\Http\Request;
 
 class DeleteBridge
 {

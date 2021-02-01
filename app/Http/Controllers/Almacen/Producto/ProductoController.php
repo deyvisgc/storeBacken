@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Almacen\Producto;
 
 use App\Http\Controllers\Controller;
+use App\Traits\Search\SeacrhTraits;
 use Core\Producto\Infraestructure\AdapterBridge\CreateBridge;
 use Core\Producto\Infraestructure\AdapterBridge\DeleteBridge;
 use Core\Producto\Infraestructure\AdapterBridge\ReadBridge;
 use Core\Producto\Infraestructure\AdapterBridge\UpdateBridge;
 use Illuminate\Http\Request;
 
+
 class ProductoController extends Controller
 {
+    use SeacrhTraits;
     /**
      * @var CreateBridge
      */
@@ -67,6 +70,21 @@ class ProductoController extends Controller
     function CambiarStatus(int $id)
     {
         return response()->json($this->deleteBridge->__invokexid($id));
+    }
+    function SearchxType (Request $request) {
+        $status= '';
+        switch ($request['data'][0]['typesearch']){
+            case 'lote':
+                $status = $this->seachxlote($request['data'][0]['id']);
+                break;
+            case 'clase' :
+                $status = $this->seachxclase($request['data'][0]['id']);
+                break;
+            case 'unidad' :
+                $status = $this->seachxunidad($request['data'][0]['id']);
+                break;
+        }
+        return response()->json($status);
     }
 
 }

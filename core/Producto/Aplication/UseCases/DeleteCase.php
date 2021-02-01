@@ -11,11 +11,11 @@ class DeleteCase
 
 
     /**
-     * @var ClaseRepository
+     * @var ProductoRepository
      */
-    private ClaseRepository $repository;
+    private ProductoRepository $repository;
 
-    public function __construct(ClaseRepository $repository)
+    public function __construct(ProductoRepository $repository)
     {
 
         $this->repository = $repository;
