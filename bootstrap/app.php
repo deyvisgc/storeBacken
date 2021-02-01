@@ -95,6 +95,8 @@ $app->configure('app');
  $app->register(App\Providers\AppServiceProvider::class);
  $app->register(App\Providers\AuthServiceProvider::class);
  $app->register(App\Providers\EventServiceProvider::class);
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -115,6 +117,7 @@ $app->router->group([
     require __DIR__.'/../routes/RolRoutes.php';
     require __DIR__.'/../routes/CajaRoutes.php';
     require __DIR__.'/../routes/RegistroSanitario.php';
+    require __DIR__.'/../routes/Almacen.php';
     require __DIR__.'/../routes/PersonRoutes.php';
     require __DIR__.'/../routes/UserRoutes.php';
     require __DIR__.'/../routes/AuthenticationRoutes.php';

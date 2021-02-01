@@ -4,27 +4,27 @@
 namespace Core\RegistroSanitario\Domain\Entity;
 
 
-use Core\RegistroSanitario\Domain\ValueObjects\Codigo;
-use Core\RegistroSanitario\Domain\ValueObjects\Description;
-use Core\RegistroSanitario\Domain\ValueObjects\FechaVencimiento;
-use Core\RegistroSanitario\Domain\ValueObjects\IdRegistroSanitario;
+use Core\RegistroSanitario\Domain\ValueObjects\ProNombre;
+use Core\RegistroSanitario\Domain\ValueObjects\ProPrecioCompra;
+use Core\RegistroSanitario\Domain\ValueObjects\ProPrecioVenta;
+use Core\RegistroSanitario\Domain\ValueObjects\ProCantidad;
 
 class RegistroSanitarioEntity
 {
     /**
-     * @var IdRegistroSanitario
+     * @var ProCantidad
      */
     private int $idRegistroSanitario;
     /**
-     * @var Codigo
+     * @var ProNombre
      */
     private string $codigo;
     /**
-     * @var FechaVencimiento
+     * @var ProPrecioVenta
      */
     private string $fechaVencimiento;
     /**
-     * @var Description
+     * @var ProPrecioCompra
      */
     private string $description;
 
@@ -37,7 +37,7 @@ class RegistroSanitarioEntity
     }
 
     /**
-     * @return IdRegistroSanitario
+     * @return ProCantidad
      */
     public function getIdRegistroSanitario()
     {
@@ -45,7 +45,7 @@ class RegistroSanitarioEntity
     }
 
     /**
-     * @param IdRegistroSanitario $idRegistroSanitario
+     * @param ProCantidad $idRegistroSanitario
      */
     public function setIdRegistroSanitario($idRegistroSanitario): void
     {
@@ -53,7 +53,7 @@ class RegistroSanitarioEntity
     }
 
     /**
-     * @return Codigo
+     * @return ProNombre
      */
     public function getCodigo()
     {
@@ -61,7 +61,7 @@ class RegistroSanitarioEntity
     }
 
     /**
-     * @param Codigo $codigo
+     * @param ProNombre $codigo
      */
     public function setCodigo($codigo): void
     {
@@ -69,7 +69,7 @@ class RegistroSanitarioEntity
     }
 
     /**
-     * @return FechaVencimiento
+     * @return ProPrecioVenta
      */
     public function getFechaVencimiento()
     {
@@ -77,7 +77,7 @@ class RegistroSanitarioEntity
     }
 
     /**
-     * @param FechaVencimiento $fechaVencimiento
+     * @param ProPrecioVenta $fechaVencimiento
      */
     public function setFechaVencimiento($fechaVencimiento): void
     {
@@ -85,7 +85,7 @@ class RegistroSanitarioEntity
     }
 
     /**
-     * @return Description
+     * @return ProPrecioCompra
      */
     public function getDescription()
     {
@@ -93,7 +93,7 @@ class RegistroSanitarioEntity
     }
 
     /**
-     * @param Description $description
+     * @param ProPrecioCompra $description
      */
     public function setDescription($description): void
     {
