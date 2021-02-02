@@ -18,5 +18,5 @@ interface ProductoRepository
 
     function delete(int $id);
 
-    function CambiarStatus(int $id);
+    function CambiarStatus(string $status,int $id);
 }

@@ -22,6 +22,8 @@ $router->patch('api/v1/Almacen/Producto','Almacen\Producto\ProductoController@Up
 $router->get('api/v1/Almacen/Producto','Almacen\Producto\ProductoController@Read');
 $router->get('api/v1/Almacen/Producto/{id}','Almacen\Producto\ProductoController@Readxid');
 $router->delete('api/v1/Almacen/Producto/{id}','Almacen\Producto\ProductoController@delete');
+$router->patch('api/v1/Almacen/Producto/changestatus','Almacen\Producto\ProductoController@changestatus');
+
 
 //SEARCHTRAITS
 $router->post('api/v1/Almacen/Producto/SearchxType','Almacen\Producto\ProductoController@SearchxType');
