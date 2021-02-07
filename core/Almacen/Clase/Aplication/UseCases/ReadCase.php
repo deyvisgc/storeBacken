@@ -24,5 +24,19 @@ class ReadCase
     {
         return $this->repository->Readxid($idproducto);
     }
+    public function clasesuperior()
+    {
+        return $this->repository->getclasepadre();
+    }
+    public function claserecursiva()
+    {
+        return $this->repository->ObtenerPadreehijoclase();
+    }
+    public function Obtenerclasexid($idpadre) {
+        return $this->repository->Obtenerclasexid($idpadre);
+    }
+    public function viewchild($idpadre) {
+        return $this->repository->viewchild($idpadre);
+    }
 
 }

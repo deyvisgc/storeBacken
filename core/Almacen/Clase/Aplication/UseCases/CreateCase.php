@@ -8,7 +8,7 @@ namespace Core\Almacen\Clase\Aplication\UseCases;
 use Core\Almacen\Clase\Domain\Entity\ClaseEntity;
 use Core\Almacen\Clase\Domain\Repositories\ClaseRepository;
 use Core\Almacen\Clase\Domain\ValueObjects\CLASSNAME;
-use Core\Almacen\Clase\Domain\ValueObjects\IDCLASESUPERIOR;
+use Core\Almacen\Clase\Domain\ValueObjects\IDHIJO;
 
 class CreateCase
 {
@@ -22,12 +22,12 @@ class CreateCase
         $this->repository = $repository;
     }
 
-    public function __invoke(string $accion,string $clasname,int $idclasesupe )
+    public function __invoke(string $clasname, ?int $idclasesupe )
     {
         $name = new CLASSNAME($clasname);
-        $idclasesupe= new IDCLASESUPERIOR($idclasesupe);
+        $idclasesupe= new IDHIJO($idclasesupe);
         $clase = ClaseEntity::create($name, $idclasesupe);
-        return $this->repository->Create($clase,$accion);
+        return $this->repository->Create($clase);
     }
 
 }

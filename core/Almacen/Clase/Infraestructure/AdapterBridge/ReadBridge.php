@@ -6,6 +6,8 @@ namespace Core\Almacen\Clase\Infraestructure\AdapterBridge;
 
 use Core\Almacen\Clase\Aplication\UseCases\ReadCase;
 use Core\Almacen\Clase\Infraestructure\DataBase\ClaseSql;
+use Illuminate\Http\Request;
+
 class ReadBridge
 {
 
@@ -29,5 +31,23 @@ class ReadBridge
     {
         $readcase= new ReadCase($this->clase);
         return $readcase->__invokexid($id);
+    }
+    public function __clasesuperior()
+    {
+        $readcase= new ReadCase($this->clase);
+        return $readcase->clasesuperior();
+    }
+    public function __getclaserecursiva()
+    {
+        $readcase= new ReadCase($this->clase);
+        return $readcase->claserecursiva();
+    }
+    public function __Obtenerclasexid($idpadre) {
+        $readcase= new ReadCase($this->clase);
+        return $readcase->Obtenerclasexid($idpadre);
+    }
+    public function __viewchild($idpadre) {
+        $readcase= new ReadCase($this->clase);
+        return $readcase->viewchild($idpadre);
     }
 }

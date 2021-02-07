@@ -23,13 +23,33 @@ class UpdateBridge
     {
         $this->productoSql = $productoSql;
     }
-    public function __invoke(Request $request)
+    public function __invoke($request)
     {
-        $idclase=$request->input('id_clase');
-        $accion=$request->input('accion');
-        $classnname=$request->input('classname');
-        $idclasesupe=$request->input('idclasssuperior');
+        $accion=$request['accion'];
+        $idpadre=$request['clasePadre'];
+        $idhijo=$request['clasehijo'];
         $clasecase= new UpdateCase($this->productoSql);
-        return $clasecase->__invoke($accion, $classnname, $idclasesupe, $idclase);
+        return $clasecase->__invoke($accion, $idpadre, $idhijo);
+    }
+    public function __Actualizarcate($request)
+    {
+        $idclase=$request['idclase'];
+        $name=$request['Cla_nombre'];
+        $clasecase= new UpdateCase($this->productoSql);
+        return $clasecase->Actualizaracate($idclase, $name);
+    }
+    public function __Changestatu($request)
+    {
+        $idclase=$request['id_clase_producto'];
+        $status=$request['clas_status'];
+        $clasecase= new UpdateCase($this->productoSql);
+        return $clasecase->ChangeStatus($idclase,$status);
+    }
+    public function __ChangestatuRecursiva($request)
+    {
+        $idclase=$request[0];//idclase
+        $status=$request[1]; // valor del estado hijo
+        $clasecase= new UpdateCase($this->productoSql);
+        return $clasecase->ChangeStatusRecursiva($idclase,$status);
     }
 }

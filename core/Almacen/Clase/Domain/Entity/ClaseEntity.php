@@ -5,7 +5,8 @@ namespace Core\Almacen\Clase\Domain\Entity;
 
 
 use Core\Almacen\Clase\Domain\ValueObjects\CLASSNAME;
-use Core\Almacen\Clase\Domain\ValueObjects\IDCLASESUPERIOR;
+use Core\Almacen\Clase\Domain\ValueObjects\IDHIJO;
+use Core\Almacen\Clase\Domain\ValueObjects\IDPADRE;
 
 class ClaseEntity
 {
@@ -16,25 +17,53 @@ class ClaseEntity
      */
     private CLASSNAME $classname;
     /**
-     * @var IDCLASESUPERIOR
+     * @var IDHIJO
      */
-    private IDCLASESUPERIOR $id_Clasesuperior;
+    private IDHIJO $id_Clasesuperior;
+    /**
+     * @var IDPADRE
+     */
+    private IDPADRE $IDPADRE;
 
-    public function __construct(CLASSNAME $classname, IDCLASESUPERIOR $id_Clasesuperior)
+    public function __construct(CLASSNAME $classname, IDHIJO $id_Clasesuperior)
     {
 
         $this->classname = $classname;
         $this->id_Clasesuperior = $id_Clasesuperior;
     }
 
-    static function create(CLASSNAME $classname, IDCLASESUPERIOR $id_Clasesuperior)
+    /**
+     * @return CLASSNAME
+     */
+    public function Classname(): CLASSNAME
+    {
+        return $this->classname;
+    }
+
+    /**
+     * @return IDHIJO
+     */
+    public function IdClasesuperior(): IDHIJO
+    {
+        return $this->id_Clasesuperior;
+    }
+
+    /**
+     * @return IDPADRE
+     */
+    public function IDPADRE(): IDPADRE
+    {
+        return $this->IDPADRE;
+    }
+
+    static function create(CLASSNAME $classname, IDHIJO $id_Clasesuperior)
     {
         return new self($classname, $id_Clasesuperior);
     }
 
-    static function update(CLASSNAME $classname, IDCLASESUPERIOR $id_Clasesuperior)
+    static function update(IDPADRE $IDPADRE,IDHIJO $id_hijo)
     {
-        return new self($classname, $id_Clasesuperior);
+        return ['id_clase_producto' => $IDPADRE->getIdpadre(),'clas_id_clase_superior' => $id_hijo->getIdclasesupe()];
     }
 
 

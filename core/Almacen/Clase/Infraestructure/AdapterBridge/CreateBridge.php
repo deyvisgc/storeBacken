@@ -6,7 +6,6 @@ namespace Core\Almacen\Clase\Infraestructure\AdapterBridge;
 
 use Core\Almacen\Clase\Aplication\UseCases\CreateCase;
 use Core\Almacen\Clase\Infraestructure\DataBase\ClaseSql;
-use Core\Producto\Infraestructure\DataBase\ProductoSql;
 use Illuminate\Http\Request;
 
 class CreateBridge
@@ -14,21 +13,23 @@ class CreateBridge
 
 
     /**
-     * @var ProductoSql
+     * @var ClaseSql
      */
-    private ProductoSql $claseSql;
+    private ClaseSql $claseSql;
 
-    public function __construct(ProductoSql $claseSql)
+    public function __construct(ClaseSql $claseSql)
     {
 
         $this->claseSql = $claseSql;
     }
     public function __invoke(Request $request)
     {
-        $accion=$request->input('accion');
-        $classnname=$request->input('classname');
-        $idclasesupe=$request->input('idclasssuperior');
+        $classnname=$request['data']['Cla_nombre'];
+        $idclasesupe=$request['data']['clase_superior'];
         $createClass= new CreateCase($this->claseSql);
-      return  $createClass->__invoke($accion, $classnname, $idclasesupe);
+        if ($idclasesupe == '') {
+            $idclasesupe=0;
+        }
+      return  $createClass->__invoke($classnname, $idclasesupe);
     }
 }
