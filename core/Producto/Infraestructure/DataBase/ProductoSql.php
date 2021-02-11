@@ -6,12 +6,13 @@ namespace Core\Producto\Infraestructure\DataBase;
 
 use Core\Producto\Domain\Entity\ProductoEntity;
 use Core\Producto\Domain\Repositories\ProductoRepository;
+use Core\Traits\QueryTraits;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
 class ProductoSql implements ProductoRepository
 {
-
+    Use QueryTraits;
     function Create(ProductoEntity $productoEntity)
     {
         try {
@@ -28,7 +29,8 @@ class ProductoSql implements ProductoRepository
                         'id_clase_producto' => $productoEntity->IDClaseProducto()->getIdclaseProducto(),
                         'id_unidad_medida' => $productoEntity->UnidadMedida()->getIdunidadmedida(),
                         'pro_cod_barra' => $productoEntity->Barra()->getBarra(),
-                        'pro_code' => $productoEntity->Code()->getCode()
+                        'pro_code' => $productoEntity->Code()->getCode(),
+                        'id_subclase' =>$productoEntity->IdSubclase()->getIdsubclase()
                     ]);
             if ($create == true) {
                 return ['status' => true, 'message' => 'Registro existo'];
@@ -56,7 +58,8 @@ class ProductoSql implements ProductoRepository
                     'id_clase_producto' => $productoEntity->IDClaseProducto()->getIdclaseProducto(),
                     'id_unidad_medida' => $productoEntity->UnidadMedida()->getIdunidadmedida(),
                     'pro_cod_barra' => $productoEntity->Barra()->getBarra(),
-                    'pro_code' => $productoEntity->Code()->getCode()
+                    'pro_code' => $productoEntity->Code()->getCode(),
+                    'id_subclase' =>$productoEntity->IdSubclase()->getIdsubclase()
                 ]);
                 return ['status' => true, 'message' => 'Actualizado Correctamente'];
             } else {
@@ -81,11 +84,11 @@ class ProductoSql implements ProductoRepository
     function Readxid(int $id)
     {
         if ($id > 0) {
-            $produc = DB::table('product')->where('id_product', $id)->first();
             $lote = DB::table('lote')->get();
-            $clase = DB::table('clase_producto')->get();
+            $padre = $this->ClasePadre();
+            $hijo = $this->Clasehijoxidpadre($id);
             $unidad = DB::table('unidad_medida')->get();
-            return array('producto' => $produc, 'lote' => $lote, 'clase' => $clase, 'unidad' => $unidad);
+            return array('lote' => $lote, 'clapadre' => $padre,'clahijo'=>$hijo, 'unidad' => $unidad);
         } else {
             return ['status' => false, 'message' => 'id inexistente'];
         }

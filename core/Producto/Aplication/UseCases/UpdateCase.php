@@ -8,6 +8,7 @@ use Core\Producto\Domain\Entity\ProductoEntity;
 use Core\Producto\Domain\Repositories\ProductoRepository;
 use Core\Producto\Domain\ValueObjects\IDClaseProducto;
 use Core\Producto\Domain\ValueObjects\IDLOTE;
+use Core\Producto\Domain\ValueObjects\IDSUBLCASE;
 use Core\Producto\Domain\ValueObjects\IDUnidadMedida;
 use Core\Producto\Domain\ValueObjects\ProCantidad;
 use Core\Producto\Domain\ValueObjects\ProCantidadMinima;
@@ -33,7 +34,7 @@ class UpdateCase
     }
 
     public function __invoke(int $idproducto,string $pro_nombre, float $pro_precio_compra, float $pro_precio_venta, int $pro_cantidad, int $pro_cantidad_min,
-                             string $pro_description, int $id_lote, int $id_clase_producto, int $id_unidad_medida, string $pro_cod_barra, string $pro_code)
+                             string $pro_description, int $id_lote, int $id_clase_producto, int $id_unidad_medida, string $pro_cod_barra, string $pro_code,int $id_sub_clase)
     {
         $nomb = new ProNombre($pro_nombre);
         $pre_compra = new ProPrecioCompra($pro_precio_compra);
@@ -46,6 +47,7 @@ class UpdateCase
         $id_unida_ned = new IDUnidadMedida($id_unidad_medida);
         $proco_barra = new ProCodeBarra($pro_cod_barra);
         $pro_code = new ProCode($pro_code);
+        $idsubclase = new IDSUBLCASE($id_sub_clase);
         $Producto = ProductoEntity::update($nomb,
             $pre_compra,
             $pre_venta,
@@ -56,7 +58,8 @@ class UpdateCase
             $idclase_prod,
             $id_unida_ned,
             $pro_code,
-            $proco_barra
+            $proco_barra,
+            $idsubclase
            );
         return $this->repository->Update($Producto,$idproducto);
     }
