@@ -34,7 +34,7 @@ class CreateCase
     }
 
     public function __invoke(string $pro_nombre, float $pro_precio_compra, float $pro_precio_venta, int $pro_cantidad, int $pro_cantidad_min,
-                             string $pro_description, int $id_lote, int $id_clase_producto, int $id_unidad_medida, string $pro_cod_barra, string $pro_code, int $subclase)
+                             string $pro_description, int $id_lote, int $id_clase_producto, int $id_unidad_medida, string $pro_cod_barra, int $subclase)
     {
         $nomb = new ProNombre($pro_nombre);
         $pre_compra = new ProPrecioCompra($pro_precio_compra);
@@ -46,7 +46,6 @@ class CreateCase
         $idclase_prod = new IDClaseProducto($id_clase_producto);
         $id_unida_ned = new IDUnidadMedida($id_unidad_medida);
         $proco_barra = new ProCodeBarra($pro_cod_barra);
-        $pro_code = new ProCode($pro_code);
         $idsubclase = new IDSUBLCASE($subclase);
         $Producto = ProductoEntity::create($nomb,
             $pre_compra,
@@ -57,7 +56,6 @@ class CreateCase
             $idlote,
             $idclase_prod,
             $id_unida_ned,
-            $pro_code,
             $proco_barra,
             $idsubclase);
         return $this->repository->Create($Producto);

@@ -123,6 +123,7 @@ $app->router->group([
     require __DIR__.'/../routes/AuthenticationRoutes.php';
     require __DIR__.'/../routes/SangriaRoutes.php';
     require __DIR__.'/../routes/HistorialCajaRoutes.php';
+    require __DIR__.'/../routes/Compras.php';
 });
 
 return $app;

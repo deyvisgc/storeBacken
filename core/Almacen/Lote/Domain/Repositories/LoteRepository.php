@@ -9,9 +9,9 @@ use Core\Almacen\Lote\Domain\Entity\LoteEntity;
 
 interface LoteRepository
 {
-    function Create(LoteEntity $loteEntity,string $accion);
+    function Create(LoteEntity $loteEntity);
 
-    function Update(LoteEntity $loteEntity, int $id,string $accion);
+    function Update(LoteEntity $loteEntity, int $id);
 
     function Read();
 
@@ -19,5 +19,5 @@ interface LoteRepository
 
     function delete(int $id);
 
-    function CambiarStatus(int $id);
+    function CambiarStatus(int $id, string $status);
 }

@@ -22,12 +22,11 @@ class CreateBridge
     }
     public function __invoke(Request $request)
     {
-        $accion=$request->input('accion');
-        $lot_name=$request->input('lot_name');
-        $lot_codigo=$request->input('lot_codigo');
-        $lot_expiration_date=$request->input('lot_expiration_date');
-        $lot_creation_date=$request->input('lot_creation_date');
+        $lot_name=$request['data']['lote'];
+        $lot_codigo=$request['data']['codigo'];
+        $lot_creation_date=$request['data']['fecha_creacion'];
+        $lot_expiration_date=$request['data']['fecha_expiracion'];
         $createProducto= new CreateCase($this->lotesql);
-      return  $createProducto->__invoke($accion, $lot_name, $lot_codigo, $lot_expiration_date, $lot_creation_date);
+      return  $createProducto->__invoke($lot_name, $lot_codigo, $lot_expiration_date, $lot_creation_date);
     }
 }

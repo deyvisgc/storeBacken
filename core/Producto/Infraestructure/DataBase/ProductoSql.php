@@ -16,23 +16,23 @@ class ProductoSql implements ProductoRepository
     function Create(ProductoEntity $productoEntity)
     {
         try {
-            $create = DB::table('product')
-                ->insert(
+              $create = DB::table('product')->insertGetId(
                     ['pro_name' => $productoEntity->Nombre()->getProNombre(),
                         'pro_precio_compra' => $productoEntity->PrecioCompra()->getProPrecioCompra(),
                         'pro_precio_venta' => $productoEntity->PrecioVenta()->getProPrecioVenta(),
                         'pro_cantidad' => $productoEntity->Cantidad()->getProCantidad(),
                         'pro_cantidad_min' => $productoEntity->CantidadMinima()->getProCantidadMinima(),
-                        'pro_status' => '1',
+                        'pro_status' => 'active',
                         'pro_description' => $productoEntity->Descripcion()->getProDescripcion(),
                         'id_lote' => $productoEntity->IDLOTE()->getIdlote(),
                         'id_clase_producto' => $productoEntity->IDClaseProducto()->getIdclaseProducto(),
                         'id_unidad_medida' => $productoEntity->UnidadMedida()->getIdunidadmedida(),
                         'pro_cod_barra' => $productoEntity->Barra()->getBarra(),
-                        'pro_code' => $productoEntity->Code()->getCode(),
                         'id_subclase' =>$productoEntity->IdSubclase()->getIdsubclase()
                     ]);
-            if ($create == true) {
+              $code = DB::select("SELECT concat('P', (LPAD($create, 4, '0'))) as codigo");
+              $updaecode = DB::table('product')->where('id_product', $create)->update(['pro_code'=>$code[0]->codigo]);
+            if ($updaecode == 1) {
                 return ['status' => true, 'message' => 'Registro existo'];
             } else {
                 return ['status' => false, 'message' => 'Error al registrar'];
@@ -43,24 +43,11 @@ class ProductoSql implements ProductoRepository
 
     }
 
-    function Update(ProductoEntity $productoEntity, int $idproducto)
+    function Update(ProductoEntity $productoEntity, int $idproducto,$pro_code)
     {
         try {
             if ($idproducto > 0) {
-                DB::table('product')->where('id_product', $idproducto)->update([
-                    'pro_name' => $productoEntity->Nombre()->getProNombre(),
-                    'pro_precio_compra' => $productoEntity->PrecioCompra()->getProPrecioCompra(),
-                    'pro_precio_venta' => $productoEntity->PrecioVenta()->getProPrecioVenta(),
-                    'pro_cantidad' => $productoEntity->Cantidad()->getProCantidad(),
-                    'pro_cantidad_min' => $productoEntity->CantidadMinima()->getProCantidadMinima(),
-                    'pro_description' => $productoEntity->Descripcion()->getProDescripcion(),
-                    'id_lote' => $productoEntity->IDLOTE()->getIdlote(),
-                    'id_clase_producto' => $productoEntity->IDClaseProducto()->getIdclaseProducto(),
-                    'id_unidad_medida' => $productoEntity->UnidadMedida()->getIdunidadmedida(),
-                    'pro_cod_barra' => $productoEntity->Barra()->getBarra(),
-                    'pro_code' => $productoEntity->Code()->getCode(),
-                    'id_subclase' =>$productoEntity->IdSubclase()->getIdsubclase()
-                ]);
+                DB::table('product')->where('id_product', $idproducto)->update($productoEntity->Array($pro_code));
                 return ['status' => true, 'message' => 'Actualizado Correctamente'];
             } else {
                 return ['status' => false, 'message' => 'Error al Actualizar'];
@@ -88,7 +75,9 @@ class ProductoSql implements ProductoRepository
             $padre = $this->ClasePadre();
             $hijo = $this->Clasehijoxidpadre($id);
             $unidad = DB::table('unidad_medida')->get();
-            return array('lote' => $lote, 'clapadre' => $padre,'clahijo'=>$hijo, 'unidad' => $unidad);
+            $product = DB::table('product')->where('id_product', $id)->first();
+            return array('lote' => $lote, 'clapadre' => $padre,'clahijo'=>$hijo, 'unidad' => $unidad,
+                         'product' => $product);
         } else {
             return ['status' => false, 'message' => 'id inexistente'];
         }
@@ -108,10 +97,10 @@ class ProductoSql implements ProductoRepository
     function CambiarStatus(string $status, int $id)
     {
         if ($id > 0) {
-            if ($status === '0') {
-                $status = '1';
+            if ($status === 'active') {
+                $status = 'disable';
             } else {
-                $status = '0';
+                $status = 'active';
             }
             DB::table('product')->where('id_product', $id)->update(['pro_status'=>$status]);
             return ['status' => true, 'message' => 'Estado  Actualizado Correctamente'];

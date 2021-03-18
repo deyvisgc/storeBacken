@@ -27,16 +27,16 @@ class UpdateCase
         $this->repository = $repository;
     }
 
-    public function __invoke($accion,$lot_name,$lot_codigo,$lot_expiration_date,$lot_creation_date,$id)
+    public function __invoke($lot_name,$lot_codigo,$lot_expiration_date,$lot_creation_date,$id)
     {
         $nomb = new LOTNAME($lot_name);
         $lot_codigo = new LOTCODIGO($lot_codigo);
         $lot_expiration_date = new LOTEESPIRACIDATE($lot_expiration_date);
         $lot_creation_date = new L0TCREATIONDATE($lot_creation_date);
         $loteEntity = LoteEntity::update($nomb, $lot_codigo, $lot_expiration_date, $lot_creation_date);
-        return $this->repository->Update($loteEntity, $id, $accion);
+        return $this->repository->Update($loteEntity, $id);
     }
-     public function ChangeStatus(int $status) {
-
+     public function ChangeStatus(int $id, string $status) {
+        return $this->repository->CambiarStatus($id, $status);
      }
 }

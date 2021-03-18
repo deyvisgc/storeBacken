@@ -20,9 +20,9 @@ class DeleteBridge
     {
         $this->unidadSql = $unidadSql;
     }
-    public function __invokexid(int $idproducto)
+    public function __invokexid(int $idunidad)
     {
         $readcase= new DeleteCase($this->unidadSql);
-        return $readcase->__invokexid($idproducto);
+        return $readcase->__invokexid($idunidad);
     }
 }

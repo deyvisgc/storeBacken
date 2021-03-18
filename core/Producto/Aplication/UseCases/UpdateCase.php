@@ -46,7 +46,6 @@ class UpdateCase
         $idclase_prod = new IDClaseProducto($id_clase_producto);
         $id_unida_ned = new IDUnidadMedida($id_unidad_medida);
         $proco_barra = new ProCodeBarra($pro_cod_barra);
-        $pro_code = new ProCode($pro_code);
         $idsubclase = new IDSUBLCASE($id_sub_clase);
         $Producto = ProductoEntity::update($nomb,
             $pre_compra,
@@ -57,11 +56,11 @@ class UpdateCase
             $idlote,
             $idclase_prod,
             $id_unida_ned,
-            $pro_code,
             $proco_barra,
             $idsubclase
            );
-        return $this->repository->Update($Producto,$idproducto);
+
+        return $this->repository->Update($Producto,$idproducto,$pro_code);
     }
      public function ChangeStatus(string $status, int $id) {
          return $this->repository->CambiarStatus($status, $id);

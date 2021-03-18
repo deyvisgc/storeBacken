@@ -39,5 +39,20 @@ class LoteController extends Controller
     public function Read() {
         return response()->json($this->readBridge->__invoke());
     }
+    public function store(Request $request) {
+
+        return response()->json($this->createBridge->__invoke($request));
+    }
+    public function update(Request $request) {
+
+        return response()->json($this->updateBridge->__invoke($request));
+    }
+    public function delete($id) {
+
+        return response()->json($this->deleteBridge->__invokexid($id));
+    }
+    public function ChangestatusLote(Request $request) {
+        return response()->json($this->updateBridge->__changestatus($request));
+    }
 
 }

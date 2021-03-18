@@ -8,9 +8,9 @@ use Core\Almacen\Unidad\Domain\Entity\UnidadEntity;
 
 interface UnidadRepository
 {
-    function Create(UnidadEntity $unidadEntity,string $accion);
+    function Create(UnidadEntity $unidadEntity,$fecha_Creacion);
 
-    function Update(UnidadEntity $unidadEntity, int $id,string $accion);
+    function Update(UnidadEntity $unidadEntity, int $id,$fecha_Creacion);
 
     function Read();
 
@@ -18,5 +18,5 @@ interface UnidadRepository
 
     function delete(int $id);
 
-    function CambiarStatus(int $id);
+    function CambiarStatus(int $id, string $status);
 }

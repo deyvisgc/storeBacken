@@ -25,7 +25,7 @@ class CreateCase
         $this->repository = $repository;
     }
 
-    public function __invoke($accion,$lot_name,$lot_codigo,$lot_expiration_date,$lot_creation_date)
+    public function __invoke($lot_name,$lot_codigo,$lot_expiration_date,$lot_creation_date)
     {
 
         $nomb = new LOTNAME($lot_name);
@@ -33,7 +33,7 @@ class CreateCase
         $lot_expiration_date = new LOTEESPIRACIDATE($lot_expiration_date);
         $lot_creation_date = new L0TCREATIONDATE($lot_creation_date);
         $Producto = LoteEntity::create($nomb, $lot_codigo, $lot_expiration_date, $lot_creation_date);
-        return $this->repository->Create($Producto,$accion);
+        return $this->repository->Create($Producto);
     }
 
 }

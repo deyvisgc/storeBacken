@@ -10,7 +10,7 @@ interface ProductoRepository
 {
     function Create(ProductoEntity $productoEntity);
 
-    function Update(ProductoEntity $productoEntity, int $idproducto);
+    function Update(ProductoEntity $productoEntity, int $idproducto, $pro_code);
 
     function Read();
 

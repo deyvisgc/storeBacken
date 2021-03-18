@@ -22,12 +22,12 @@ class CreateCase
         $this->repository = $repository;
     }
 
-    public function __invoke(string $accion,string $um_name,string $nom_corto)
+    public function __invoke(string $um_name,string $nom_corto, $fecha_creacion)
     {
         $nomb = new UMNAME($um_name);
         $nom_cor = new UMNOMBRECORTO($nom_corto);
         $unidad = UnidadEntity::create($nomb, $nom_cor);
-        return $this->repository->Create($unidad, $accion);
+        return $this->repository->Create($unidad, $fecha_creacion);
     }
 
 }

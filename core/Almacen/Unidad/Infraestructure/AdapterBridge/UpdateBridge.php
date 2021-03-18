@@ -15,19 +15,25 @@ class UpdateBridge
     /**
      * @var UnidadSql
      */
-    private UnidadSql $productoSql;
+    private UnidadSql $unidadsql;
 
     public function __construct(UnidadSql $unidadSql)
     {
-        $this->productoSql = $unidadSql;
+        $this->unidadsql = $unidadSql;
     }
     public function __invoke(Request $request)
     {
-        $id=$request->input('id_unidad');
-        $accion=$request->input('accion');
-        $um_name=$request->input('um_name');
-        $nom_corto=$request->input('um_nombre_corto');
-        $create= new UpdateCase($this->productoSql);
-      return  $create->__invoke($id, $accion, $um_name, $nom_corto);
+        $id=$request['data']['id_unidad_medida'];
+        $um_name=$request['data']['unidad_update'];
+        $nom_corto=$request['data']['alias_update'];
+        $fecha_creacion = $request['data']['fecha_creacion_update'];
+        $create= new UpdateCase($this->unidadsql);
+      return  $create->__invoke($id, $um_name, $nom_corto, $fecha_creacion);
+    }
+    public function __changestatus(Request $request) {
+        $id=$request['data']['id_unidad_medida'];
+        $status=$request['data']['um_status'];
+        $UpdateUnidad= new UpdateCase($this->unidadsql);
+        return $UpdateUnidad->ChangeStatus($id, $status);
     }
 }

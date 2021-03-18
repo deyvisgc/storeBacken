@@ -21,13 +21,18 @@ class UpdateBridge
     }
     public function __invoke(Request $request)
     {
-        $id=$request->input('idlote');
-        $accion=$request->input('accion');
-        $lot_name=$request->input('lot_name');
-        $lot_codigo=$request->input('lot_codigo');
-        $lot_expiration_date=$request->input('lot_expiration_date');
-        $lot_creation_date=$request->input('lot_creation_date');
-        $createProducto= new UpdateCase($this->loteSql);
-        return  $createProducto->__invoke($accion, $lot_name, $lot_codigo, $lot_expiration_date, $lot_creation_date,$id);
+        $id=$request['data']['id_lote'];
+        $lot_name=$request['data']['lote_update'];
+        $lot_codigo=$request['data']['codigo_update'];
+        $lot_creation_date=$request['data']['fecha_creacion_update'];
+        $lot_expiration_date=$request['data']['fecha_expiracion_update'];
+        $UpdateProducto= new UpdateCase($this->loteSql);
+        return  $UpdateProducto->__invoke($lot_name, $lot_codigo, $lot_expiration_date, $lot_creation_date,$id);
+    }
+    public function __changestatus(Request $request) {
+        $id=$request['data']['id_lote'];
+        $status=$request['data']['lot_status'];
+        $UpdateProducto= new UpdateCase($this->loteSql);
+        return $UpdateProducto->ChangeStatus($id, $status);
     }
 }

@@ -56,13 +56,6 @@ class ProductoEntity
      * @var IDUnidadMedida
      */
     private IDUnidadMedida $unidadMedida;
-    /**
-     * @var ProCode
-     */
-    private ProCode $code;
-    /**
-     * @var ProCodeBarra
-     */
     private ProCodeBarra $barra;
     private ?int $id_producto;
     /**
@@ -72,7 +65,7 @@ class ProductoEntity
 
     public function __construct(ProNombre  $nombre, ProPrecioCompra $precioCompra, ProPrecioVenta $precioVenta, ProCantidad $cantidad,
                                 ProCantidadMinima $cantidadMinima, ProDescripcion $descripcion, IDLOTE $IDLOTE,
-                                IDClaseProducto $IDClaseProducto, IDUnidadMedida $unidadMedida,ProCode $code,ProCodeBarra $barra, IDSUBLCASE $id_subclase)
+                                IDClaseProducto $IDClaseProducto, IDUnidadMedida $unidadMedida,ProCodeBarra $barra, IDSUBLCASE $id_subclase)
     {
         $this->nombre = $nombre;
         $this->precioCompra = $precioCompra;
@@ -83,7 +76,6 @@ class ProductoEntity
         $this->IDLOTE = $IDLOTE;
         $this->IDClaseProducto = $IDClaseProducto;
         $this->unidadMedida = $unidadMedida;
-        $this->code = $code;
         $this->barra = $barra;
         $this->id_subclase = $id_subclase;
     }
@@ -99,13 +91,29 @@ class ProductoEntity
 
      static function create ( ProNombre  $nombre, ProPrecioCompra $precioCompra, ProPrecioVenta $precioVenta, ProCantidad $cantidad,
                              ProCantidadMinima $cantidadMinima,ProDescripcion $descripcion,IDLOTE $IDLOTE,
-                             IDClaseProducto $IDClaseProducto, IDUnidadMedida $unidadMedida,ProCode $code,ProCodeBarra $codeBarra, IDSUBLCASE $IDSUBLCASE) {
-                              return new self($nombre, $precioCompra, $precioVenta, $cantidad, $cantidadMinima,$descripcion, $IDLOTE,$IDClaseProducto,$unidadMedida,$code,$codeBarra,$IDSUBLCASE);
+                             IDClaseProducto $IDClaseProducto, IDUnidadMedida $unidadMedida,ProCodeBarra $codeBarra, IDSUBLCASE $IDSUBLCASE) {
+                              return new self($nombre, $precioCompra, $precioVenta, $cantidad, $cantidadMinima,$descripcion, $IDLOTE,$IDClaseProducto,$unidadMedida,$codeBarra,$IDSUBLCASE);
      }
     static function update (ProNombre  $nombre, ProPrecioCompra $precioCompra, ProPrecioVenta $precioVenta, ProCantidad $cantidad,
                             ProCantidadMinima $cantidadMinima, ProDescripcion $descripcion,IDLOTE $IDLOTE,
-                            IDClaseProducto $IDClaseProducto, IDUnidadMedida $unidadMedida,ProCode $code,ProCodeBarra $codeBarra, IDSUBLCASE $IDSUBLCASE) {
-        return new self($nombre, $precioCompra, $precioVenta, $cantidad, $cantidadMinima,$descripcion, $IDLOTE,$IDClaseProducto,$unidadMedida,$code,$codeBarra,$IDSUBLCASE);
+                            IDClaseProducto $IDClaseProducto, IDUnidadMedida $unidadMedida,ProCodeBarra $codeBarra, IDSUBLCASE $IDSUBLCASE) {
+        return new self($nombre, $precioCompra, $precioVenta, $cantidad, $cantidadMinima,$descripcion, $IDLOTE,$IDClaseProducto,$unidadMedida,$codeBarra,$IDSUBLCASE);
+    }
+    public function Array($pro_code){
+        return [
+            'pro_name' => $this->Nombre()->getProNombre(),
+            'pro_precio_compra' => $this->PrecioCompra()->getProPrecioCompra(),
+            'pro_precio_venta' => $this->PrecioVenta()->getProPrecioVenta(),
+            'pro_cantidad' => $this->Cantidad()->getProCantidad(),
+            'pro_cantidad_min' => $this->CantidadMinima()->getProCantidadMinima(),
+            'pro_description' => $this->Descripcion()->getProDescripcion(),
+            'id_lote' => $this->IDLOTE()->getIdlote(),
+            'id_clase_producto' => $this->IDClaseProducto()->getIdclaseProducto(),
+            'id_unidad_medida' => $this->UnidadMedida()->getIdunidadmedida(),
+            'pro_cod_barra' => $this->Barra()->getBarra(),
+            'pro_code' => $pro_code,
+            'id_subclase' =>$this->IdSubclase()->getIdsubclase()
+        ];
     }
 
     public function Nombre(): ProNombre

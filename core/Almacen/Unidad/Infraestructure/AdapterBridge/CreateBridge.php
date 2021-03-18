@@ -24,11 +24,11 @@ class CreateBridge
     }
     public function __invoke(Request $request)
     {
-        $accion=$request->input('accion');
-        $um_name=$request->input('um_name');
-        $nom_corto=$request->input('um_nombre_corto');
+        $um_name=$request['data']['um_name'];
+        $nom_corto=$request['data']['um_alias'];
+        $fecha_creacion=$request['data']['fecha_creacion'];
         $create= new CreateCase($this->unidadSql);
-        return $create->__invoke($accion, $um_name, $nom_corto);
+        return $create->__invoke($um_name, $nom_corto,$fecha_creacion);
 
     }
 }

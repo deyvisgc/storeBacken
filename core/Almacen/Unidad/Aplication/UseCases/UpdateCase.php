@@ -24,14 +24,14 @@ class UpdateCase
         $this->repository = $repository;
     }
 
-    public function __invoke(int $id, string $accion,string $um_name,string $nom_corto)
+    public function __invoke(int $id,string $um_name,string $nom_corto, $fecha_creacion)
     {
         $nomb = new UMNAME($um_name);
         $nom_cor = new UMNOMBRECORTO($nom_corto);
         $unidad = UnidadEntity::update($nomb, $nom_cor);
-        return $this->repository->Update($unidad, $id, $accion);
+        return $this->repository->Update($unidad, $id, $fecha_creacion);
     }
-     public function ChangeStatus(int $status) {
-
+     public function ChangeStatus(int $id, string $status) {
+        return $this->repository->CambiarStatus($id, $status);
      }
 }

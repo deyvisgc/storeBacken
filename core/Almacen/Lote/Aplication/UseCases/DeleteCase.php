@@ -18,9 +18,9 @@ class DeleteCase
     {
         $this->repository = $repository;
     }
-    public function __invokexid(int $idproducto)
+    public function __invokexid(int $idlore)
     {
-        return $this->repository->delete($idproducto);
+        return $this->repository->delete($idlore);
     }
 
 }

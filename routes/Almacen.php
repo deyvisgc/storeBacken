@@ -30,9 +30,17 @@ $router->post('api/v1/Almacen/Producto/SearchxType','Almacen\Producto\ProductoCo
 
 //Lote
 $router->get('api/v1/Almacen/Lote','Almacen\Lote\LoteController@Read');
-
+$router->post('api/v1/Almacen/Lote','Almacen\Lote\LoteController@store');
+$router->patch('api/v1/Almacen/Lote','Almacen\Lote\LoteController@update');
+$router->delete('api/v1/Almacen/Lote/{id}','Almacen\Lote\LoteController@delete');
+$router->patch('api/v1/Almacen/Lote/ChangestatusLote','Almacen\Lote\LoteController@ChangestatusLote');
 //Unidad Medida
 $router->get('api/v1/Almacen/Unidad','Almacen\Unidad\UnidadMedidaController@Read');
+$router->post('api/v1/Almacen/Unidad','Almacen\Unidad\UnidadMedidaController@store');
+$router->patch('api/v1/Almacen/Unidad','Almacen\Unidad\UnidadMedidaController@update');
+$router->delete('api/v1/Almacen/Unidad/{id}','Almacen\Unidad\UnidadMedidaController@delete');
+$router->patch('api/v1/Almacen/Unidad/ChangestatusUnidad','Almacen\Unidad\UnidadMedidaController@ChangestatusUnidad');
+
 //Clase
 $router->get('api/v1/Almacen/Clase','Almacen\Clase\ClaseController@Read');
 $router->post('api/v1/Almacen/Clase','Almacen\Clase\ClaseController@store');

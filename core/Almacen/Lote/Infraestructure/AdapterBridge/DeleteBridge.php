@@ -16,15 +16,15 @@ class DeleteBridge
     /**
      * @var LoteSql
      */
-    private LoteSql $productoSql;
+    private LoteSql $lotesql;
 
     public function __construct(LoteSql $loteSql)
     {
-        $this->productoSql = $loteSql;
+        $this->lotesql = $loteSql;
     }
     public function __invokexid(int $id)
     {
-        $readcase= new DeleteCase($this->productoSql);
+        $readcase= new DeleteCase($this->lotesql);
         return $readcase->__invokexid($id);
     }
 }

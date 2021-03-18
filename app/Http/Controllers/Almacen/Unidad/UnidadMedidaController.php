@@ -40,4 +40,16 @@ class UnidadMedidaController extends Controller
     public function Read() {
         return response()->json($this->readBridge->__invoke());
     }
+    public function store(Request $request) {
+        return response()->json($this->createBridge->__invoke($request));
+    }
+    public function update(Request $request) {
+        return response()->json($this->updateBridge->__invoke($request));
+    }
+    public function delete(int $id) {
+        return response()->json($this->deleteBridge->__invokexid($id));
+    }
+    public function ChangestatusUnidad(Request $request) {
+        return response()->json($this->updateBridge->__changestatus($request));
+    }
 }
