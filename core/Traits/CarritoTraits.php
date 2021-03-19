@@ -80,6 +80,16 @@ trait CarritoTraits
         }
     }
     public function PagarCompra($array) {
-        return $array[0];
+        $subtotal = (double)$array[1]['subtotal'];
+        $total = (double)$array[1]['total'];
+        $igv = (double) $array[1]['igv'];
+        $tipoComprobante = $array[0]['tipo_comprobante'];
+        $tipoPago = $array[0]['tipo_pago'];
+        $idPersona = $array[0]['idProveedor'];
+        $status = DB::select("CALL addCompra (?,?,?,?,?,?)", array($subtotal, $total, $igv, "'$tipoComprobante'", "' $tipoPago'",$idPersona));
+        if ($status[0]->idCompra > 0) {
+            return ['status'=> true, 'message' => 'La compra numero '.$status[0]->idCompra.' se realizo correctamente'];
+        }
+         return ['status'=> false, 'message' => 'Error al realizar la compra'];;
     }
 }
