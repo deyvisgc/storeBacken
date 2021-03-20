@@ -4,7 +4,10 @@
 namespace Core\Traits;
 
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 trait CarritoTraits
 {
@@ -79,15 +82,24 @@ trait CarritoTraits
             return  ['status'=>false , 'message'=> 'La columna'.$id. 'no se encuentra en nuestra base de datos'];
         }
     }
-    public function PagarCompra($array) {
-        $subtotal = (double)$array[1]['subtotal'];
-        $total = (double)$array[1]['total'];
-        $igv = (double) $array[1]['igv'];
-        $tipoComprobante = $array[0]['tipo_comprobante'];
-        $tipoPago = $array[0]['tipo_pago'];
-        $idPersona = $array[0]['idProveedor'];
+    public function PagarCompra($data) {
+        $subtotal = (double)$data->subtotal;
+        $total = (double)$data->total;
+        $igv = (double) $data->igv;
+        $tipoComprobante = $data->tipoComprobante;
+        $tipoPago = $data->tipoPago;
+        $idPersona = $data->idProveedor;
         $status = DB::select("CALL addCompra (?,?,?,?,?,?)", array($subtotal, $total, $igv, "'$tipoComprobante'", "' $tipoPago'",$idPersona));
         if ($status[0]->idCompra > 0) {
+            $fileExtension = $data->file('pdf')->getClientOriginalName();
+            $file = pathinfo($fileExtension, PATHINFO_FILENAME);
+            $extension = $data->file('pdf')->getClientOriginalExtension();
+            $fileStore = $file . '_' . time() . '.' . $extension;
+            $path = $data->file('pdf')->storeAs('Comprobantes', $fileStore);
+           /* $url = Storage::disk('local')->path($path); */
+            $url = URL::asset('storage/app/'.$path);
+            DB::table('compra')->where('id_compra', $status[0]->idCompra)->update(['url_comprobante'=>$path]);
+
             return ['status'=> true, 'message' => 'La compra numero '.$status[0]->idCompra.' se realizo correctamente'];
         }
          return ['status'=> false, 'message' => 'Error al realizar la compra'];;

@@ -24,8 +24,7 @@ class ComprasController extends Controller
         return response()->json($this->DeleteCarr($request->data));
     }
     public function Pagar(Request $request) {
-        $data = [$request->Pagos, $request->Totales];
-        return response()->json($this->PagarCompra($data));
+        return response()->json($this->PagarCompra($request));
     }
 
 }
