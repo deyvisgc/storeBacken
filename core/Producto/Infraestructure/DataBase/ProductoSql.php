@@ -4,12 +4,14 @@
 namespace Core\Producto\Infraestructure\DataBase;
 
 
+use App\Http\Excepciones\Exepciones;
 use Core\Producto\Domain\Entity\ProductoEntity;
 use Core\Producto\Domain\Repositories\ProductoRepository;
 use Core\Traits\QueryTraits;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
+const   Code = '775820300317';
 class ProductoSql implements ProductoRepository
 {
     Use QueryTraits;
@@ -106,6 +108,20 @@ class ProductoSql implements ProductoRepository
             return ['status' => true, 'message' => 'Estado  Actualizado Correctamente'];
         } else {
             return ['status' => false, 'message' => 'Error al cambiar de estado'];
+        }
+    }
+
+    function LastIdProduct()
+    {
+        try {
+            $lastId = DB::table('product')->max('id_product');
+            $lastId = $lastId + 1;
+            $codigoBarra = Code.$lastId;
+            $Status = new Exepciones(true,'Su codigo de Barra es'.$codigoBarra,200,$codigoBarra);
+            return $Status->SendError();
+        } catch (QueryException $exception){
+            $Status = new Exepciones(false, $exception->getMessage(), $exception->getCode(),null);
+            return $Status->SendError();
         }
     }
 }

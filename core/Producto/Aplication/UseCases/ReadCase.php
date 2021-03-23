@@ -31,5 +31,8 @@ class ReadCase
     {
         return $this->repository->Readxid($idproducto);
     }
+    public function __invokeLastId() {
+        return $this->repository->LastIdProduct();
+    }
 
 }

@@ -30,4 +30,8 @@ class ReadBridge
         $readcase= new ReadCase($this->productoSql);
         return $readcase->__invokexid($idproducto);
     }
+    public function __invokeLastId() {
+        $readcase= new ReadCase($this->productoSql);
+        return $readcase->__invokeLastId();
+    }
 }

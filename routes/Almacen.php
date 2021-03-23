@@ -23,6 +23,7 @@ $router->get('api/v1/Almacen/Producto','Almacen\Producto\ProductoController@Read
 $router->get('api/v1/Almacen/Producto/{id}','Almacen\Producto\ProductoController@Readxid');
 $router->delete('api/v1/Almacen/Producto/{id}','Almacen\Producto\ProductoController@delete');
 $router->patch('api/v1/Almacen/Producto/changestatus','Almacen\Producto\ProductoController@changestatus');
+$router->get('api/v1/Almacen/LastIdProducto','Almacen\Producto\ProductoController@LastIdProducto');
 
 
 //SEARCHTRAITS

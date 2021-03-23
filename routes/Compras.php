@@ -24,6 +24,8 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->patch('Compras/UpdateCantidad','Compras\ComprasController@UpdateCantidad');
     $app->post('Compras/Delete','Compras\ComprasController@Delete');
     $app->post('Compras/Pagar','Compras\ComprasController@Pagar');
+    $app->get('Compras/ComprasACredito','Compras\ComprasController@Compras');
+    $app->get('Compras/Detalle/{id}','Compras\ComprasController@Detalle');
 });
 $router->get('api/v1/Almacen/Clase','Almacen\Clase\ClaseController@Read');
 

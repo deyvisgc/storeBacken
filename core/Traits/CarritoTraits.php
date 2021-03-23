@@ -42,7 +42,20 @@ trait CarritoTraits
         $idProducto = $request['idProducto'];
         $idPersona = $request['idPersona'];
         $idCaja = $request['idCaja'];
-        $status = DB::select("CALL addCarrCompra (?,?,?,?,?)", array($cantidad,$precio_compra,$idProducto,$idPersona,$idCaja));
+        $prod_nombre = $request['pro_nombre'];
+        $cantidad_minima = $request['cantidad_minima'];
+        $codeBarra  = $request['codeBarra'];
+        $status = DB::select("CALL addCarrCompra (?,?,?,?,?,?,?,?)",
+                   array(
+                       $cantidad,
+                       $precio_compra,
+                       $idProducto,
+                       $idPersona,
+                       $idCaja,
+                       $prod_nombre,
+                       $cantidad_minima,
+                       $codeBarra
+                       ));
         return $status;
 
     }
@@ -89,16 +102,24 @@ trait CarritoTraits
         $tipoComprobante = $data->tipoComprobante;
         $tipoPago = $data->tipoPago;
         $idPersona = $data->idProveedor;
-        $status = DB::select("CALL addCompra (?,?,?,?,?,?)", array($subtotal, $total, $igv, "'$tipoComprobante'", "' $tipoPago'",$idPersona));
+        $cuotas= $data->cuotas;
+        $monto = $data->monto;
+        $montoDeudaOrVuelto = $data->montoVueltoOrDeuda;
+        $status = DB::select("CALL addCompra (?,?,?,?,?,?,?,?,?)",
+            array($subtotal, $total, $igv, $tipoComprobante, $tipoPago,
+                  $idPersona, $cuotas, $monto,$montoDeudaOrVuelto));
         if ($status[0]->idCompra > 0) {
+            if (!$data->file('pdf')) {
+                return ['status'=> true, 'message' => 'La compra numero '.$status[0]->idCompra.' se realizo correctamente'];
+            }
             $fileExtension = $data->file('pdf')->getClientOriginalName();
             $file = pathinfo($fileExtension, PATHINFO_FILENAME);
             $extension = $data->file('pdf')->getClientOriginalExtension();
             $fileStore = $file . '_' . time() . '.' . $extension;
             $path = $data->file('pdf')->storeAs('Comprobantes', $fileStore);
-           /* $url = Storage::disk('local')->path($path); */
-            $url = URL::asset('storage/app/'.$path);
-            DB::table('compra')->where('id_compra', $status[0]->idCompra)->update(['url_comprobante'=>$path]);
+           /* $url = Storage::disk('local')->path($path);
+            $url = URL::asset('storage/app/'.$path);*/
+            DB::table('compra')->where('idCompra', $status[0]->idCompra)->update(['comUrlComprobante'=>$path]);
 
             return ['status'=> true, 'message' => 'La compra numero '.$status[0]->idCompra.' se realizo correctamente'];
         }

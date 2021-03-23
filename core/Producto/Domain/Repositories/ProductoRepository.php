@@ -13,7 +13,7 @@ interface ProductoRepository
     function Update(ProductoEntity $productoEntity, int $idproducto, $pro_code);
 
     function Read();
-
+    function LastIdProduct();
     function Readxid(int $id);
 
     function delete(int $id);
