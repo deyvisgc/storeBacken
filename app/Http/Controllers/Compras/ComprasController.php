@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Compras;
 use App\Http\Controllers\Controller;
 use Core\Compras\Infraestructure\Adapter_Bridge\ReadBridge;
 use Core\Traits\CarritoTraits;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 
 class ComprasController extends Controller
@@ -13,11 +16,11 @@ class ComprasController extends Controller
     /**
      * @var ReadBridge
      */
-    private ReadBridge $createBridge;
+    private ReadBridge $redBridge;
 
     public function __construct(ReadBridge $readBridge)
     {
-        $this->createBridge = $readBridge;
+        $this->redBridge = $readBridge;
     }
     public function Proveedor() {
         return response()->json($this->searchProveedor());
@@ -38,10 +41,21 @@ class ComprasController extends Controller
         return response()->json($this->PagarCompra($request));
     }
     public function Compras(Request $request) {
-        return  response()->json($this->createBridge->__invoke($request));
+        return  response()->json($this->redBridge->__invoke($request));
     }
     public function Detalle(int $id) {
-        return  response()->json($this->createBridge->__Detalle($id));
+        return  response()->json($this->redBridge->__Detalle($id));
     }
+    public function VerPdf(Request $request) {
+        return   $image_file_path = storage_path("Comprobantes/3f104f95-c3ee-4126-8a4c-1757acfcf354_1616589571.pdf");
+        $imagen = DB::table('compra')->where('idCompra', $id)->get();
+        $path = storage_path('app\public\Comprobantes') . '/' . $imagen[0]->comUrlComprobante;
+        $file = File::get($path);
+        $type = File::mimeType($path);
+        $response = response()->make($file, 200);
+        $response->header("Content-Type", $type);
+        return $response;
+        return response()->json();
 
+    }
 }

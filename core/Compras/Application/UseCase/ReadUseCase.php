@@ -27,4 +27,8 @@ class ReadUseCase
     {
         return $this->repository->Detalle($id);
     }
+    public function __Filtros($data)
+    {
+        return $this->repository->Filtros($data);
+    }
 }

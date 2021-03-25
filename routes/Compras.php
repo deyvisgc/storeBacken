@@ -26,6 +26,9 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->post('Compras/Pagar','Compras\ComprasController@Pagar');
     $app->get('Compras/ComprasACredito','Compras\ComprasController@Compras');
     $app->get('Compras/Detalle/{id}','Compras\ComprasController@Detalle');
+    $app->post('Compras/PagosCredito','Compras\PagosController@PagosCredito');
+    $app->get('Compras/VerPdf/{id}','Compras\ComprasController@VerPdf');
+    $app->post('Compras/VerPdf','Compras\ComprasController@VerPdf');
 });
 $router->get('api/v1/Almacen/Clase','Almacen\Clase\ClaseController@Read');
 

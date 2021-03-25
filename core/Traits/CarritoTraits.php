@@ -117,9 +117,9 @@ trait CarritoTraits
             $extension = $data->file('pdf')->getClientOriginalExtension();
             $fileStore = $file . '_' . time() . '.' . $extension;
             $path = $data->file('pdf')->storeAs('Comprobantes', $fileStore);
-           /* $url = Storage::disk('local')->path($path);
-            $url = URL::asset('storage/app/'.$path);*/
-            DB::table('compra')->where('idCompra', $status[0]->idCompra)->update(['comUrlComprobante'=>$path]);
+           /* $url = Storage::disk('local')->path($path); */
+            $url = URL::asset('storage/app/'.$path);
+            DB::table('compra')->where('idCompra', $status[0]->idCompra)->update(['comUrlComprobante'=>$url]);
 
             return ['status'=> true, 'message' => 'La compra numero '.$status[0]->idCompra.' se realizo correctamente'];
         }

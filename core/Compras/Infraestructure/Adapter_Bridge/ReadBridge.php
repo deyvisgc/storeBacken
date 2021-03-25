@@ -28,4 +28,9 @@ class ReadBridge
         $readcase= new ReadUseCase($this->repository);
         return $readcase->__Detalle($id);
     }
+    public function __Filtros($data) {
+        return $data;
+        $readcase = new ReadUseCase($this->repository);
+        $readcase->__Filtros($data);
+    }
 }
