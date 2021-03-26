@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Compras;
+use App\Exports\Excel\ComprasCredito;
+use App\Exports\Excel\ComprasCreditoBuyID;
+use App\Exports\HistorialPagosExport;
 use App\Http\Controllers\Controller;
 use Core\Compras\Infraestructure\Adapter_Bridge\ReadBridge;
 use Core\Traits\CarritoTraits;
@@ -8,6 +11,7 @@ use Core\Traits\CarritoTraits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ComprasController extends Controller
 {
@@ -46,16 +50,18 @@ class ComprasController extends Controller
     public function Detalle(int $id) {
         return  response()->json($this->redBridge->__Detalle($id));
     }
-    public function VerPdf(Request $request) {
-        return   $image_file_path = storage_path("Comprobantes/3f104f95-c3ee-4126-8a4c-1757acfcf354_1616589571.pdf");
-        $imagen = DB::table('compra')->where('idCompra', $id)->get();
-        $path = storage_path('app\public\Comprobantes') . '/' . $imagen[0]->comUrlComprobante;
-        $file = File::get($path);
-        $type = File::mimeType($path);
-        $response = response()->make($file, 200);
-        $response->header("Content-Type", $type);
-        return $response;
-        return response()->json();
-
+    public function Exportar(Request $request) {
+        $tabla = $request['tabla'];
+        $fechaDesde = $request['fechaDesde'];
+        $fechaHasta = $request['fechaHasta'];
+        $codeProveedor = $request['codeProveedor'];
+        $tipoPago      = $request['tipoPago'];
+        $tipoComprobante =$request['tipoComprobante'];
+        return Excel::download(new ComprasCredito($tabla,$fechaDesde,$fechaHasta,$codeProveedor,$tipoPago,$tipoComprobante), 'reportescompras.xlsx')->deleteFileAfterSend (false);
     }
+    public function ExportarById(int $id) {
+
+        return Excel::download(new ComprasCreditoBuyID($id), 'reportescompras.xlsx')->deleteFileAfterSend (false);
+    }
+
 }
