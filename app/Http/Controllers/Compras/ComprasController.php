@@ -44,7 +44,7 @@ class ComprasController extends Controller
     public function Pagar(Request $request) {
         return response()->json($this->PagarCompra($request));
     }
-    public function Compras(Request $request) {
+    public function AllCompras(Request $request) {
         return  response()->json($this->redBridge->__invoke($request));
     }
     public function Detalle(int $id) {

@@ -56,8 +56,11 @@ trait CarritoTraits
                        $cantidad_minima,
                        $codeBarra
                        ));
-        return $status;
-
+       return DB::select("select car.id, car.idProducto, car.idPersona,car.idCaja,car.cantidad,car.precio,car.subTotal,
+                                pro.pro_name,per.per_razon_social, totales.total from (select sum(carrito.subTotal) as total from carrito where idPersona = $idPersona) totales,
+                                carrito as car,product as pro,persona as per where car.idProducto= pro.id_product and
+                                car.idPersona = per.id_persona and car.idPersona = $idPersona group by car.id,car.idProducto,car.idPersona,car.idCaja,car.cantidad,car.precio, car.subTotal,pro.pro_name, per.per_razon_social, totales.total;"
+                         );
     }
     public function Listar(int $id) {
         $lista = DB::select("select car.id,car.idProducto,car.idPersona,car.idCaja,car.cantidad,car.precio,car.subTotal, pro.pro_name, per.per_razon_social,totales.total

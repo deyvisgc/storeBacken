@@ -19,10 +19,6 @@ class ReadRepository implements ComprasRepository
 
         try {
             $query =  DB::table('compra as com');
-
-            if($data['tabla'] === 'credito') {
-                $query->where('comTipoPago',$data['tabla']);
-            }
             if ($data['fechaDesde'] !== '' && $data['fechaHasta'] !== '') {
                 $query->whereBetween('comFecha', [$data['fechaDesde'], $data['fechaHasta']]);
             }
@@ -61,11 +57,5 @@ class ReadRepository implements ComprasRepository
             $excepciones = new  Exepciones(false,'error',$exception->getCode(),$exception->getMessage());
             return $excepciones->SendError();
         }
-    }
-
-    public function Filtros($params)
-    {
-        return $params;
-
     }
 }
