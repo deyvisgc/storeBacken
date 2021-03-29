@@ -25,11 +25,12 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->post('Compras/Delete','Compras\ComprasController@Delete');
     $app->post('Compras/Pagar','Compras\ComprasController@Pagar');
     $app->get('Compras/ComprasACredito','Compras\ComprasController@Compras');
-    $app->get('Compras/Detalle/{id}','Compras\ComprasController@Detalle');
     $app->post('Compras/PagosCredito','Compras\PagosController@PagosCredito');
+    $app->get('Compras/All','Compras\ComprasController@AllCompras');
     $app->get('Compras/Exportar','Compras\ComprasController@Exportar');
     $app->get('Compras/Exportar/{id}','Compras\ComprasController@ExportarById');
-    $app->get('Compras/All','Compras\ComprasController@AllCompras');
+    $app->get('Compras/Detalle/{id}','Compras\ComprasController@Detalle');
+    $app->patch('Compras/ChangeStatus/{id}','Compras\ComprasController@ChangeStatus');
 });
 $router->get('api/v1/Almacen/Clase','Almacen\Clase\ClaseController@Read');
 

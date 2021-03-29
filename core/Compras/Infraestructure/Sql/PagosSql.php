@@ -20,7 +20,7 @@ class PagosSql implements PagosRepository
              $status= DB::table('historial_pagos_credito')->insert([
                 'montoPagado' =>$data['monto'],
                  'montoDeuda' =>$data['deuda'],
-                 'fechaCreacion' => $fecha->format('y-m-d H:i:s'),
+                 'fechaCreacion' => $fecha,
                  'idVendedor' =>$data['idVendedor'],
                   'idCompra' =>$data['idCompra'],
                   'deudaPorPagar' => (float)$data['deudaporPagar']
@@ -28,15 +28,15 @@ class PagosSql implements PagosRepository
              if ($status) {
                  $compra = DB::table('compra')->where('idCompra', $data['idCompra'])->first();
                  if ((float)$data['deudaporPagar'] === (float)0) {
-                     $estado = '2';
+                     $estado = 2;
                  } else {
-                     $estado = '1';
+                     $estado = 1;
                  }
                  DB::table('compra')->where('idCompra', $data['idCompra'])->update(
                      [
                          'comMontoDeuda' =>  (float)$data['deudaporPagar'],
                          'comMontoPagado' => $compra->comMontoPagado+$data['monto'],
-                         'comEstado' => $estado
+                         'comEstadoTipoPago' => $estado
                      ]);
                $exception = new Exepciones($status,'Pago de deuda completada',200,0);
               return $exception->SendError();

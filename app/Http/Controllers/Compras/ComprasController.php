@@ -6,25 +6,34 @@ use App\Exports\Excel\ComprasCreditoBuyID;
 use App\Exports\HistorialPagosExport;
 use App\Http\Controllers\Controller;
 use Core\Compras\Infraestructure\Adapter_Bridge\ReadBridge;
+use Core\Compras\Infraestructure\Adapter_Bridge\UpdateBridge;
 use Core\Traits\CarritoTraits;
 
+use Core\Traits\QueryTraits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ComprasController extends Controller
 {
     use CarritoTraits;
 
+
     /**
      * @var ReadBridge
      */
     private ReadBridge $redBridge;
+    /**
+     * @var UpdateBridge
+     */
+    private UpdateBridge $updateBridge;
 
-    public function __construct(ReadBridge $readBridge)
+    public function __construct(ReadBridge $readBridge, UpdateBridge $updateBridge)
     {
         $this->redBridge = $readBridge;
+        $this->updateBridge = $updateBridge;
     }
     public function Proveedor() {
         return response()->json($this->searchProveedor());
@@ -60,8 +69,10 @@ class ComprasController extends Controller
         return Excel::download(new ComprasCredito($tabla,$fechaDesde,$fechaHasta,$codeProveedor,$tipoPago,$tipoComprobante), 'reportescompras.xlsx')->deleteFileAfterSend (false);
     }
     public function ExportarById(int $id) {
-
         return Excel::download(new ComprasCreditoBuyID($id), 'reportescompras.xlsx')->deleteFileAfterSend (false);
+    }
+    public function ChangeStatus(int $id) {
+        return response()->json($this->updateBridge->__invokeUpdate($id));
     }
 
 }

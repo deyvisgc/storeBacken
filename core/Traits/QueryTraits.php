@@ -59,4 +59,15 @@ trait QueryTraits
        clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior and cp.id_clase_producto =$idpadre
        order by cp.id_clase_producto asc");
     }
+    public function ReadCompraxid(int $idCompra) {
+       return DB::table('detalle_compra as dt')
+            ->join('compra as c', 'dt.idCompra', '=', 'c.idCompra')
+            ->join('product as pr', 'dt.idProduct', '=', 'pr.id_product')
+            ->select('dt.idCompraDetalle as id', 'dt.dcCantidad as cantidad',
+                'dt.dcPrecioUnitario as precio', 'dt.dcSubTotal as subTotal', 'dt.idCompra as codecompra',
+                'pr.pro_name as producto')
+            ->orderBy('dt.idCompraDetalle','desc')
+            ->where('dt.idCompra', '=', $idCompra)
+            ->get();
+    }
 }

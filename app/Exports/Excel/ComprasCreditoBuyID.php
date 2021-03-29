@@ -4,16 +4,19 @@
 namespace App\Exports\Excel;
 
 
+use Core\Traits\QueryTraits;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class ComprasCreditoBuyID  implements WithTitle
+class ComprasCreditoBuyID  implements FromView, WithTitle
 {
     private $id;
+    use QueryTraits;
 
     public function __construct($id)
     {
@@ -22,17 +25,9 @@ class ComprasCreditoBuyID  implements WithTitle
 
     public function view(): View
     {
-        /*Log::info('err '.$result);*/
+        Log::info('error '.$this->id);
         return view('Exportar.Excel.DetalleCompras', [
-            'compras' => DB::table('detalle_compra as dt')
-                         ->join('compra as c', 'dt.idCompra', '=', 'c.idCompra')
-                         ->join('product as pr', 'dt.idProduct', '=', 'pr.id_product')
-                         ->select('dt.idCompraDetalle as id', 'dt.dcCantidad as cantidad',
-                             'dt.dcPrecioUnitario as precio', 'dt.dcSubTotal as subTotal', 'dt.idCompra as codecompra',
-                              'pr.pro_name as producto')
-                         ->orderBy('dt.idCompraDetalle','desc')
-                         ->where('dt.idCompra', '=', $this->id)
-                         ->get()
+            'compras' => $this->ReadCompraxid($this->id)
         ]);
     }
     public function title(): string
