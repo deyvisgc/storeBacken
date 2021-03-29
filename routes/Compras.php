@@ -31,6 +31,7 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('Compras/Exportar/{id}','Compras\ComprasController@ExportarById');
     $app->get('Compras/Detalle/{id}','Compras\ComprasController@Detalle');
     $app->patch('Compras/ChangeStatus/{id}','Compras\ComprasController@ChangeStatus');
+    $app->patch('Compras/Reportes/Inventario','Compras\ComprasController@Inventario');
 });
 $router->get('api/v1/Almacen/Clase','Almacen\Clase\ClaseController@Read');
 

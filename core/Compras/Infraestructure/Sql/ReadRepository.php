@@ -20,8 +20,6 @@ class ReadRepository implements ComprasRepository
     public function Read(object $data)
     {
         try {
-            $table =  $data['tabla'];
-            Log::info($data['fechaDesde']);
             $query =  DB::table('compra as com');
             if($data['tabla'] && $data['tabla'] !== 'vigente' && $data['tabla'] !== 'anuladas') {
                 $query->where('comTipoPago', $data['tabla']);
