@@ -6,7 +6,7 @@ namespace Core\Rol\Application\UseCases;
 
 use Core\Rol\Domain\Repositories\RolRepository;
 
-class DeleteRolUseCase
+class ChangeStatusRolUseCase
 {
     /**
      * @var RolRepository
@@ -18,12 +18,12 @@ class DeleteRolUseCase
         $this->rolRepository = $rolRepository;
     }
 
-    public function deleteRol($idRol) {
-        $responseDB = $this->rolRepository->deleteRol($idRol);
+    public function changeStatusRol(int $idRol) {
+        $responseDB = $this->rolRepository->changeStatusRol($idRol);
         if ($responseDB === 1) {
-            return response()->json(['status' => true, 'code' => 200, 'message' => 'Rol deshabilitado']);
+            return response()->json(['status' => true, 'code' => 200, 'message' => 'Rol habilitado']);
         } else {
-            return response()->json(['status' => false, 'code' => 400, 'message' => 'No se hizo nada']);
+            return response()->json(['status' => false, 'code' => 400, 'message' => 'Rol no habilitado']);
         }
     }
 }

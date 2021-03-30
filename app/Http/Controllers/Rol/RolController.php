@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Rol;
 
 use App\Http\Controllers\Controller;
 use Core\Rol\Domain\Entity\RolEntity;
+use Core\Rol\Infraestructura\AdapterBridge\ChangeStatusRolAdapter;
 use Core\Rol\Infraestructura\AdapterBridge\CreateRolAdapter;
 use Core\Rol\Infraestructura\AdapterBridge\DeleteRolAdapter;
 use Core\Rol\Infraestructura\AdapterBridge\EditRolAdapter;
@@ -33,6 +34,10 @@ class RolController extends Controller
      * @var ListRolByIdAdapter
      */
     private ListRolByIdAdapter $listRolByIdAdapter;
+    /**
+     * @var ChangeStatusRolAdapter
+     */
+    private ChangeStatusRolAdapter $changeStatusRolAdapter;
 
     /**
      * Create a new controller instance.
@@ -44,7 +49,8 @@ class RolController extends Controller
         ListRolAdapter $listRolAdapter,
         EditRolAdapter $editRolAdapter,
         DeleteRolAdapter $deleteRolAdapter,
-        ListRolByIdAdapter $listRolByIdAdapter
+        ListRolByIdAdapter $listRolByIdAdapter,
+        ChangeStatusRolAdapter $changeStatusRolAdapter
     )
     {
         $this->listRolAdapter = $listRolAdapter;
@@ -52,6 +58,7 @@ class RolController extends Controller
         $this->editRolAdapter = $editRolAdapter;
         $this->deleteRolAdapter = $deleteRolAdapter;
         $this->listRolByIdAdapter = $listRolByIdAdapter;
+        $this->changeStatusRolAdapter = $changeStatusRolAdapter;
     }
 
     public function listRol() {
@@ -60,7 +67,7 @@ class RolController extends Controller
 
     public function createRol(Request $request) {
         // Obteniendo los datos enviados desde el cliente
-        $name = $request['rolName'];
+        $name = $request->rol['rolName'];
         // Intanciando una entidad para pasarlo como parametro al metodo createRol
         $rolEntity = new RolEntity($name,'ACTIVE', 0);
 
@@ -69,9 +76,9 @@ class RolController extends Controller
     }
 
     public function updateRol(Request $request){
-        $id = $request->input('idRol');
-        $name = $request->input('rolName');
-        $status = $request->input('rolStatus');
+        $id = $request['rol']['idRol'];
+        $name = $request['rol']['rolName'];
+        $status = $request['rol']['rolStatus'];
 
         $rolEntity = new RolEntity($name,$status,$id);
 
@@ -84,5 +91,10 @@ class RolController extends Controller
 
     public function listRolById($idRol) {
         return response()->json($this->listRolByIdAdapter->listRolById($idRol));
+    }
+
+    public function changeStatus(Request $request) {
+        $idRol = $request['idRol'];
+        return response()->json($this->changeStatusRolAdapter->changeStatusRol((int) $idRol));
     }
 }

@@ -15,4 +15,5 @@ interface UserRepository
     public function listUsers();
     public function getUserById(int $idUser);
     public function updateTokenUser(int $idUser, string $tokenUser);
+    public function getUserByIdPerson(int $idPerson);
 }

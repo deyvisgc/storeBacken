@@ -20,12 +20,18 @@ class PrivilegiosRepositoryImpl implements PrivilegioRepository
         }
     }
 
-    public function listPrivilegesByRol(int $idRol)
+    public function listPrivilegesByRol($idRol)
     {
-        // TODO: Implement listPrivilegesByRol() method.
+        try {
+            return DB::select('SELECT pri.pri_nombre, pri.pri_acces, pri.pri_group, pri.pri_ico FROM rol as r, privilegio as pri, rol_has_privilegio as rp
+                                WHERE pri.id_privilegio = rp.id_privilegio AND r.id_rol = rp.id_rol
+                                AND r.id_rol = ?', [$idRol]);
+        } catch (QueryException $exception) {
+            return $exception->getMessage();
+        }
     }
 
-    public function listPrivilegesByUser(int $idUser)
+    public function listPrivilegesByUser($idUser)
     {
         // TODO: Implement listPrivilegesByUser() method.
     }
