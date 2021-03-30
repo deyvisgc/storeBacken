@@ -60,7 +60,7 @@ class UpdateCase
            );
         return $this->repository->Update($Producto,$idproducto);
     }
-     public function ChangeStatus(int $status) {
-
+     public function ChangeStatus(string $status, int $id) {
+         return $this->repository->CambiarStatus($status, $id);
      }
 }

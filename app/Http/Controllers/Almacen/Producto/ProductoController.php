@@ -86,5 +86,8 @@ class ProductoController extends Controller
         }
         return response()->json($status);
     }
+    function changestatus (Request $request) {
+        return response()->json($this->updateBridge->changestatus($request));
+    }
 
 }

@@ -36,4 +36,12 @@ class UpdateBridge
         $createProducto= new UpdateCase($this->productoSql);
       return  $createProducto->__invoke($idproducto,$pro_nombre, $pro_precio_compra, $pro_precio_venta, $pro_cantidad, $pro_cantidad_min, $pro_description, $id_lote, $id_clase_producto, $id_unidad_medida, $pro_cod_barra, $pro_code);
     }
+    public function changestatus (Request $request) {
+
+        $idproducto=$request['data'][0]['id'];
+        $status=$request['data'][0]['status'];
+        $update= new UpdateCase($this->productoSql);
+        return $update->ChangeStatus($status,$idproducto);
+
+    }
 }
