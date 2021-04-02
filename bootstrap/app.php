@@ -97,7 +97,8 @@ $app->configure('app');
  $app->register(App\Providers\EventServiceProvider::class);
  $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
  $app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
-
+$app->register(\Barryvdh\DomPDF\ServiceProvider::class);
+$app->configure('dompdf');
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

@@ -19,6 +19,17 @@ $router->get('/', function () use ($router) {
 //Search
 $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('Reportes/Inventario','Reportes\InventarioController@Inventario');
+    $app->get('Reportes/Pdf','Reportes\InventarioController@Pdf');
+    $app->get('Reportes/Exprotar/Inventario','Reportes\InventarioController@ExportarInventario');
+    $app->get('Reportes/probar','Reportes\InventarioController@probar');
+    $app->post('Reportes/AddSangria','Reportes\Sangria\SangriaController@AddSangria');
+    $app->get('Reportes/GetSangria','Reportes\Sangria\SangriaController@GetSangria');
+    $app->post('Reportes/DeleteSangria','Reportes\Sangria\SangriaController@DeleteSangria');
+
+
+
+
+
 });
 
 

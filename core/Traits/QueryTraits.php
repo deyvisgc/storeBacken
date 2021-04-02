@@ -70,4 +70,5 @@ trait QueryTraits
             ->where('dt.idCompra', '=', $idCompra)
             ->get();
     }
+
 }
