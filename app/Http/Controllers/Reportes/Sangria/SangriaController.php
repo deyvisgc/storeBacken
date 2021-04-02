@@ -4,9 +4,12 @@
 namespace App\Http\Controllers\Reportes\Sangria;
 
 
+use App\Exports\Excel\Reportes\ExportarInventario;
+use App\Exports\Excel\Reportes\ExportarSangria;
 use App\Http\Controllers\Controller;
 use Core\Reportes\Infraestructure\Adapter\SangriaAdapter;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use const Core\Reportes\Infraestructure\Sql\result;
 
 class SangriaController extends Controller
@@ -29,5 +32,13 @@ class SangriaController extends Controller
     }
     function DeleteSangria(Request $request) {
         return response()->json($this->sangriaAdapter->deleteSangria($request));
+    }
+    function excel(Request $request)
+    {
+        $fechaDesde = $request->input('fechaDesde');
+        $fechaHasta = $request->input('fechaHasta');
+        $caja = $request->input('caja');
+        $tipoSangria = $request->input('tipoSangria');
+        return Excel::download(new ExportarSangria($fechaDesde, $fechaHasta, $caja, $tipoSangria), 'reportesSangria.xlsx')->deleteFileAfterSend (false);
     }
 }

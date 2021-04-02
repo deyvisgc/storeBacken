@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Reportes;
 
 
 use App\Exports\Excel\ComprasCreditoBuyID;
-use App\Exports\Excel\Inventario\exportar;
+use App\Exports\Excel\Reportes\exportarInventario;
 use App\Http\Controllers\Controller;
 use Core\Reportes\Infraestructure\Adapter\InventarioAdapter;
 use Illuminate\Http\Request;
@@ -40,7 +40,7 @@ class InventarioController extends Controller
         $codigo = $request->input('codigo');
         $nombre = $request->input('nombre');
         $categoria = $request->input('categoria');
-        return Excel::download(new exportar($codigo, $nombre, $categoria), 'reportesInventario.xlsx')->deleteFileAfterSend (false);
+        return Excel::download(new exportarInventario($codigo, $nombre, $categoria), 'reportesInventario.xlsx')->deleteFileAfterSend (false);
     }
     public function probar () {
         $data = [];

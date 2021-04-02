@@ -8,7 +8,6 @@ use App\Http\Excepciones\Exepciones;
 use Core\Reportes\Domain\SangriaRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
-
 class SangriaSql implements SangriaRepository
 {
 
@@ -62,14 +61,36 @@ class SangriaSql implements SangriaRepository
     }
     function Read($params)
     {
-        $sangria=  DB::table('sangria as s')
-                   ->join('user as us', 's.id_user', '=', 'us.id_user')
-                   ->join('persona as per','per.id_user', '=', 'us.id_user')
-                   ->join('caja as ca', 's.id_caja', '=', 'ca.id_caja')
-                   ->select('s.*', 'per.per_nombre', 'ca.ca_name')
-                   ->get();
-        $exception = new Exepciones(true,'lista encontrada',200, $sangria);
-        return $exception->SendError();
+        try {
+            $listCaja = array();
+            $query = DB::table('sangria as s');
+            if ($params->fechaDesde && $params->fechaHasta) {
+                $query->whereBetween('s.san_fecha', [$params->fechaDesde, $params->fechaHasta]);
+            }
+            if ($params->caja) {
+                $query->where('s.id_caja',$params->caja);
+            }
+            if ($params->tipoSangria) {
+                $query->where('s.san_tipo_sangria',$params->tipoSangria);
+            }
+            if(!$params->caja && !$params->tipoSangria) {
+                $caja = DB::table("caja")->select('*')->get();
+            } else {
+                $caja = [];
+            }
+            $query->join('user as us', 's.id_user', '=', 'us.id_user')
+                ->join('persona as per','per.id_user', '=', 'us.id_user')
+                ->join('caja as ca', 's.id_caja', '=', 'ca.id_caja')
+                ->select('s.*', 'per.per_nombre', 'ca.ca_name')
+                ->get();
+            $result= $query->get();
+            array_push($listCaja,['lista'=>$result, 'caja' => $caja]);
+            $exception = new Exepciones(true,'lista encontrada',200, $listCaja[0]);
+            return $exception->SendError();
+        }catch (QueryException $exception) {
+            $exception = new Exepciones(false,$exception->getMessage(),$exception->getCode(), []);
+            return $exception->SendError();
+        }
     }
 
     function delete($id)
@@ -98,4 +119,5 @@ class SangriaSql implements SangriaRepository
             return $exepciones->SendError();
         }
     }
+
 }

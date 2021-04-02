@@ -25,8 +25,7 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->post('Reportes/AddSangria','Reportes\Sangria\SangriaController@AddSangria');
     $app->get('Reportes/GetSangria','Reportes\Sangria\SangriaController@GetSangria');
     $app->post('Reportes/DeleteSangria','Reportes\Sangria\SangriaController@DeleteSangria');
-
-
+    $app->get('Reportes/Exprotar/Sangria','Reportes\Sangria\SangriaController@excel');
 
 
 

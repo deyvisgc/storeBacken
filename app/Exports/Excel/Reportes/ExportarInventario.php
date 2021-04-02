@@ -1,14 +1,14 @@
 <?php
 
 
-namespace App\Exports\Excel\Inventario;
+namespace App\Exports\Excel\Reportes;
 
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromView;
 
-class exportar implements FromView
+class ExportarInventario implements FromView
 {
     private $codigo;
     private $nombre;
@@ -43,7 +43,7 @@ class exportar implements FromView
             $suma += $value->total;
         }
 
-        return view('Exportar.Excel.Inventario.inventario', [
+        return view('Exportar.Excel.Reportes.Inventario', [
             'inventario' => array($result, 'total'=> $suma)
         ]);
     }
