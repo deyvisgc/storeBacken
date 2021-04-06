@@ -18,4 +18,10 @@ class listCajaUseCase
     {
         return $this->cajaRepository->listCaja();
     }
+    function totales($idPersona, $fechaDesde, $fechaHasta, $month, $year) {
+        return $this->cajaRepository->totales($idPersona, $fechaDesde, $fechaHasta, $month, $year);
+    }
+    function obtenerSaldoInicial (int $idcaja) {
+        return $this->cajaRepository->obtenerSaldoInicial($idcaja);
+    }
 }

@@ -5,56 +5,63 @@ namespace Core\Reportes\Infraestructure\Sql;
 
 
 use App\Http\Excepciones\Exepciones;
+use Carbon\Carbon;
 use Core\Reportes\Domain\SangriaRepository;
+use Core\Traits\CajaTraits;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 class SangriaSql implements SangriaRepository
 {
-
+    use CajaTraits;
     function AddSangria($data)
     {
+        DB::beginTransaction();
         try {
-            if ($data->sangria['id'] <= 0) { // crear
-                $idSangria = DB::table('sangria')
-                    ->insertGetId([
+            $statusCaja= $this->ActualizarMontoCaja($data->sangria['idCaja'],$data->sangria['idUsuario'],$data->sangria['monto'],$data->sangria['fecha'],$data->sangria['tipoSangria']);
+            if ($statusCaja[0]) {
+                if ($data->sangria['id'] <= 0) { // crear
+                    $idSangria = DB::table('sangria')
+                        ->insertGetId([
+                            'san_monto'=>$data->sangria['monto'],
+                            'san_fecha' =>$data->sangria['fecha'],
+                            'san_tipo_sangria' => $data->sangria['tipoSangria'],
+                            'san_motivo' => $data->sangria['motivo'],
+                            'id_caja' =>$data->sangria['idCaja'],
+                            'id_user' =>$data->sangria['idUsuario']
+                        ]);
+                    if ($idSangria > 0) {
+                        $message = 'La sangria numero '.''. $idSangria.' fue creada correctamente';
+                        $status = true; $code = 200;
+
+                    } else {
+                        $message = 'Error al crear sangria';
+                        $status = false; $code = 402 ;
+                    }
+                } else {
+                    $idSangria = DB::table('sangria')->where('id_sangria', $data->sangria['id'])->update([
                         'san_monto'=>$data->sangria['monto'],
                         'san_fecha' =>$data->sangria['fecha'],
                         'san_tipo_sangria' => $data->sangria['tipoSangria'],
-                        'san_motivo' => $data->sangria['motivo'],
-                        'id_caja' =>$data->sangria['idCaja'],
-                        'id_user' =>$data->sangria['idUsuario']
+                        'san_motivo' => $data->sangria['motivo']
                     ]);
-                if ($idSangria > 0) {
-                    $message = 'La sangria numero '.''. $idSangria.' fue creada correctamente';
-                    $status = true; $code = 200;
+                    if ($idSangria > 0) {
+                        $message = 'La sangria numero '.''. $idSangria.' fue actualizada correctamente';
+                        $status = true; $code = 200;
 
-                } else {
-                    $message = 'Error al crear sangria';
-                    $status = false; $code = 402 ;
-
+                    } else {
+                        $message = 'Error al actualizar sangria';
+                        $status = false; $code = 402 ;
+                    }
                 }
+                DB::commit();
+                $exception = new Exepciones($status,$message,$code, []);
+                return $exception->SendError();
             } else {
-
-                $idSangria = DB::table('sangria')->where('id_sangria', $data->sangria['id'])
-                    ->update([
-                    'san_monto'=>$data->sangria['monto'],
-                    'san_fecha' =>$data->sangria['fecha'],
-                    'san_tipo_sangria' => $data->sangria['tipoSangria'],
-                    'san_motivo' => $data->sangria['motivo']
-                ]);
-                if ($idSangria > 0) {
-                    $message = 'La sangria numero '.''. $idSangria.' fue actualizada correctamente';
-                    $status = true; $code = 200;
-
-                } else {
-                    $message = 'Error al actualizar sangria';
-                    $status = false; $code = 402 ;
-
-                }
+                $exception = new Exepciones($statusCaja[0],$statusCaja[1],403, []);
+                return $exception->SendError();
             }
-            $exception = new Exepciones($status,$message,$code, []);
-           return $exception->SendError();
         } catch (QueryException $err) {
+            DB::rollBack();
             $exception = new Exepciones(false,$err->getMessage(),$err->getCode(), []);
             return $exception->SendError();
         }

@@ -21,4 +21,12 @@ class CreateCajaAdapter
         $createCaja= new createCajaUseCase($this->cajaRepositoryImpl);
         return $createCaja->createCaja($cajaEntity);
     }
+     function AperturarCaja($caja){
+        $createCaja= new createCajaUseCase($this->cajaRepositoryImpl);
+        return $createCaja->AperturarCaja($caja);
+    }
+    function GuardarCorteDiario($corteCaja) {
+        $createCaja= new createCajaUseCase($this->cajaRepositoryImpl);
+        return $createCaja->GuardarCorteDiario($corteCaja);
+    }
 }

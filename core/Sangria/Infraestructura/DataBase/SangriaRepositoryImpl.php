@@ -24,7 +24,7 @@ class SangriaRepositoryImpl implements SagriaRepository
     public function editSangria(SangriaEntity $sangriaEntity)
     {
         try {
-            return $edit = DB::table('sangria')
+             $edit = DB::table('sangria')
                 ->where('id_sangria',$sangriaEntity->getIdSangria())
                 ->update([
                     'san_monto' =>$sangriaEntity->getSanMonto(),

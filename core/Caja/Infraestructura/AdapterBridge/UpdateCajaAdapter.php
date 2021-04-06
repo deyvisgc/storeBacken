@@ -21,4 +21,8 @@ class UpdateCajaAdapter
         $updateCaja = new updateCajaUseCase($this->cajaRepositoryImpl);
         return $updateCaja->updateCaja($cajaEntity);
     }
+    function CerrarCaja($caja) {
+        $updateCaja = new updateCajaUseCase($this->cajaRepositoryImpl);
+        return $updateCaja->cerrarCaja($caja);
+    }
 }

@@ -18,4 +18,10 @@ class createCajaUseCase
     public function createCaja(CajaEntity $cajaEntity){
         return $this->cajaRepository->createCaja($cajaEntity);
     }
+     function AperturarCaja($caja){
+        return $this->cajaRepository->aperturarCaja($caja);
+    }
+    function GuardarCorteDiario ($corteCaja){
+        return $this->cajaRepository->aperturarCaja($corteCaja);
+    }
 }

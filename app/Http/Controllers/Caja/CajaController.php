@@ -11,6 +11,7 @@ use Core\Caja\Infraestructura\AdapterBridge\DeleteCajaAdapter;
 use Core\Caja\Infraestructura\AdapterBridge\ListCajaAdapter;
 use Core\Caja\Infraestructura\AdapterBridge\UpdateCajaAdapter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CajaController extends Controller
 {
@@ -61,4 +62,36 @@ class CajaController extends Controller
     {
         return response()->json($this->deleteCajaAdapter->deleteCaja($idCaja));
     }
+    function totales(Request $request) {
+        $idPersona = $request->input('idUsuario');
+        $fechaDesde = $request->input('fechaDesde');
+        $fechaHasta = $request->input('fechaHasta');
+        $month = $request->input('month');
+        $year = $request->input('year');
+        return response()->json($this->listCajaAdapter->totales($idPersona, $fechaDesde, $fechaHasta, $month, $year));
+    }
+    function Aperturar(Request  $request) {
+        return response()->json($this->createCajaAdapter->AperturarCaja($request));
+    }
+    function CerrarCaja(Request  $request) {
+        return response()->json($this->updateCajaAdapter->CerrarCaja($request->caja));
+    }
+    function ValidarCaja(Request  $request) {
+        $idcaja =  $request->input('idCaja');
+        $idUsers = $request->input('idUser');
+        $query = DB::table('caja')
+              ->where([[ 'id_caja', '=', $idcaja], ['id_user', '=', $idUsers], ['ca_status', '=', 'open']])
+              ->first();
+        return response()->json($query);
+    }
+    function ObtenerSaldoInicial(int $idCaja) {
+        return response()->json($this->listCajaAdapter->obtenerSaldoInicial($idCaja));
+    }
+    function GuardarCorteDiario(Request  $request) {
+        return $request;
+        return $request->corteCaja[0];
+        return response()->json($this->createCajaAdapter->GuardarCorteDiario($request));
+
+    }
+
 }

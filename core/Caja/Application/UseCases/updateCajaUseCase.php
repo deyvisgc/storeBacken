@@ -15,8 +15,12 @@ class updateCajaUseCase
     {
         $this->cajaRepository=$cajaRepository;
     }
-    public function updateCaja(CajaEntity $cajaEntity)
+     function updateCaja(CajaEntity $cajaEntity)
     {
         return $this->cajaRepository->updateCaja($cajaEntity);
+    }
+     function cerrarCaja($caja)
+    {
+        return $this->cajaRepository->cerrarCaja($caja);
     }
 }
