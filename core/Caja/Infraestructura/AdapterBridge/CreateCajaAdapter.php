@@ -25,8 +25,8 @@ class CreateCajaAdapter
         $createCaja= new createCajaUseCase($this->cajaRepositoryImpl);
         return $createCaja->AperturarCaja($caja);
     }
-    function GuardarCorteDiario($corteCaja) {
+    function GuardarCorte($detallecorteCaja, $corteCaja) {
         $createCaja= new createCajaUseCase($this->cajaRepositoryImpl);
-        return $createCaja->GuardarCorteDiario($corteCaja);
+        return $createCaja->GuardarCorte($detallecorteCaja, $corteCaja);
     }
 }

@@ -80,11 +80,11 @@ class CajaRepositoryImpl implements CajaRepository
             }
             $exepciones = new Exepciones(true, 'econtrados', 200,
                 [$data['ingreso'][0], $data['salida'][0], $data['devoluciones'][0],$data['montoInicial'][0]]);
-           return $exepciones->SendError();
+           return $exepciones->SendStatus();
 
         } catch (QueryException $exception) {
             $exepciones = new Exepciones(false, $exception->getMessage(),$exception->getCode() , []);
-           return $exepciones->SendError();
+           return $exepciones->SendStatus();
         }
     }
     function queryXFECHAS ($idpersona,$fechaDesde, $fechaHasta) {
@@ -213,11 +213,11 @@ class CajaRepositoryImpl implements CajaRepository
           DB::commit();
           $messaje = "Exito al abrir caja numero ". $request['caja']['idCaja'];
           $exepciones = new Exepciones(true,$messaje,200,[]);
-         return $exepciones->SendError();
+         return $exepciones->SendStatus();
         }catch (QueryException $exception) {
             DB::rollBack();
             $exepciones = new Exepciones(true,$exception->getMessage(),$exception->getCode(),[]);
-          return  $exepciones->SendError();
+          return  $exepciones->SendStatus();
         }
     }
 
@@ -227,10 +227,10 @@ class CajaRepositoryImpl implements CajaRepository
              DB::table('caja')->where('id_caja', $caja['idCaja'])->update(['ca_status' => 'close']);
             $message = 'Caja numero '.$caja['idCaja'].'cerrada correctamente';
             $exception = new Exepciones(true, $message,200,[]);
-            $exception->SendError();
+            $exception->SendStatus();
         }catch (QueryException $exception) {
             $exception = new Exepciones(false, $exception->getMessage(), $exception->getCode(),[]);
-            $exception->SendError();
+            $exception->SendStatus();
         }
     }
 
@@ -241,13 +241,13 @@ class CajaRepositoryImpl implements CajaRepository
             if ($idCaja === 0) {
                 $messge = "EL numero de caja debe ser mayor a 0";
                 $exepciones = new Exepciones(false,$messge,403,[]);
-               return $exepciones->SendError();
+               return $exepciones->SendStatus();
             }
             $caja = DB::table('caja')->where('id_caja', $idCaja)->first();
             if (empty($caja->id_caja)) {
                 $messge = "El numero de caja ingresado no existe en nuestra base de datos";
                 $exepciones = new Exepciones(false,$messge,403,[]);
-              return  $exepciones->SendError();
+              return  $exepciones->SendStatus();
             }
             $saldoInicial = DB::table('caja_historial')->where('ch_tipo_operacion', '=', 'apertura')
                 ->where(DB::raw('DATE(ch_fecha_operacion)'), $fechahoy )
@@ -255,17 +255,90 @@ class CajaRepositoryImpl implements CajaRepository
                 ->get();
             $messge = "monto Inicial encontrado";
             $exepciones = new Exepciones(true,$messge,200,$saldoInicial);
-          return  $exepciones->SendError();
+          return  $exepciones->SendStatus();
         } catch (QueryException $exception) {
             $exepciones = new Exepciones(false,$exception->getMessage(),$exception->getCode(),[]);
-          return  $exepciones->SendError();
+          return  $exepciones->SendStatus();
         }
 
 
     }
 
-    function GuardarCorteDiario($corteCaja)
+    function GuardarCorte($detalleCorteCaja, $corteCaja)
     {
-        return $corteCaja;
+           DB::beginTransaction();
+        try {
+            $idCorteCaja = DB::table('caja_corte')->insertGetId([
+                'fecha_corte' => $corteCaja['fecha'],
+                'hora_inicio' =>$corteCaja['horaInicio'],
+                'hora_termino' =>$corteCaja['horaTermino'],
+                'id_caja' =>$corteCaja['idCaja'],
+                'monto_inicial' =>$corteCaja['saldoInicio'],
+                'ganancias_x_dia'=>$corteCaja['totalCobrado'],
+                'total_monedas'=> $corteCaja['totalMonedas'],
+                'total_billetes' =>$corteCaja['totalBilletes']
+            ]);
+               DB::table('caja_corte_diario')->insertGetId([
+                'fecha_corte_diario' =>$corteCaja['fecha'],
+                'id_caja_corte' => $idCorteCaja,
+                'monto_entregado_dia' =>$corteCaja['totalEntregado'],
+            ]);
+            if ($detalleCorteCaja['corteSemanal']) {
+                DB::table('caja_corte_semanal')->insert([
+                    'id_caja' =>$corteCaja['idCaja'],
+                    'ccs_monto_ingresado' =>$corteCaja['totalEntregarSemanal'],
+                    'ccs_fecha_corte' =>$corteCaja['fecha'],
+                    'css_fecha_inicio' =>$detalleCorteCaja['fechaInicio'],
+                    'css_fecha_termino' =>$detalleCorteCaja['fechaTermino']
+                ]);
+                $message = 'EL corte caja semanal numero '.$idCorteCaja. ' se guardo correctamente';
+            } else {
+                $message = 'EL corte caja diario numero '.$idCorteCaja. ' se guardo correctamente';
+            }
+            $billetes = $detalleCorteCaja['billetes'];
+            $monedas = $detalleCorteCaja['monedas'];
+            for ($i = 0; $i < sizeof($billetes); $i++) {
+              DB::table('detalle_corte_caja')->insert([
+                        'dcc_cantidad' => $billetes[$i]['cantidad'],
+                        'dcc_total' => $billetes[$i]['subtotal'],
+                        'dcc_valor' =>$billetes[$i]['descripcion'],
+                        'id_corte_caja' =>$idCorteCaja,
+                        'dcc_type_money' =>$billetes[$i]['type_money']
+                    ]);
+            }
+            for ($i = 0; $i < sizeof($monedas); $i++) {
+                DB::table('detalle_corte_caja')
+                    ->insert([
+                        'dcc_cantidad' => $monedas[$i]['cantidad'],
+                        'dcc_total' => $monedas[$i]['subtotal'],
+                        'dcc_valor' =>$monedas[$i]['descripcion'],
+                        'id_corte_caja' =>$idCorteCaja,
+                        'dcc_type_money' =>$monedas[$i]['type_money']
+                    ]);
+            }
+            DB::commit();
+            $excepciones = new Exepciones(true,$message,200, []);
+            return $excepciones->SendStatus();
+        }catch (QueryException $exception){
+            DB::rollBack();
+            $excepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $excepcion->SendStatus();
+        }
+    }
+
+    function buscarCortesXFechas($fechaDesde, $fechaHasta)
+    {
+        try {
+            $query = DB::table('detalle_corte_caja as dt')
+                     ->join('caja_corte as cc', 'dt.id_corte_caja','=', 'cc.id_caja_corte')
+                     ->select('dt.*', 'cc.fecha_corte')
+                     ->whereBetween('cc.fecha_corte', [$fechaDesde, $fechaHasta])
+                     ->get();
+            $excepciones = new Exepciones(true,'lista encontrada', 200, $query);
+           return $excepciones->SendStatus();
+        }catch (QueryException $exception) {
+            $excepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $excepciones->SendStatus();
+        }
     }
 }

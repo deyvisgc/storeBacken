@@ -88,9 +88,16 @@ class CajaController extends Controller
         return response()->json($this->listCajaAdapter->obtenerSaldoInicial($idCaja));
     }
     function GuardarCorteDiario(Request  $request) {
-        return $request;
-        return $request->corteCaja[0];
-        return response()->json($this->createCajaAdapter->GuardarCorteDiario($request));
+        return response()->json($this->createCajaAdapter->GuardarCorte($request->detalleCorteCaja[0], $request->corteCaja,));
+
+    }
+    function GuardarCorteSemanal(Request  $request) {
+        return response()->json($this->createCajaAdapter->GuardarCorte($request->detalleCorteCaja, $request->corteCaja,));
+    }
+    function SearhCortesXfechas(Request $request) {
+        $fechaDesde = $request->fechaDesde;
+        $fechaHasta = $request->fechaHasta;
+        return response()->json($this->listCajaAdapter->buscarcortesxfechas($fechaDesde, $fechaHasta));
 
     }
 

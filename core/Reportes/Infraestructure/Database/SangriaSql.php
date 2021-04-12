@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Core\Reportes\Infraestructure\Sql;
+namespace Core\Reportes\Infraestructure\Database;
 
 
 use App\Http\Excepciones\Exepciones;
@@ -55,15 +55,15 @@ class SangriaSql implements SangriaRepository
                 }
                 DB::commit();
                 $exception = new Exepciones($status,$message,$code, []);
-                return $exception->SendError();
+                return $exception->SendStatus();
             } else {
                 $exception = new Exepciones($statusCaja[0],$statusCaja[1],403, []);
-                return $exception->SendError();
+                return $exception->SendStatus();
             }
         } catch (QueryException $err) {
             DB::rollBack();
             $exception = new Exepciones(false,$err->getMessage(),$err->getCode(), []);
-            return $exception->SendError();
+            return $exception->SendStatus();
         }
     }
     function Read($params)
@@ -93,37 +93,10 @@ class SangriaSql implements SangriaRepository
             $result= $query->get();
             array_push($listCaja,['lista'=>$result, 'caja' => $caja]);
             $exception = new Exepciones(true,'lista encontrada',200, $listCaja[0]);
-            return $exception->SendError();
+            return $exception->SendStatus();
         }catch (QueryException $exception) {
             $exception = new Exepciones(false,$exception->getMessage(),$exception->getCode(), []);
-            return $exception->SendError();
-        }
-    }
-
-    function delete($id)
-    {
-        try {
-            if ($id === 0) {
-                $message = 'El numero de sangria  '.$id. 'debe ser mayor a 0';
-                $status = false;
-                $code = 401;
-            }
-            $idsangria = DB::table('sangria')->where('id_sangria', $id)->first();
-            if (empty($idsangria->id_sangria)) {
-                $message = 'El numero de sangria  '.$idsangria->id_sangria. 'no existe en nuestra base de datos';
-                $status = false;
-                $code = 401;
-            } else {
-                DB::table('sangria')->where('id_sangria', $id)->delete();
-                $message = 'La sangria numero '.$id. ' se elimino correctamente';
-                $status = true;
-                $code = 200;
-            }
-            $exepciones = new Exepciones($status,$message, $code, []);
-            return $exepciones->SendError();
-        } catch (QueryException $exception) {
-            $exepciones = new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
-            return $exepciones->SendError();
+            return $exception->SendStatus();
         }
     }
 

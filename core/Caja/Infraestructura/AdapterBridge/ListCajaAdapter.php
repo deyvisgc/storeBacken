@@ -29,4 +29,8 @@ class ListCajaAdapter
         $listCaja = new listCajaUseCase($this->cajaRepositoryImpl);
         return $listCaja->obtenerSaldoInicial($idCaja);
     }
+    function buscarcortesxfechas($fechaDesde, $fechaHasta) {
+        $listCaja = new listCajaUseCase($this->cajaRepositoryImpl);
+        return $listCaja->buscarCortesXFechas($fechaDesde, $fechaHasta);
+    }
 }

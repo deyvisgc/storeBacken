@@ -24,4 +24,7 @@ class listCajaUseCase
     function obtenerSaldoInicial (int $idcaja) {
         return $this->cajaRepository->obtenerSaldoInicial($idcaja);
     }
+    function buscarCortesXFechas ($fechaDesde, $fechaHasta) {
+        return $this->cajaRepository->buscarCortesXFechas($fechaDesde, $fechaHasta);
+    }
 }

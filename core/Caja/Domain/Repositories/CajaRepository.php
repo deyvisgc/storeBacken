@@ -16,6 +16,7 @@ interface CajaRepository
     public function listCaja();
     function totales(int $idPersona, $fechaDesde, $fechaHasta, $month, $year);
     function obtenerSaldoInicial(int $idCaja);
-    function GuardarCorteDiario($corteCaja);
+    function buscarCortesXFechas($fechaDesde, $fechaHasta);
+    function GuardarCorte($detallecorteCaja,$corteCaja);
 
 }

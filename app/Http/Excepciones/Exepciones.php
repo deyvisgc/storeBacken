@@ -18,7 +18,7 @@ class Exepciones
         $this->Codigo = $Codigo;
         $this->data = $data;
     }
-    public function SendError() {
+    public function SendStatus() {
         $array = ['status' => $this->Status, 'message' => $this->Message, 'codigo' =>  $this->Codigo, 'data' => $this->data];
         return $array;
     }

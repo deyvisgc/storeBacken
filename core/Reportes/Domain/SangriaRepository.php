@@ -8,5 +8,4 @@ interface SangriaRepository
 {
   function AddSangria($sangria);
   function Read($params);
-  function delete($id);
 }

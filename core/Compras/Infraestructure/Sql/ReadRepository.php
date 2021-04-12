@@ -44,10 +44,10 @@ class ReadRepository implements ComprasRepository
             $result= $query->get();
 
             $excepciones = new  Exepciones(true,'listaEncontrada',200, $result);
-            return $excepciones->SendError();
+            return $excepciones->SendStatus();
         }catch (QueryException $exception) {
             $excepciones = new  Exepciones(false,'error',$exception->getCode(),$exception->getMessage());
-            return $excepciones->SendError();
+            return $excepciones->SendStatus();
         }
     }
 
@@ -56,10 +56,10 @@ class ReadRepository implements ComprasRepository
         try {
             $status = $this->ReadCompraxid($id);
             $excepciones = new  Exepciones(true,'listaEncontrada',200,$status);
-            return $excepciones->SendError();
+            return $excepciones->SendStatus();
         }catch (QueryException $exception) {
             $excepciones = new  Exepciones(false,'error',$exception->getCode(),$exception->getMessage());
-            return $excepciones->SendError();
+            return $excepciones->SendStatus();
         }
     }
 
@@ -70,16 +70,16 @@ class ReadRepository implements ComprasRepository
             if (empty($status->idCompra)) {
                 $message = 'No existe la compra'.$id. 'en nuestro sistema';
                 $excepciones = new  Exepciones(false,$message,400,$status);
-                return $excepciones->SendError();
+                return $excepciones->SendStatus();
             }
             $estado = $status->comEstado === 1 ? 0 : 1;
             DB::table('compra')->where('idCompra', $id)->update(['comEstado' => $estado]);
             $message = 'La compra numero '.$status->comSerieCorrelativo. ' fue anulada correctamente';
             $excepciones = new  Exepciones(true,$message,200,$status);
-            return $excepciones->SendError();
+            return $excepciones->SendStatus();
         }catch (QueryException $exception) {
             $excepciones = new  Exepciones(false,$exception->getMessage(),$exception->getCode(),0);
-            return $excepciones->SendError();
+            return $excepciones->SendStatus();
         }
     }
 }

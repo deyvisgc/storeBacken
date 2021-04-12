@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Core\Reportes\Infraestructure\Sql;
+namespace Core\Reportes\Infraestructure\Database;
 
 
 use App\Http\Excepciones\Exepciones;
@@ -38,10 +38,10 @@ class InvntarioSql implements InventarioRepository
             $array = result;
             array_push($array,['lista'=>$result, 'categoria' => $categoria]);
             $exception = new Exepciones(true,'Productos encontrados',200,$array[0]);
-           return $exception->SendError();
+           return $exception->SendStatus();
         } catch (QueryException $exception) {
             $exception = new Exepciones(false,$exception->getMessage(),$exception->getCode(),[]);
-            return $exception->SendError();
+            return $exception->SendStatus();
         }
     }
 }

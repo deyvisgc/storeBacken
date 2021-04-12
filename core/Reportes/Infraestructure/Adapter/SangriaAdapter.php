@@ -7,7 +7,7 @@ use Core\Reportes\Application\Sangria\AddSangriaUseCase;
 use Core\Reportes\Application\Sangria\DeleteSangriaUseCase;
 use Core\Reportes\Application\Sangria\ReadSangriaUseCase;
 use Core\Reportes\Domain\SangriaRepository;
-use Core\Reportes\Infraestructure\Sql\SangriaSql;
+use Core\Reportes\Infraestructure\Database\SangriaSql;
 
 class SangriaAdapter
 {

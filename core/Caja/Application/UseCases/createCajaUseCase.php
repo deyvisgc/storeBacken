@@ -21,7 +21,7 @@ class createCajaUseCase
      function AperturarCaja($caja){
         return $this->cajaRepository->aperturarCaja($caja);
     }
-    function GuardarCorteDiario ($corteCaja){
-        return $this->cajaRepository->aperturarCaja($corteCaja);
+    function GuardarCorte($detallecorteCaja,$corteCaja){
+        return $this->cajaRepository->GuardarCorte($detallecorteCaja,$corteCaja);
     }
 }

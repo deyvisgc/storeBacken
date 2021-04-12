@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use Core\Reportes\Infraestructure\Adapter\SangriaAdapter;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use const Core\Reportes\Infraestructure\Sql\result;
+use const Core\Reportes\Infraestructure\Database\result;
 
 class SangriaController extends Controller
 {

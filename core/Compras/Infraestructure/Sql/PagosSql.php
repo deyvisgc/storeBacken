@@ -39,11 +39,11 @@ class PagosSql implements PagosRepository
                          'comEstadoTipoPago' => $estado
                      ]);
                $exception = new Exepciones($status,'Pago de deuda completada',200,0);
-              return $exception->SendError();
+              return $exception->SendStatus();
              }
         }catch (QueryException $exception) {
             $exception = new Exepciones(false,$exception->getMessage(),$exception->getCode(),0);
-           return $exception->SendError();
+           return $exception->SendStatus();
         }
     }
 }

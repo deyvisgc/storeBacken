@@ -5,7 +5,7 @@ namespace Core\Reportes\Infraestructure\Adapter;
 
 
 use Core\Reportes\Application\InventarioUseCase;
-use Core\Reportes\Infraestructure\Sql\InvntarioSql;
+use Core\Reportes\Infraestructure\Database\InvntarioSql;
 
 class InventarioAdapter
 {
