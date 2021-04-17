@@ -57,7 +57,9 @@ class RolRepositoryImpl implements RolRepository
         try {
             return DB::table('rol')
                 ->where('id_rol', '=', $idRol)
-                ->delete();
+                ->update([
+                    'rol_status' => 'DISABLED',
+                ]);
         } catch (QueryException $exception) {
             return $exception->getMessage();
         }
@@ -69,6 +71,19 @@ class RolRepositoryImpl implements RolRepository
             return DB::table('rol')
                 ->where('id_rol', '=', $idRol)
                 ->get();
+        } catch (QueryException $exception) {
+            return $exception->getMessage();
+        }
+    }
+
+    public function changeStatusRol(int $idRol)
+    {
+        try {
+            return DB::table('rol')
+                ->where('id_rol', '=', $idRol)
+                ->update([
+                    'rol_status' => 'ACTIVE',
+                ]);
         } catch (QueryException $exception) {
             return $exception->getMessage();
         }

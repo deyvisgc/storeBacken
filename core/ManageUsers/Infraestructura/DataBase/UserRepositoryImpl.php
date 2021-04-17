@@ -17,7 +17,16 @@ class UserRepositoryImpl implements UserRepository
     {
         try {
             $insertPerson = DB::table('persona')
-                ->insertGetId($personEntity->toArray());
+                ->insertGetId([
+                    'per_nombre' => $personEntity->getPerName(),
+                    'per_apellido' => $personEntity->getPerLastName(),
+                    'per_direccion' => $personEntity->getPerAddress(),
+                    'per_celular' => $personEntity->getPerPhone(),
+                    'per_tipo' => $personEntity->getPerType(),
+                    'per_tipo_documento' => $personEntity->getPerTypeDocument(),
+                    'per_numero_documento' => $personEntity->getPerDocNumber(),
+                    'per_status' => 'ACTIVE',
+                ]);
 
             return DB::table('user')
                 ->insert([
@@ -91,6 +100,17 @@ class UserRepositoryImpl implements UserRepository
                 ->update([
                     'us_token' => $tokenUser
                 ]);
+        } catch (QueryException $exception) {
+            return $exception->getMessage();
+        }
+    }
+
+    public function getUserByIdPerson(int $idPerson)
+    {
+        try {
+            return DB::table('user')
+                ->where('id_persona', '=', $idPerson)
+                ->get();
         } catch (QueryException $exception) {
             return $exception->getMessage();
         }

@@ -13,4 +13,5 @@ interface RolRepository
     public function editRol(RolEntity $rolEntity);
     public function createRol(RolEntity $rolEntity);
     public function  deleteRol(int $idRol);
+    public function changeStatusRol(int $idRol);
 }

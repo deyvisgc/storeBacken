@@ -7,7 +7,7 @@ namespace Core\Privilegio\Domain\Repositories;
 interface PrivilegioRepository
 {
     public function listPrivileges();
-    public function listPrivilegesByRol(int $idRol);
-    public function listPrivilegesByUser(int $idUser);
+    public function listPrivilegesByRol($idRol);
+    public function listPrivilegesByUser($idUser);
     public function listDisabledPrivileges();
 }

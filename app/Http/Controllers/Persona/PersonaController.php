@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Persona;
 
 use App\Http\Controllers\Controller;
 use Core\ManagePerson\Domain\Entity\PersonEntity;
+use Core\ManagePerson\Infraestructura\AdapterBridge\ChangeStatusPersonAdapter;
 use Core\ManagePerson\Infraestructura\AdapterBridge\CreatePersonAdapter;
 use Core\ManagePerson\Infraestructura\AdapterBridge\DeletePersonAdapter;
 use Core\ManagePerson\Infraestructura\AdapterBridge\GetPersonAdapter;
@@ -36,13 +37,18 @@ class PersonaController extends Controller
      * @var GetPersonAdapter
      */
     private GetPersonAdapter $getPersonAdapter;
+    /**
+     * @var ChangeStatusPersonAdapter
+     */
+    private ChangeStatusPersonAdapter $changeStatusPersonAdapter;
 
     public function __construct(
         CreatePersonAdapter $createPersonAdapter,
         UpdatePersonAdapter $updatePersonAdapter,
         DeletePersonAdapter $deletePersonAdapter,
         GetPersonByIdAdapter $getPersonByIdAdapter,
-        GetPersonAdapter $getPersonAdapter
+        GetPersonAdapter $getPersonAdapter,
+        ChangeStatusPersonAdapter $changeStatusPersonAdapter
     )
     {
         $this->createPersonAdapter = $createPersonAdapter;
@@ -50,16 +56,17 @@ class PersonaController extends Controller
         $this->deletePersonAdapter = $deletePersonAdapter;
         $this->getPersonByIdAdapter = $getPersonByIdAdapter;
         $this->getPersonAdapter = $getPersonAdapter;
+        $this->changeStatusPersonAdapter = $changeStatusPersonAdapter;
     }
 
     public function createPerson(Request $request) {
-        $name = $request['name'];
-        $lastName = $request['lastName'];
-        $address = $request['address'];
-        $phone = $request['phone'];
-        $typePerson = $request['typePerson'];
-        $typeDocument = $request['typeDocument'];
-        $docNumber = $request['docNumber'];
+        $name = $request['person']['name'];
+        $lastName = $request['person']['lastName'];
+        $address = $request['person']['address'];
+        $phone = $request['person']['phone'];
+        $typePerson = $request['person']['typePerson'];
+        $typeDocument = $request['person']['typeDocument'];
+        $docNumber = $request['person']['docNumber'];
 
         $person = new PersonEntity(0, $name,$lastName,$address,$phone,$typePerson,$typeDocument,$docNumber);
 
@@ -79,17 +86,22 @@ class PersonaController extends Controller
     }
 
     public function updatePerson(Request $request) {
-        $idPersona = $request['idPersona'];
-        $name = $request['name'];
-        $lastName = $request['lastName'];
-        $address = $request['address'];
-        $phone = $request['phone'];
-        $typePerson = $request['typePerson'];
-        $typeDocument = $request['typeDocument'];
-        $docNumber = $request['docNumber'];
+        $idPersona = $request['person']['idPersona'];
+        $name = $request['person']['name'];
+        $lastName = $request['person']['lastName'];
+        $address = $request['person']['address'];
+        $phone = $request['person']['phone'];
+        $typePerson = $request['person']['typePerson'];
+        $typeDocument = $request['person']['typeDocument'];
+        $docNumber = $request['person']['docNumber'];
 
         $person = new PersonEntity($idPersona,$name,$lastName,$address,$phone,$typePerson,$typeDocument,$docNumber);
 
         return response()->json($this->updatePersonAdapter->updatePerson($person));
+    }
+
+    public function changeStatusPerson(Request $request) {
+        $idPersona = $request['idPerson'];
+        return response()->json($this->changeStatusPersonAdapter->changeStatusPerson($idPersona));
     }
 }

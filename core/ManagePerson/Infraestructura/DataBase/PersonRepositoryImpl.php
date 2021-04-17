@@ -16,7 +16,16 @@ class PersonRepositoryImpl implements PersonRepository
     {
         try {
             return DB::table('persona')
-                ->insert($personEntity->toArray());
+                ->insert([
+                    'per_nombre' => $personEntity->getPerName(),
+                    'per_apellido' => $personEntity->getPerLastName(),
+                    'per_direccion' => $personEntity->getPerAddress(),
+                    'per_celular' => $personEntity->getPerPhone(),
+                    'per_tipo' => $personEntity->getPerType(),
+                    'per_tipo_documento' => $personEntity->getPerTypeDocument(),
+                    'per_numero_documento' => $personEntity->getPerDocNumber(),
+                    'per_status' => 'ACTIVE',
+                ]);
         } catch (QueryException $exception) {
             return $exception->getMessage();
         }
@@ -36,9 +45,22 @@ class PersonRepositoryImpl implements PersonRepository
     public function deletePerson(int $idPerson)
     {
         try {
+            $exist = DB::table('user')
+                ->where('id_persona', '=', $idPerson)
+                ->exists();
+            if ($exist == true) {
+                DB::table('user')
+                    ->where('id_persona', '=', $idPerson)
+                    ->update([
+                        'us_status' => 'DISABLED',
+                    ]);
+            }
+
             return DB::table('persona')
                 ->where('id_persona', '=', $idPerson)
-                ->delete();
+                ->update([
+                    'per_status' => 'DISABLED'
+                ]);
         } catch (QueryException $exception) {
             return $exception->getMessage();
         }
@@ -60,6 +82,31 @@ class PersonRepositoryImpl implements PersonRepository
             return DB::table('persona')
                 ->where('id_persona', '=', $idPerson)
                 ->get();
+        } catch (QueryException $exception) {
+            return $exception->getMessage();
+        }
+    }
+
+    public function changeStatusPerson(int $idPerson)
+    {
+        try {
+            $exist = DB::table('user')
+                ->where('id_persona', '=', $idPerson)
+                ->exists();
+
+            if ($exist == true) {
+                DB::table('user')
+                    ->where('id_persona', '=', $idPerson)
+                    ->update([
+                        'us_status' => 'ACTIVE',
+                    ]);
+            }
+
+            return DB::table('persona')
+                ->where('id_persona', '=', $idPerson)
+                ->update([
+                    'per_status' => 'ACTIVE'
+                ]);
         } catch (QueryException $exception) {
             return $exception->getMessage();
         }

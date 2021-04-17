@@ -19,11 +19,11 @@ class UpdateUserUseCase
         $this->userRepository = $userRepository;
     }
 
-    public function editUser(UserEntity $userEntity): \Illuminate\Http\JsonResponse
+    public function editUser(UserEntity $userEntity)
     {
         $responseDB = $this->userRepository->editUser($userEntity);
 
-        if ($responseDB === 0) {
+        if ($responseDB > 0 ) {
             return response()->json(['status' => true, 'code' => 200, 'message' => 'Datos usuario actualizado']);
         } else {
             return response()->json(['status' => false, 'code' => 400, 'message' => 'Datos usuario no actualizados']);
