@@ -18,13 +18,7 @@ class listCajaUseCase
     {
         return $this->cajaRepository->listCaja();
     }
-    function totales($idPersona, $fechaDesde, $fechaHasta, $month, $year) {
-        return $this->cajaRepository->totales($idPersona, $fechaDesde, $fechaHasta, $month, $year);
-    }
-    function obtenerSaldoInicial (int $idcaja) {
-        return $this->cajaRepository->obtenerSaldoInicial($idcaja);
-    }
-    function buscarCortesXFechas ($fechaDesde, $fechaHasta) {
-        return $this->cajaRepository->buscarCortesXFechas($fechaDesde, $fechaHasta);
+    function totales($idPersona, $idCaja, $fechaDesde, $fechaHasta) {
+        return $this->cajaRepository->totales($idPersona, $idCaja, $fechaDesde, $fechaHasta);
     }
 }

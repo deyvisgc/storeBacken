@@ -37,7 +37,8 @@ class ArqueoSql implements ArqueoCajaRepository
     {
         try {
             $idCaja = $params['idCaja'];
-            $fecha = Carbon::make($params['fecha'])->format('Y-m-d');
+            $fechDesde = $params['fechaDesde'];
+            $fechHasta = $params['fechaHasta'];
             if ($idCaja <= 0) {
                 $message = 'La caja numero '.$idCaja. 'debe ser mayor a 0';
                 $excepciones = new Exepciones(false, $message, 401, []);
@@ -49,41 +50,82 @@ class ArqueoSql implements ArqueoCajaRepository
                 $excepciones = new Exepciones(false, $message, 401, []);
                 return $excepciones->SendStatus();
             }
-            $Corte = DB::table('caja_corte as c')
-                           ->where('c.id_caja', $idCaja)
-                           ->where('c.fecha_corte', '=', $fecha)
-                           ->first();
-            $totalVenta = DB::table('caja_historial')
-                ->select(DB::raw('IFNULL(sum(ch_total_dinero), 0) as total'))
-                ->where('ch_tipo_operacion', '=', 'ingreso')
-                ->where(DB::raw('date(ch_fecha_operacion)'), $fecha)
-                ->get();
-            $totalCorte = DB::table('caja_corte_diario')
-                          ->select('monto_entregado_dia')
-                          ->where(DB::raw('date(fecha_corte_diario)'), $fecha)
-                          ->where('id_caja_corte', $Corte->id_caja_corte)
-                          ->first();
-            if (empty($Corte)) {
-                $message = 'La fecha '.$fecha. ' no concuerda con la fecha de corte de caja';
-                $excepciones = new Exepciones(false, $message, 401,[]);
+            if ($fechDesde && !$fechHasta) {
+                $data =  $this->CorteDiario($idCaja, $fechDesde);
+                if (is_array($data)) {
+                    $excepciones = new Exepciones(true, 'totales Encontrados', 200,$data);
+                    return $excepciones->SendStatus();
+                }
+                $excepciones = new Exepciones(false, $data, 401,[]);
+                return $excepciones->SendStatus();
+            } else {
+                $data =  $this->CorteSemanal($idCaja, $fechDesde,$fechHasta);
+                if (is_array($data)) {
+                    $excepciones = new Exepciones(true, 'totales Encontrados', 200,$data);
+                    return $excepciones->SendStatus();
+                }
+                $excepciones = new Exepciones(false, $data, 401,[]);
                 return $excepciones->SendStatus();
             }
-            if ($totalVenta[0]->total == 0) {
-                $message = 'La fecha '.$fecha. ' no concuerda con la fecha del historial de caja';
-                $excepciones = new Exepciones(false, $message, 401,[]);
-                return $excepciones->SendStatus();
-            }
-            if (empty($totalCorte)) {
-                $message = 'La fecha '.$fecha. ' no concuerda con la fecha del corte de caja';
-                $excepciones = new Exepciones(false, $message, 401,[]);
-                return $excepciones->SendStatus();
-            }
-            $excepciones = new Exepciones(true, 'totales Encontrados', 200,
-                                          array('totalVenta' => $totalVenta[0]->total, 'Corte' =>$Corte, 'totalCorte'=>$totalCorte->monto_entregado_dia));
-            return $excepciones->SendStatus();
         }catch (QueryException $exception) {
             $excepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
             return $excepciones->SendStatus();
         }
     }
+ function CorteDiario($idCaja,$fecha) {
+     $Corte = DB::table('caja_corte_diario as cd')
+         ->join('caja_corte as c', 'cd.id_caja_corte', '=', 'c.id_caja_corte')
+         ->where('c.id_caja', $idCaja)
+         ->where('c.fecha_corte', '=', $fecha)
+         ->select(DB::raw('IFNULL(cd.monto_entregado_dia, 0) as totalEntregado'),
+                  DB::raw( 'IFNULL(c.total_monedas, 0) as monedas'),
+                  DB::raw('IFNULL(c.total_billetes, 0) as billetes'),
+                  DB::raw('IFNULL(c.monto_inicial, 0) as montoApertura')
+         )->first();
+     $totalVenta = DB::table('caja_historial')
+         ->select(DB::raw('IFNULL(sum(ch_total_dinero), 0) as totalVenta'))
+         ->where('ch_tipo_operacion', '=', 'ingreso')
+         ->where(DB::raw('date(ch_fecha_operacion)'), $fecha)
+         ->first();
+
+     if (empty($Corte)) {
+         $message = 'La fecha '.$fecha. ' no concuerda con la fecha de corte de caja';
+         return $message;
+     }
+
+     if ($totalVenta->totalVenta == 0) {
+         $message = 'La fecha '.$fecha. ' no concuerdan con las fechas de la venta del dia';
+         return $message;
+     }
+     return array('Corte'=>$Corte, 'venta' =>$totalVenta);
+ }
+ function CorteSemanal($idCaja, $fechadesde, $fechaHasta) {
+     $Corte = DB::table('caja_corte_diario as cd')
+         ->join('caja_corte as c', 'cd.id_caja_corte', '=', 'c.id_caja_corte')
+         ->where('c.id_caja', $idCaja)
+         ->whereBetween('c.fecha_corte', [$fechadesde, $fechaHasta])
+         ->select(
+             DB::raw('IFNULL(sum(c.total_monedas), 0) as monedas'),
+             DB::raw('IFNULL(sum(c.total_billetes), 0) as billetes'),
+             DB::raw('IFNULL(sum(c.monto_inicial), 0) as montoApertura'),
+             DB::raw('IFNULL(sum(cd.monto_entregado_dia), 0) as totalEntregado')
+         )
+         ->first();
+     $totalVenta = DB::table('caja_historial')
+         ->select(DB::raw('IFNULL(sum(ch_total_dinero), 0) as totalVenta'))
+         ->where('ch_tipo_operacion', '=', 'ingreso')
+         ->where('id_caja', $idCaja)
+         ->whereBetween(DB::raw('date(ch_fecha_operacion)'), [$fechadesde, $fechaHasta])
+         ->first();
+     if ((float)$Corte->monedas == 0 || (float)$Corte->billetes == 0 || (float)$Corte->montoApertura == 0 && (float)$Corte->totalEntregado == 0) {
+         $message = 'Las fechas '.$fechadesde.' '. $fechaHasta. ' no concuerda con la fecha de corte de caja';
+         return $message;
+     }
+     if ($totalVenta->totalVenta == 0) {
+         $message = 'Las fecha '.$fechadesde.' '.$fechaHasta . ' no concuerdan con las fechas de la venta de la semana';
+         return $message;
+     }
+     return array('Corte'=>$Corte, 'venta' =>$totalVenta);
+ }
+
 }

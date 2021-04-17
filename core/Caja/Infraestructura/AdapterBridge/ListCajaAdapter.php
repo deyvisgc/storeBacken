@@ -21,16 +21,8 @@ class ListCajaAdapter
         $listCaja = new listCajaUseCase($this->cajaRepositoryImpl);
         return $listCaja->listCaja();
     }
-    function totales($idPersona, $fechaDesde, $fechaHasta, $month, $year) {
+    function totales($idPersona, $idCaja, $fechaDesde, $fechaHasta) {
         $listCaja = new listCajaUseCase($this->cajaRepositoryImpl);
-        return $listCaja->totales($idPersona, $fechaDesde, $fechaHasta, $month, $year);
-    }
-    function obtenerSaldoInicial(int $idCaja) {
-        $listCaja = new listCajaUseCase($this->cajaRepositoryImpl);
-        return $listCaja->obtenerSaldoInicial($idCaja);
-    }
-    function buscarcortesxfechas($fechaDesde, $fechaHasta) {
-        $listCaja = new listCajaUseCase($this->cajaRepositoryImpl);
-        return $listCaja->buscarCortesXFechas($fechaDesde, $fechaHasta);
+        return $listCaja->totales($idPersona, $idCaja, $fechaDesde, $fechaHasta);
     }
 }

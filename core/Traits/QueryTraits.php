@@ -4,6 +4,7 @@
 namespace Core\Traits;
 
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -69,6 +70,90 @@ trait QueryTraits
             ->orderBy('dt.idCompraDetalle','desc')
             ->where('dt.idCompra', '=', $idCompra)
             ->get();
+    }
+    public function ValidarCajaXusuario(int $idCaja, int $idUsuario) {
+       $caja = DB::table('caja')
+               ->where('id_caja', $idCaja)
+               ->where('id_user', $idUsuario)
+               ->exists();
+      return $caja;
+    }
+
+    function ValidarCaja($idcaja, $idUsers) {
+        $query = DB::table('caja')
+            ->where([[ 'id_caja', '=', $idcaja], ['id_user', '=', $idUsers], ['ca_status', '=', 'open']])
+            ->first();
+        return response()->json($query);
+    }
+    function SearchXRangeDate ($idCaja, $fechaDesde, $fechaHasta) {
+        $ingresos =  DB::table('caja_historial as ch')
+            ->join('caja as c', 'ch.id_caja', '=', 'c.id_caja')
+            ->select(DB::raw('IFNULL(SUM(ch.ch_total_dinero), 0) as totalIngreso'))
+            ->where('ch.id_caja', $idCaja)
+            ->where('c.ca_status', '=', 'open')
+            ->where('ch.ch_tipo_operacion', '=', 'ingreso')
+            ->whereBetween(DB::raw('DATE(ch.ch_fecha_operacion)'), [$fechaDesde , $fechaHasta])
+            ->first();
+        $salidas =  DB::table('caja_historial as ch')
+            ->join('caja as c', 'ch.id_caja', '=', 'c.id_caja')
+            ->select(DB::raw('IFNULL(SUM(ch.ch_total_dinero), 0) as totalSalidas'))
+            ->where('ch.id_caja', $idCaja)
+            ->where('c.ca_status', '=', 'open')
+            ->where('ch.ch_tipo_operacion', '=', 'salida')
+            ->whereBetween(DB::raw('DATE(ch.ch_fecha_operacion)'), [$fechaDesde , $fechaHasta])
+            ->first();
+        $devoluciones =  DB::table('caja_historial as ch')
+            ->join('caja as c', 'ch.id_caja', '=', 'c.id_caja')
+            ->select(DB::raw('IFNULL(SUM(ch.ch_total_dinero), 0) as totalDevoluciones'))
+            ->where('c.ca_status', '=', 'open')
+            ->where('ch.id_caja', $idCaja)
+            ->where('ch.ch_tipo_operacion', '=', 'devolucion')
+            ->whereBetween(DB::raw('DATE(ch.ch_fecha_operacion)'), [$fechaDesde , $fechaHasta])
+            ->first();
+        $montoInicial =  DB::table('caja_historial as ch')
+            ->join('caja as c', 'ch.id_caja', '=', 'c.id_caja')
+            ->select(DB::raw('IFNULL(SUM(ch.ch_total_dinero), 0) as montoInicial'))
+            ->where('c.ca_status', '=', 'open')
+            ->where('ch.id_caja', $idCaja)
+            ->where('ch.ch_tipo_operacion', '=', 'apertura')
+            ->whereBetween(DB::raw('DATE(ch.ch_fecha_operacion)'), [$fechaDesde , $fechaHasta])
+            ->first();
+        return array($montoInicial, $ingresos, $salidas,$devoluciones);
+    }
+    function SearchNowDate ($idCaja, $fechaHoy) {
+        $ingresos =  DB::table('caja_historial as ch')
+            ->join('caja as c', 'ch.id_caja', '=', 'c.id_caja')
+            ->select(DB::raw('IFNULL(SUM(ch.ch_total_dinero), 0) as totalIngreso'))
+            ->where('ch.id_caja', $idCaja)
+            ->where('c.ca_status', '=', 'open')
+            ->where('ch.ch_tipo_operacion', '=', 'ingreso')
+            ->where(DB::raw('DATE(ch.ch_fecha_operacion)'), $fechaHoy)
+            ->first();
+        $salidas =  DB::table('caja_historial as ch')
+            ->join('caja as c', 'ch.id_caja', '=', 'c.id_caja')
+            ->select(DB::raw('IFNULL(SUM(ch.ch_total_dinero), 0) as totalSalidas'))
+            ->where('ch.id_caja', $idCaja)
+            ->where('c.ca_status', '=', 'open')
+            ->where('ch.ch_tipo_operacion', '=', 'salida')
+            ->where(DB::raw('DATE(ch.ch_fecha_operacion)'), $fechaHoy)
+            ->first();
+        $devoluciones =  DB::table('caja_historial as ch')
+            ->join('caja as c', 'ch.id_caja', '=', 'c.id_caja')
+            ->select(DB::raw('IFNULL(SUM(ch.ch_total_dinero), 0) as totalDevoluciones'))
+            ->where('c.ca_status', '=', 'open')
+            ->where('ch.id_caja', $idCaja)
+            ->where('ch.ch_tipo_operacion', '=', 'devolucion')
+            ->where(DB::raw('DATE(ch.ch_fecha_operacion)'), $fechaHoy)
+            ->first();
+        $montoInicial =  DB::table('caja_historial as ch')
+            ->join('caja as c', 'ch.id_caja', '=', 'c.id_caja')
+            ->select(DB::raw('IFNULL(SUM(ch.ch_total_dinero), 0) as montoInicial'))
+            ->where('c.ca_status', '=', 'open')
+            ->where('ch.id_caja', $idCaja)
+            ->where('ch.ch_tipo_operacion', '=', 'apertura')
+            ->where(DB::raw('DATE(ch.ch_fecha_operacion)'), $fechaHoy)
+            ->first();
+        return array($montoInicial, $ingresos, $salidas,$devoluciones);
     }
 
 }

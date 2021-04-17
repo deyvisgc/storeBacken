@@ -14,9 +14,6 @@ interface CajaRepository
     public function updateCaja(CajaEntity $cajaEntity);
     public function deleteCaja(int $idCaja);
     public function listCaja();
-    function totales(int $idPersona, $fechaDesde, $fechaHasta, $month, $year);
-    function obtenerSaldoInicial(int $idCaja);
-    function buscarCortesXFechas($fechaDesde, $fechaHasta);
-    function GuardarCorte($detallecorteCaja,$corteCaja);
+    function totales(int $idPersona, int $idcaja, $fechaDesde, $fechaHasta);
 
 }

@@ -10,11 +10,13 @@ use Core\Caja\Infraestructura\AdapterBridge\CreateCajaAdapter;
 use Core\Caja\Infraestructura\AdapterBridge\DeleteCajaAdapter;
 use Core\Caja\Infraestructura\AdapterBridge\ListCajaAdapter;
 use Core\Caja\Infraestructura\AdapterBridge\UpdateCajaAdapter;
+use Core\Traits\QueryTraits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CajaController extends Controller
 {
+    use QueryTraits;
     private ListCajaAdapter $listCajaAdapter;
     private CreateCajaAdapter $createCajaAdapter;
     private UpdateCajaAdapter $updateCajaAdapter;
@@ -64,11 +66,10 @@ class CajaController extends Controller
     }
     function totales(Request $request) {
         $idPersona = $request->input('idUsuario');
+        $idCaja = $request->input('idCaja');
         $fechaDesde = $request->input('fechaDesde');
         $fechaHasta = $request->input('fechaHasta');
-        $month = $request->input('month');
-        $year = $request->input('year');
-        return response()->json($this->listCajaAdapter->totales($idPersona, $fechaDesde, $fechaHasta, $month, $year));
+        return response()->json($this->listCajaAdapter->totales($idPersona, $idCaja, $fechaDesde, $fechaHasta));
     }
     function Aperturar(Request  $request) {
         return response()->json($this->createCajaAdapter->AperturarCaja($request));
@@ -79,26 +80,10 @@ class CajaController extends Controller
     function ValidarCaja(Request  $request) {
         $idcaja =  $request->input('idCaja');
         $idUsers = $request->input('idUser');
-        $query = DB::table('caja')
-              ->where([[ 'id_caja', '=', $idcaja], ['id_user', '=', $idUsers], ['ca_status', '=', 'open']])
-              ->first();
-        return response()->json($query);
+        return response()->json($this->ValidarCajaXusuario($idcaja, $idUsers));
     }
-    function ObtenerSaldoInicial(int $idCaja) {
-        return response()->json($this->listCajaAdapter->obtenerSaldoInicial($idCaja));
-    }
-    function GuardarCorteDiario(Request  $request) {
-        return response()->json($this->createCajaAdapter->GuardarCorte($request->detalleCorteCaja[0], $request->corteCaja,));
-
-    }
-    function GuardarCorteSemanal(Request  $request) {
-        return response()->json($this->createCajaAdapter->GuardarCorte($request->detalleCorteCaja, $request->corteCaja,));
-    }
-    function SearhCortesXfechas(Request $request) {
-        $fechaDesde = $request->fechaDesde;
-        $fechaHasta = $request->fechaHasta;
-        return response()->json($this->listCajaAdapter->buscarcortesxfechas($fechaDesde, $fechaHasta));
-
+    function getCorte(Request $request) {
+        return $request;
     }
 
 }

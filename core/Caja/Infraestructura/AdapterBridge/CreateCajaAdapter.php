@@ -25,8 +25,4 @@ class CreateCajaAdapter
         $createCaja= new createCajaUseCase($this->cajaRepositoryImpl);
         return $createCaja->AperturarCaja($caja);
     }
-    function GuardarCorte($detallecorteCaja, $corteCaja) {
-        $createCaja= new createCajaUseCase($this->cajaRepositoryImpl);
-        return $createCaja->GuardarCorte($detallecorteCaja, $corteCaja);
-    }
 }
