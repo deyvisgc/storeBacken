@@ -21,7 +21,6 @@ class ListPrivilegesByRolUseCase
     }
 
     public function listPrivilegesByRol($idRol) {
-        $idRolDecrypt = $this->CryptoJSAesDecrypt(KEY_PASSWORD_TO_DECRYPT, $idRol);
-        return $this->privilegioRepository->listPrivilegesByRol($idRolDecrypt);
+        return $this->privilegioRepository->listPrivilegesByRol($idRol);
     }
 }

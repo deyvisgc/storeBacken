@@ -35,6 +35,9 @@ class LoteController extends Controller
         $this->updateBridge = $updateBridge;
         $this->readBridge = $readBridge;
         $this->deleteBridge =$deleteBridge;
+        $this->middleware('auth', ['only' => [
+            'Read'
+        ]]);
     }
     public function Read() {
         return response()->json($this->readBridge->__invoke());

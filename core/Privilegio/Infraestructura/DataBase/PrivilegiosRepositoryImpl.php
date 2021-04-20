@@ -4,6 +4,7 @@
 namespace Core\Privilegio\Infraestructura\DataBase;
 
 
+use App\Http\Excepciones\Exepciones;
 use Core\Privilegio\Domain\Repositories\PrivilegioRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -23,11 +24,16 @@ class PrivilegiosRepositoryImpl implements PrivilegioRepository
     public function listPrivilegesByRol($idRol)
     {
         try {
-            return DB::select('SELECT pri.pri_nombre, pri.pri_acces, pri.pri_group, pri.pri_ico FROM rol as r, privilegio as pri, rol_has_privilegio as rp
-                                WHERE pri.id_privilegio = rp.id_privilegio AND r.id_rol = rp.id_rol
-                                AND r.id_rol = ?', [$idRol]);
+           $roles = DB::table('rol_has_privilegio as rp')
+                ->join('privilegio as p', 'rp.id_privilegio', '=', 'p.id_privilegio')
+                ->where('id_rol', $idRol)
+                ->select('p.*', 'rp.*')
+                ->get();
+          $excepciones = new  Exepciones(true, 'privilegios encontrados', 200, $roles);
+          return $excepciones->SendStatus();
         } catch (QueryException $exception) {
-            return $exception->getMessage();
+            $excepciones = new  Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+          return  $excepciones->SendStatus();
         }
     }
 

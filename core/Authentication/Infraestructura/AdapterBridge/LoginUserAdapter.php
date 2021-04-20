@@ -18,25 +18,15 @@ class LoginUserAdapter
     /**
      * @var UserRepositoryImpl
      */
-    private UserRepositoryImpl $userRepositoryImpl;
-    /**
-     * @var RolRepositoryImpl
-     */
-    private RolRepositoryImpl $rolRepositoryImpl;
 
-    public function __construct(
-        AuthenticationRepositoryImpl $authenticationRepositoryImpl,
-        UserRepositoryImpl $userRepositoryImpl,
-        RolRepositoryImpl $rolRepositoryImpl
-    )
+    public function __construct( AuthenticationRepositoryImpl $authenticationRepositoryImpl)
     {
+
         $this->authenticationRepositoryImpl = $authenticationRepositoryImpl;
-        $this->userRepositoryImpl = $userRepositoryImpl;
-        $this->rolRepositoryImpl = $rolRepositoryImpl;
     }
 
     public function loginUser($userName, $password) {
-        $user = new LoginUserUseCase($this->authenticationRepositoryImpl, $this->userRepositoryImpl, $this->rolRepositoryImpl);
+        $user = new LoginUserUseCase($this->authenticationRepositoryImpl);
         return $user->loginUser($userName, $password);
     }
 }

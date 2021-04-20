@@ -39,8 +39,7 @@ class PrivilegesController extends Controller
     }
 
     public function listPrivilegesByRol(Request $request) {
-        $idRol = $request['idRol'];
-        return response()->json($this->listPrivilegesByRolAdapter->listPrivilegesByRol($idRol));
+        return response()->json($this->listPrivilegesByRolAdapter->listPrivilegesByRol($request['idRol']));
     }
 
 }

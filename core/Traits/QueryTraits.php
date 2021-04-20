@@ -155,5 +155,14 @@ trait QueryTraits
             ->first();
         return array($montoInicial, $ingresos, $salidas,$devoluciones);
     }
+    function ObtenerInformacionPersonal($idPersona, $idRol) {
+      $perfil =  DB::table('users as us')
+             ->join('persona as per', 'us.id_persona', '=', 'per.id_persona')
+             ->join('rol as r', 'us.id_rol', '=', 'r.id_rol')
+            ->where('us.id_persona', $idPersona)
+            ->where('us.us_status', '=', 'active')
+            ->first();
+     return [$perfil];
+    }
 
 }

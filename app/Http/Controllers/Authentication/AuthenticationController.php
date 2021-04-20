@@ -31,18 +31,18 @@ class AuthenticationController extends Controller
         $this->logoutUserAdapter = $logoutUserAdapter;
     }
 
-    public function loginUser(Request $request): \Illuminate\Http\JsonResponse
+    public function loginUser(Request $request)
     {
-        $userName = $request['userName'];
-        $userPassword = $request['userPassword'];
+        $userName = $request->input('userName');
+        $userPassword = $request->input('password');
 
         return response()->json($this->loginUserAdapter->loginUser($userName, $userPassword));
     }
 
     public function logoutUser(Request $request): \Illuminate\Http\JsonResponse
     {
-        $tokenUser = $request['userToken'];
-        $idPersona = $request['idPersona'];
+        $tokenUser = $request['api_token'];
+        $idPersona = $request['idUsuario'];
 
         return response()->json($this->logoutUserAdapter->logoutUser($tokenUser, $idPersona));
     }
