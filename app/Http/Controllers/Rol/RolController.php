@@ -49,7 +49,6 @@ class RolController extends Controller
         ListRolAdapter $listRolAdapter,
         EditRolAdapter $editRolAdapter,
         DeleteRolAdapter $deleteRolAdapter,
-        ListRolByIdAdapter $listRolByIdAdapter,
         ChangeStatusRolAdapter $changeStatusRolAdapter
     )
     {
@@ -57,7 +56,6 @@ class RolController extends Controller
         $this->createRolAdapter = $createRolAdapter;
         $this->editRolAdapter = $editRolAdapter;
         $this->deleteRolAdapter = $deleteRolAdapter;
-        $this->listRolByIdAdapter = $listRolByIdAdapter;
         $this->changeStatusRolAdapter = $changeStatusRolAdapter;
     }
 
@@ -78,9 +76,7 @@ class RolController extends Controller
     public function updateRol(Request $request){
         $id = $request['rol']['idRol'];
         $name = $request['rol']['rolName'];
-        $status = $request['rol']['rolStatus'];
-
-        $rolEntity = new RolEntity($name,$status,$id);
+        $rolEntity = new RolEntity($name,$id);
 
         return response()->json($this->editRolAdapter->editRol($rolEntity));
     }
@@ -88,13 +84,9 @@ class RolController extends Controller
     public function deleteRol($idRol) {
         return response()->json($this->deleteRolAdapter->deleteRol($idRol));
     }
-
-    public function listRolById($idRol) {
-        return response()->json($this->listRolByIdAdapter->listRolById($idRol));
-    }
-
     public function changeStatus(Request $request) {
-        $idRol = $request['idRol'];
-        return response()->json($this->changeStatusRolAdapter->changeStatusRol((int) $idRol));
+        $idRol = $request->data['id_rol'];
+        $status = $request->data['rol_status'];
+        return response()->json($this->changeStatusRolAdapter->changeStatusRol($idRol, $status));
     }
 }

@@ -19,11 +19,7 @@ class DeleteRolUseCase
     }
 
     public function deleteRol($idRol) {
-        $responseDB = $this->rolRepository->deleteRol($idRol);
-        if ($responseDB === 1) {
-            return response()->json(['status' => true, 'code' => 200, 'message' => 'Rol deshabilitado']);
-        } else {
-            return response()->json(['status' => false, 'code' => 400, 'message' => 'No se hizo nada']);
-        }
+        return $this->rolRepository->deleteRol($idRol);
+
     }
 }

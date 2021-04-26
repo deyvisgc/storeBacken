@@ -6,10 +6,8 @@ namespace Core\Privilegio\Application\UseCases;
 
 use Core\Privilegio\Domain\Repositories\PrivilegioRepository;
 
-class
-ListPrivilegesUseCase
+class DeleteUseCase
 {
-
     /**
      * @var PrivilegioRepository
      */
@@ -19,9 +17,7 @@ ListPrivilegesUseCase
     {
         $this->privilegioRepository = $privilegioRepository;
     }
-
-    public function listPrivileges()
-    {
-        return $this->privilegioRepository->listPrivileges();
+    function eliminarPrivilegioGrupo($idPadre, $idPrivilegio) {
+        return $this->privilegioRepository->eliminarPrivilegioGrupo($idPadre, $idPrivilegio);
     }
 }

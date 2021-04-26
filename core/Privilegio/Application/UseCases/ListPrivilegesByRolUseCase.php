@@ -20,7 +20,16 @@ class ListPrivilegesByRolUseCase
         $this->privilegioRepository = $privilegioRepository;
     }
 
-    public function listPrivilegesByRol($idRol) {
+     function listPrivilegesByRol($idRol) {
         return $this->privilegioRepository->listPrivilegesByRol($idRol);
+    }
+    function getGrupos() {
+        return $this->privilegioRepository->getGrupos();
+    }
+    function getGruposDetalle($id) {
+        return $this->privilegioRepository->getGruposDetalle($id);
+    }
+    function getPrivilegios() {
+        return $this->privilegioRepository->getPrivilegios();
     }
 }

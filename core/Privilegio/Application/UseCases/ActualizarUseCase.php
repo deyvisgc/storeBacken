@@ -6,7 +6,7 @@ namespace Core\Privilegio\Application\UseCases;
 
 use Core\Privilegio\Domain\Repositories\PrivilegioRepository;
 
-class ListPrivilegesByUserUseCase
+class ActualizarUseCase
 {
     /**
      * @var PrivilegioRepository
@@ -17,5 +17,10 @@ class ListPrivilegesByUserUseCase
     {
         $this->privilegioRepository = $privilegioRepository;
     }
-
+    function updatePrivilegio($idPrivilegio,$nombre, $acceso, $icon, $idPadre, $grupo) {
+      return $this->privilegioRepository->updatePrivilegio($idPrivilegio, $nombre, $acceso, $icon, $idPadre, $grupo);
+    }
+    function changeStatusGrupo($data) {
+        return $this->privilegioRepository->changeStatusGrupo($data);
+    }
 }

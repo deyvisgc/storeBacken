@@ -6,7 +6,7 @@ namespace Core\Privilegio\Application\UseCases;
 
 use Core\Privilegio\Domain\Repositories\PrivilegioRepository;
 
-class ListDisabledPrivilegesUseCase
+class CreateUseCase
 {
     /**
      * @var PrivilegioRepository
@@ -17,5 +17,7 @@ class ListDisabledPrivilegesUseCase
     {
         $this->privilegioRepository = $privilegioRepository;
     }
-
+    function addGrupo($nombre, $acceso, $icon, $idPadre, $grupo) {
+      return $this->privilegioRepository->AddPrivilegio($nombre, $acceso, $icon, $idPadre, $grupo);
+    }
 }

@@ -19,8 +19,8 @@ class ChangeStatusRolAdapter
         $this->rolRepositoryImpl = $rolRepositoryImpl;
     }
 
-    public function changeStatusRol(int $idRol) {
+    public function changeStatusRol(int $idRol, string $status) {
         $rol = new ChangeStatusRolUseCase($this->rolRepositoryImpl);
-        return $rol->changeStatusRol($idRol);
+        return $rol->changeStatusRol($idRol, $status);
     }
 }

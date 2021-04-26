@@ -18,12 +18,7 @@ class ChangeStatusRolUseCase
         $this->rolRepository = $rolRepository;
     }
 
-    public function changeStatusRol(int $idRol) {
-        $responseDB = $this->rolRepository->changeStatusRol($idRol);
-        if ($responseDB === 1) {
-            return response()->json(['status' => true, 'code' => 200, 'message' => 'Rol habilitado']);
-        } else {
-            return response()->json(['status' => false, 'code' => 400, 'message' => 'Rol no habilitado']);
-        }
+    public function changeStatusRol(int $idRol, string $status) {
+        return $this->rolRepository->changeStatusRol($idRol, $status);
     }
 }
