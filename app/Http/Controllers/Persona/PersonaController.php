@@ -57,6 +57,7 @@ class PersonaController extends Controller
         $this->getPersonByIdAdapter = $getPersonByIdAdapter;
         $this->getPersonAdapter = $getPersonAdapter;
         $this->changeStatusPersonAdapter = $changeStatusPersonAdapter;
+        $this->middleware('auth');
     }
 
     public function createPerson(Request $request) {

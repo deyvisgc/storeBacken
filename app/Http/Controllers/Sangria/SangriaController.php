@@ -32,6 +32,7 @@ class SangriaController extends Controller
         $this->createSangriaAdapter = $createSangriaAdapter;
         $this->editSangriaAdapter = $editSangriaAdapter;
         $this->deleteSangriaAdapter=$deleteSangriaAdapter;
+        $this->middleware('auth');
     }
     public function listSangria()
     {

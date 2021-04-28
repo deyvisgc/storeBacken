@@ -34,6 +34,7 @@ class ComprasController extends Controller
     {
         $this->redBridge = $readBridge;
         $this->updateBridge = $updateBridge;
+        $this->middleware('auth');
     }
     public function Proveedor() {
         return response()->json($this->searchProveedor());

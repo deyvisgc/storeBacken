@@ -36,6 +36,7 @@ class RegistroSanitarioController extends Controller
         $this->createRegistroSanitarioAdapter = $createRegistroSanitarioAdapter;
         $this->deleteRegistroSanitarioAdapter = $deleteRegistroSanitarioAdapter;
         $this->updateRegistroSanitarioAdapter = $updateRegistroSanitarioAdapter;
+        $this->middleware('auth');
     }
     public function listarRegistroSanitario()
     {

@@ -25,12 +25,14 @@ class HistorialCajaController extends Controller
         CreateHistorialCajaAdapter $createHistorialCajaAdapter,
         UpdateHistorialCajaAdapter $updateHistorialCajaAdapter,
         DeleteHistorialCajaAdapter $deleteHistorialCajaAdapter
+
     )
     {
         $this->listHistorialCajaAdapter = $listHistorialCajaAdapter;
         $this->createHistorialCajaAdapter = $createHistorialCajaAdapter;
         $this->deleteHistorialCajaAdapter = $deleteHistorialCajaAdapter;
         $this->updateHistorialCajaAdapter = $updateHistorialCajaAdapter;
+        $this->middleware('auth');
     }
     public function listHistorialCaja()
     {

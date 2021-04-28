@@ -29,6 +29,9 @@ class AuthenticationController extends Controller
     {
         $this->loginUserAdapter = $loginUserAdapter;
         $this->logoutUserAdapter = $logoutUserAdapter;
+        $this->middleware('auth', ['only' => [
+           'logoutUser'
+        ]]);
     }
 
     public function loginUser(Request $request)

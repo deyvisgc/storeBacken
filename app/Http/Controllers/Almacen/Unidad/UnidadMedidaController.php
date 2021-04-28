@@ -36,9 +36,11 @@ class UnidadMedidaController extends Controller
         $this->updateBridge = $updateBridge;
         $this->readBridge = $readBridge;
         $this->deleteBridge =$deleteBridge;
-        $this->middleware('auth', ['only' => [
+       /* $this->middleware('auth', ['only' => [
             'Read'
         ]]);
+       */
+        $this->middleware('auth');
     }
     public function Read() {
         return response()->json($this->readBridge->__invoke());

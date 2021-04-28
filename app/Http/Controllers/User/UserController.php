@@ -58,6 +58,7 @@ class UserController extends Controller
         $this->getUsersAdapter = $getUsersAdapter;
         $this->getUserByIdAdapter = $getUserByIdAdapter;
         $this->getUserByIdPersonAdapter = $getUserByIdPersonAdapter;
+        $this->middleware('auth');
     }
 
     public function createUser(Request $request): \Illuminate\Http\JsonResponse

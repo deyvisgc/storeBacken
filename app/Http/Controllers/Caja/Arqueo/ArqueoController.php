@@ -26,6 +26,7 @@ class ArqueoController extends Controller
     {
         $this->readAdapter = $readAdapter;
         $this->createAdapter = $createAdapter;
+        $this->middleware('auth');
     }
     function ObtenerTotales(Request $request) {
         return response()->json($this->readAdapter->ObtenerTotales($request));

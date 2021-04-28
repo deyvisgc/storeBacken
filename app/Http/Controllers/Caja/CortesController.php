@@ -25,6 +25,7 @@ class CortesController extends Controller
     {
         $this->Createadapter = $Createadapter;
         $this->listCorteAdapter = $listCorteAdapter;
+        $this->middleware('auth');
     }
     function ObtenerSaldoInicial(int $idCaja) {
         return response()->json($this->listCorteAdapter->obtenerSaldoInicial($idCaja));

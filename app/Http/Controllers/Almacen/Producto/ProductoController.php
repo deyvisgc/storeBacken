@@ -37,6 +37,7 @@ class ProductoController extends Controller
          $this->updateBridge = $updateBridge;
          $this->readBridge = $readBridge;
          $this->deleteBridge =$deleteBridge;
+         $this->middleware('auth');
      }
 
     function Store(Request $request)

@@ -44,6 +44,7 @@ class ClaseController extends Controller
         $this->readBridge = $readBridge;
         $this->deleteBridge = $deleteBridge;
         $this->claseProduct = $claseProduct;
+        $this->middleware('auth');
     }
 
     public function Read()

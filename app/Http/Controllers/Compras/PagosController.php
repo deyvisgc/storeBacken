@@ -18,6 +18,7 @@ class PagosController extends Controller
     public function __construct(PagosBridge $pagosBridge)
     {
         $this->pagosBridge = $pagosBridge;
+        $this->middleware('auth');
     }
 
     public function PagosCredito(Request $request) {

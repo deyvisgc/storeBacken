@@ -127,6 +127,7 @@ $app->router->group([
     require __DIR__.'/../routes/HistorialCajaRoutes.php';
     require __DIR__.'/../routes/Compras.php';
     require __DIR__.'/../routes/Reportes.php';
+    require __DIR__.'/../routes/Permisos.php';
 });
 
 return $app;

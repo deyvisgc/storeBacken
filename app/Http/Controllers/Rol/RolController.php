@@ -57,6 +57,7 @@ class RolController extends Controller
         $this->editRolAdapter = $editRolAdapter;
         $this->deleteRolAdapter = $deleteRolAdapter;
         $this->changeStatusRolAdapter = $changeStatusRolAdapter;
+        $this->middleware('auth');
     }
 
     public function listRol() {
