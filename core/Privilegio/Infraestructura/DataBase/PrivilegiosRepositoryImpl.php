@@ -16,12 +16,15 @@ class PrivilegiosRepositoryImpl implements PrivilegioRepository
     public function listPrivilegesByRol($idRol)
     {
         try {
-           $roles = DB::table('rol_has_privilegio as rp')
+           $subPrivilegios = DB::table('rol_has_privilegio as rp')
                 ->join('privilegio as p', 'rp.id_privilegio', '=', 'p.id_privilegio')
-                ->where('id_rol', $idRol)
-                ->select('p.*', 'rp.*')
+                ->join('rol as r', 'rp.id_rol', '=', 'r.id_rol')
+                ->where('rp.id_rol', $idRol)
+                ->select('p.pri_nombre as sub_pri_nombre', 'p.pri_acces', 'p.id_Padre', 'rp.*')
                 ->get();
-          $excepciones = new  Exepciones(true, 'privilegios encontrados', 200, $roles);
+           $privilegiosGrupo= $this->getGrupos();
+           $lista = array('subPrivilegios' =>$subPrivilegios, 'privilegiosGrupo'=>$privilegiosGrupo );
+           $excepciones = new  Exepciones(true, 'privilegios encontrados', 200, $lista);
           return $excepciones->SendStatus();
         } catch (QueryException $exception) {
             $excepciones = new  Exepciones(false, $exception->getMessage(), $exception->getCode(), []);

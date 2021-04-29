@@ -42,7 +42,8 @@ class PrivilegesController extends Controller
     }
 
      function listPrivilegesByRol(Request $request) {
-        return response()->json($this->listPrivilegesByRolAdapter->listPrivilegesByRol($request['idRol']));
+        $privi = $request['idRol'];
+        return response()->json($this->listPrivilegesByRolAdapter->listPrivilegesByRol($privi));
     }
      function listIcon() {
         $icon = DB::table('icon')->select('*')->get();
