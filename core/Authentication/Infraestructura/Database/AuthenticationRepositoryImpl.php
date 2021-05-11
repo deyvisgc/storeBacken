@@ -23,7 +23,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository
             $users = DB::table('users')->where('us_usuario', $user)
                      ->where('us_status', '=', 'active')->first();
             if ($users != null) {
-                if (Hash::check($decodePassword, $users->us_passwor)) {
+                if (Hash::check($decodePassword, $users->us_password)) {
                     $apikey = base64_encode(str_random(40));
                     DB::table('users')->where('us_usuario', $user)->update(['us_token' => $apikey]);
                     $informacionPersonal = $this->ObtenerInformacionPersonal($users->id_persona, $users->id_rol);

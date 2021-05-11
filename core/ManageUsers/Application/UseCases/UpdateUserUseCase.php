@@ -19,14 +19,21 @@ class UpdateUserUseCase
         $this->userRepository = $userRepository;
     }
 
-    public function editUser(UserEntity $userEntity)
+     function editUser(UserEntity $userEntity)
     {
-        $responseDB = $this->userRepository->editUser($userEntity);
-
-        if ($responseDB > 0 ) {
-            return response()->json(['status' => true, 'code' => 200, 'message' => 'Datos usuario actualizado']);
-        } else {
-            return response()->json(['status' => false, 'code' => 400, 'message' => 'Datos usuario no actualizados']);
-        }
+        return $this->userRepository->editUser($userEntity);
+    }
+     function actualizarPassword($passwordActual,$passwordNueva,$us_usuario, $passwordView)
+    {
+        return $this->userRepository->updatePassword($passwordActual,$passwordNueva,$us_usuario, $passwordView);
+    }
+    function ChangeUsuario($usuario) {
+        return $this->userRepository->ChangeUsuario($usuario);
+    }
+    function RecuperarPassword($idUsuario, $passwordNueva,$passwordView) {
+        return $this->userRepository->RecuperarPassword($idUsuario, $passwordNueva,$passwordView);
+    }
+    function ChangeStatus($data) {
+        return $this->userRepository->ChangeStatus($data);
     }
 }

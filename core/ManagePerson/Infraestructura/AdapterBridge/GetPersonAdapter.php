@@ -18,9 +18,9 @@ class GetPersonAdapter
     {
         $this->personRepositoryImpl = $personRepositoryImpl;
     }
-
-    public function getPerson() {
-        $person = new GetPeopleUseCase($this->personRepositoryImpl);
-        return $person->getPeople();
+    function getPerson() {
+      $getCase = new GetPeopleUseCase($this->personRepositoryImpl);
+      return $getCase->getPerson();
     }
+
 }

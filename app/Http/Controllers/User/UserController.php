@@ -13,9 +13,10 @@ use Core\ManageUsers\Infraestructura\AdapterBridge\GetUserByIdAdapter;
 use Core\ManageUsers\Infraestructura\AdapterBridge\GetUserByIdPersonAdapter;
 use Core\ManageUsers\Infraestructura\AdapterBridge\GetUsersAdapter;
 use Core\ManageUsers\Infraestructura\AdapterBridge\UpdateUserAdapter;
+use Core\Traits\EncryptTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+define('KEY_PASSWORD_TO_DECRYPT','K56QSxGeKImwBRmiY');
 class UserController extends Controller
 {
     /**
@@ -42,7 +43,7 @@ class UserController extends Controller
      * @var GetUserByIdPersonAdapter
      */
     private GetUserByIdPersonAdapter $getUserByIdPersonAdapter;
-
+    use EncryptTrait;
     public function __construct(
         CreateUserAdapter $createUserAdapter,
         DeleteUserAdapter $deleteUserAdapter,
@@ -60,13 +61,13 @@ class UserController extends Controller
         $this->getUserByIdPersonAdapter = $getUserByIdPersonAdapter;
         $this->middleware('auth');
     }
-
-    public function createUser(Request $request): \Illuminate\Http\JsonResponse
+    function createUser(Request $request)
     {
         // User Data
         //return response()->json($request['people']['nameUser']);
         $nameUser= $request['people']['nameUser'];
         $password = $request['people']['password'];
+        $passwordView = $this->CryptoJSAesEncrypt(KEY_PASSWORD_TO_DECRYPT, $password);
         $idRol = $request['people']['idRol'];
         $token = base64_encode(str_random(50));
 
@@ -78,42 +79,55 @@ class UserController extends Controller
         $typePerson = $request['people']['typePerson'];
         $typeDocument = $request['people']['typeDocument'];
         $docNumber = $request['people']['docNumber'];
-
-        $user = new UserEntity(0, $nameUser,Hash::make($password),'ACTIVE',$token, 0, $idRol);
+        $user = new UserEntity(0, $nameUser,Hash::make($password),'active',$token, 0, $idRol,$passwordView);
         $person = new PersonEntity(0, $name,$lastName,$address,$phone,$typePerson,$typeDocument,$docNumber);
-
         return response()->json($this->createUserAdapter->createUser($user,$person));
     }
-
-    public function deleteUser($idUser): \Illuminate\Http\JsonResponse
-    {
-        return response()->json($this->deleteUserAdapter->deleteUser($idUser));
-    }
-
-    public function getUser(): \Illuminate\Http\JsonResponse
+    function getUser()
     {
         return response()->json($this->getUsersAdapter->getUser());
     }
-
-    public function getUserById(int $idUser): \Illuminate\Http\JsonResponse
+    function getUserById(int $idUser): \Illuminate\Http\JsonResponse
     {
         return response()->json($this->getUserByIdAdapter->getUserById($idUser));
     }
-
-    public function updateUser(Request $request): \Illuminate\Http\JsonResponse
+    function updateUser(Request $request): \Illuminate\Http\JsonResponse
     {
-        $name = $request['user']['nameUser'];
+        $userName = $request['user']['nameUser'];
         $idRol = $request['user']['idRol'];
-        $idUser = $request['user']['idUser'];
-        $statusUser = $request['user']['statusUser'];
-
-        $user = new UserEntity($idUser, $name, '', $statusUser, '', 0, $idRol);
+        $idPersona = $request['user']['idPersona'];
+        $user = new UserEntity(0, $userName, '', '', '', $idPersona, $idRol, '');
 
         return response()->json($this->updateUserAdapter->updateUser($user));
     }
-
-    public function getUserByIdPerson(int $idPersona): \Illuminate\Http\JsonResponse
+    function getUserByIdPerson(int $idUsers)
     {
-        return response()->json($this->getUserByIdPersonAdapter->getUserInfoByIdPerson($idPersona));
+        return response()->json($this->getUserByIdPersonAdapter->getUserByIdPerson($idUsers));
+    }
+    function UpdateContraseña(Request  $request)
+    {
+        $passwordActual = $request->passwords['passwordActual'];
+        $passwordNueva = $request->passwords['passwordNueva'];
+        $us_usuario = $request->passwords['us_usuario'];
+        $passwordView = $this->CryptoJSAesEncrypt(KEY_PASSWORD_TO_DECRYPT, $passwordNueva);
+        return response()->json($this->updateUserAdapter->ActualizarPassword($passwordActual,$passwordNueva,$us_usuario, $passwordView));
+    }
+    function ChangeUsuario(Request $request) {
+        return response()->json($this->updateUserAdapter->ChangeUsuario($request->usuario));
+    }
+    function SearchUsuario(Request $request) {
+        return response()->json($this->getUserByIdPersonAdapter->SearchUser($request->params));
+    }
+    function RecuperarPassword(Request $request) {
+        $idUsuario = $request->params['idUsuario'];
+        $passwordNueva = $request->params['nuevaPassword'];
+        $passwordView = $this->CryptoJSAesEncrypt(KEY_PASSWORD_TO_DECRYPT, $passwordNueva);
+        return response()->json($this->updateUserAdapter->RecuperarPassword($idUsuario, Hash::make($passwordNueva),$passwordView));
+    }
+    function DeleteUsersandPerson(Request $request) {
+        return response()->json($this->deleteUserAdapter->deleteUser($request->params));
+    }
+    function ChangeStatus(Request $request) {
+        return response()->json($this->updateUserAdapter->ChangeStatus($request->params));
     }
 }

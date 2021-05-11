@@ -20,13 +20,7 @@ class CreatePersonUseCase
         $this->personRepository = $personRepository;
     }
 
-    public function createPerson(PersonEntity $personEntity) {
-        $responseDB  = $this->personRepository->createPerson($personEntity);
-
-        if ($responseDB === true) {
-            return response()->json(['status' => true, 'code' => 200, 'message' => 'Persona registrada']);
-        } else {
-            return response()->json(['status' => false, 'code' => 400, 'message' => 'Persona no registrada']);
-        }
+    public function createPerson($razonSocial,$tipoDocumento,$numerDocumento,$telefono,$direccion,$typePerson) {
+        return $this->personRepository->createPerson($razonSocial,$tipoDocumento,$numerDocumento,$telefono,$direccion,$typePerson);
     }
 }

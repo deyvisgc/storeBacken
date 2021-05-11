@@ -4,6 +4,7 @@
 namespace Core\ManagePerson\Infraestructura\DataBase;
 
 
+use App\Http\Excepciones\Exepciones;
 use Core\ManagePerson\Domain\Entity\PersonEntity;
 use Core\ManagePerson\Domain\Repositories\PersonRepository;
 use Illuminate\Database\QueryException;
@@ -12,37 +13,66 @@ use Illuminate\Support\Facades\DB;
 class PersonRepositoryImpl implements PersonRepository
 {
 
-    public function createPerson(PersonEntity $personEntity)
+     function createPerson($razonSocial,$tipoDocumento,$numerDocumento,$telefono,$direccion,$typePerson)
     {
         try {
-            return DB::table('persona')
+            $status = DB::table('persona')
                 ->insert([
-                    'per_nombre' => $personEntity->getPerName(),
-                    'per_apellido' => $personEntity->getPerLastName(),
-                    'per_direccion' => $personEntity->getPerAddress(),
-                    'per_celular' => $personEntity->getPerPhone(),
-                    'per_tipo' => $personEntity->getPerType(),
-                    'per_tipo_documento' => $personEntity->getPerTypeDocument(),
-                    'per_numero_documento' => $personEntity->getPerDocNumber(),
-                    'per_status' => 'ACTIVE',
+                    'per_razon_social' => $razonSocial,
+                    'per_tipo_documento' => $tipoDocumento,
+                    'per_numero_documento' => $numerDocumento,
+                    'per_celular' => $telefono,
+                    'per_tipo' => $typePerson,
+                    'per_status' => 'active',
+                    'per_direccion' =>$direccion
                 ]);
+            if ($status) {
+                $exepciones = new Exepciones(true,'Proveedor registrado correctamente',200,[]);
+            } else {
+                $exepciones = new Exepciones(false,'Error al  este Proveedor',403,[]);
+            }
+            return $exepciones->SendStatus();
         } catch (QueryException $exception) {
-            return $exception->getMessage();
+            $exepciones = new Exepciones(false,$exception->getMessage(),$exception->getCode(),[]);
+            return $exepciones->SendStatus();
         }
     }
 
-    public function updatePerson(PersonEntity $personEntity)
+     function updatePerson(PersonEntity $personEntity, $perfil)
     {
         try {
-            return DB::table('persona')
-                ->where('id_persona', '=', $personEntity->getIdPersona())
-                ->update($personEntity->toArray());
+            if ($perfil) {
+                $status = DB::table('persona')
+                       ->where('id_persona', '=', $personEntity->getIdPersona())
+                       ->update($personEntity->toArrayPerfil());
+                if ($status === 1) {
+                    $message = 'Actualizado correctamente';
+                    $excepcion = new Exepciones(true, $message,200, []);
+                } else {
+                    $message = 'Error al Actualizar';
+                    $excepcion = new Exepciones(false, $message,403, []);
+                }
+                return $excepcion->SendStatus();
+            } else {
+                $status = DB::table('persona')->
+                       where('id_persona', '=', $personEntity->getIdPersona())
+                       ->update($personEntity->toArray());
+                if ($status === 1) {
+                    $message = 'Actualizado correctamente';
+                    $excepcion = new Exepciones(true, $message,200, []);
+                } else {
+                    $message = 'Error al Actualizar';
+                    $excepcion = new Exepciones(false, $message,403, []);
+                }
+                return $excepcion->SendStatus();
+            }
         } catch (QueryException $exception) {
-            return $exception->getMessage();
+            $excepcion = new Exepciones(false, $exception->getMessage(),$exception->getCode(), []);
+            return $excepcion->SendStatus();
         }
     }
 
-    public function deletePerson(int $idPerson)
+     function deletePerson(int $idPerson)
     {
         try {
             $exist = DB::table('user')
@@ -66,17 +96,7 @@ class PersonRepositoryImpl implements PersonRepository
         }
     }
 
-    public function getPeople()
-    {
-        try {
-            return DB::table('persona')
-                ->get();
-        } catch (QueryException $exception) {
-            return $exception->getMessage();
-        }
-    }
-
-    public function getPersonById(int $idPerson)
+     function getPersonById(int $idPerson)
     {
         try {
             return DB::table('persona')
@@ -87,7 +107,7 @@ class PersonRepositoryImpl implements PersonRepository
         }
     }
 
-    public function changeStatusPerson(int $idPerson)
+     function changeStatusPerson(int $idPerson)
     {
         try {
             $exist = DB::table('user')
@@ -109,6 +129,18 @@ class PersonRepositoryImpl implements PersonRepository
                 ]);
         } catch (QueryException $exception) {
             return $exception->getMessage();
+        }
+    }
+
+    function getPerson()
+    {
+        try {
+            $person = DB::table('persona as p')->get();
+            $excepcion = new Exepciones(true,'Informacion encontrada',200,$person);
+            return $excepcion->SendStatus();
+        } catch (QueryException $exception) {
+            $excepcion = new Exepciones(false,'Informacion no encontrada',403,[]);
+            return $excepcion->SendStatus();
         }
     }
 }

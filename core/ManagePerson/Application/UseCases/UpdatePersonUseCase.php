@@ -19,14 +19,8 @@ class UpdatePersonUseCase
         $this->personRepository = $personRepository;
     }
 
-    public function updatePerson(PersonEntity $personRepository): \Illuminate\Http\JsonResponse
+    public function updatePerson(PersonEntity $personRepository, $perfil)
     {
-        $responseDB = $this->personRepository->updatePerson($personRepository);
-
-        if ($responseDB === 1) {
-            return response()->json(['status' => true, 'code' => 200, 'message' => 'Datos persona actualizado']);
-        } else {
-            return response()->json(['status' => false, 'code' => 400, 'message' => 'Datos persona no actualizados']);
-        }
+        return $this->personRepository->updatePerson($personRepository, $perfil);
     }
 }

@@ -21,11 +21,6 @@ class CreateUserUseCase
     }
 
     public function createUser(UserEntity $userEntity, PersonEntity $personEntity) {
-        $responseDB = $this->userRepository->createUser($userEntity, $personEntity);
-        if ($responseDB === true) {
-            return response()->json(['status' => true, 'code' => 200, 'message' => 'Usuario registrado']);
-        } else {
-            return response()->json(['status' => false, 'code' => 400, 'message' => 'Usuario no registrado']);
-        }
+       return $this->userRepository->createUser($userEntity, $personEntity);
     }
 }

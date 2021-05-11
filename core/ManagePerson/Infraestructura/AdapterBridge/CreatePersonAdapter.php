@@ -23,8 +23,8 @@ class CreatePersonAdapter
         $this->personRepositoryImpl = $personRepositoryImpl;
     }
 
-    public function createPerson(PersonEntity $personEntity) {
+    public function createPerson($razonSocial,$tipoDocumento,$numerDocumento,$telefono,$direccion,$typePerson) {
         $person = new CreatePersonUseCase($this->personRepositoryImpl);
-        return $person->createPerson($personEntity);
+        return $person->createPerson($razonSocial,$tipoDocumento,$numerDocumento,$telefono,$direccion,$typePerson);
     }
 }

@@ -44,7 +44,7 @@ class AuthenticationController extends Controller
 
     public function logoutUser(Request $request): \Illuminate\Http\JsonResponse
     {
-        $tokenUser = $request['api_token'];
+        $tokenUser = $request['token'];
         $idPersona = $request['idUsuario'];
 
         return response()->json($this->logoutUserAdapter->logoutUser($tokenUser, $idPersona));

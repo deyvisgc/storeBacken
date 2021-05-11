@@ -24,4 +24,20 @@ class UpdateUserAdapter
         $user = new UpdateUserUseCase($this->userRepositoryImpl);
         return $user->editUser($userEntity);
     }
+    function ActualizarPassword($passwordActual,$passwordNueva,$us_usuario, $passwordView) {
+        $user = new UpdateUserUseCase($this->userRepositoryImpl);
+        return $user->actualizarPassword($passwordActual,$passwordNueva,$us_usuario, $passwordView);
+    }
+    function ChangeUsuario($usuario) {
+        $user = new UpdateUserUseCase($this->userRepositoryImpl);
+        return $user->ChangeUsuario($usuario);
+    }
+    function RecuperarPassword($idUsuario, $passwordNueva,$passwordView) {
+        $user = new UpdateUserUseCase($this->userRepositoryImpl);
+        return $user->RecuperarPassword($idUsuario, $passwordNueva,$passwordView);
+    }
+    function ChangeStatus($data) {
+        $user = new UpdateUserUseCase($this->userRepositoryImpl);
+        return $user->ChangeStatus($data);
+    }
 }

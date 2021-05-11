@@ -46,47 +46,38 @@ class PersonaController extends Controller
         CreatePersonAdapter $createPersonAdapter,
         UpdatePersonAdapter $updatePersonAdapter,
         DeletePersonAdapter $deletePersonAdapter,
-        GetPersonByIdAdapter $getPersonByIdAdapter,
-        GetPersonAdapter $getPersonAdapter,
-        ChangeStatusPersonAdapter $changeStatusPersonAdapter
+        GetPersonAdapter $getPersonAdapter
     )
     {
         $this->createPersonAdapter = $createPersonAdapter;
         $this->updatePersonAdapter = $updatePersonAdapter;
         $this->deletePersonAdapter = $deletePersonAdapter;
-        $this->getPersonByIdAdapter = $getPersonByIdAdapter;
         $this->getPersonAdapter = $getPersonAdapter;
-        $this->changeStatusPersonAdapter = $changeStatusPersonAdapter;
         $this->middleware('auth');
     }
-
-    public function createPerson(Request $request) {
-        $name = $request['person']['name'];
-        $lastName = $request['person']['lastName'];
-        $address = $request['person']['address'];
-        $phone = $request['person']['phone'];
-        $typePerson = $request['person']['typePerson'];
-        $typeDocument = $request['person']['typeDocument'];
-        $docNumber = $request['person']['docNumber'];
-
-        $person = new PersonEntity(0, $name,$lastName,$address,$phone,$typePerson,$typeDocument,$docNumber);
-
-        return response()->json($this->createPersonAdapter->createPerson($person));
+    function getPerson() {
+        return response()->json($this->getPersonAdapter->getPerson());
+    }
+    function createPerson(Request $request) {
+        $razonSocial = $request->person['per_razon_social'];
+        $tipoDocumento = $request->person['tipoDocumento'];
+        $numerDocumento = $request->person['numeroDocumento'];
+        $telefono = $request->person['telefono'];
+        $direccion = $request->person['direccion'];
+        $typePerson = $request->person['typePeron'];
+        return response()->json($this->createPersonAdapter->createPerson($razonSocial,$tipoDocumento,$numerDocumento,$telefono,$direccion,$typePerson));
     }
 
-    public function deletePerson($idPersona) {
+    function deletePerson($idPersona) {
         return response()->json($this->deletePersonAdapter->deletePerson($idPersona));
     }
 
-    public function getPerson() {
-        return response()->json($this->getPersonAdapter->getPerson());
-    }
-
-    public function getPersonById(int $idPersona) {
+     function getPersonById(int $idPersona) {
         return response()->json($this->getPersonByIdAdapter->getPersonById($idPersona));
     }
 
-    public function updatePerson(Request $request) {
+    function updatePerson(Request $request) {
+        $perfil = $request['person']['perfil'];
         $idPersona = $request['person']['idPersona'];
         $name = $request['person']['name'];
         $lastName = $request['person']['lastName'];
@@ -98,10 +89,9 @@ class PersonaController extends Controller
 
         $person = new PersonEntity($idPersona,$name,$lastName,$address,$phone,$typePerson,$typeDocument,$docNumber);
 
-        return response()->json($this->updatePersonAdapter->updatePerson($person));
+        return response()->json($this->updatePersonAdapter->updatePerson($person, $perfil));
     }
-
-    public function changeStatusPerson(Request $request) {
+     function changeStatusPerson(Request $request) {
         $idPersona = $request['idPerson'];
         return response()->json($this->changeStatusPersonAdapter->changeStatusPerson($idPersona));
     }

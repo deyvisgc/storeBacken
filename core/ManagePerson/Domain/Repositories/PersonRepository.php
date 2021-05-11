@@ -8,10 +8,10 @@ use Core\ManagePerson\Domain\Entity\PersonEntity;
 
 interface PersonRepository
 {
-    public function createPerson(PersonEntity $personEntity);
-    public function updatePerson(PersonEntity $personEntity);
-    public function deletePerson(int $idPerson);
-    public function getPeople();
-    public function getPersonById(int $idPerson);
-    public function changeStatusPerson(int $idPerson);
+     function createPerson($razonSocial,$tipoDocumento,$numerDocumento,$telefono,$direccion,$typePerson);
+     function updatePerson(PersonEntity $personEntity, $perfil);
+     function deletePerson(int $idPerson);
+     function getPersonById(int $idPerson);
+     function getPerson();
+     function changeStatusPerson(int $idPerson);
 }

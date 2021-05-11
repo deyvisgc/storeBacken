@@ -19,8 +19,8 @@ class DeleteUserAdapter
         $this->userRepositoryImpl = $userRepositoryImpl;
     }
 
-    public function deleteUser(int $idUser) {
+    public function deleteUser($data) {
         $user = new DeleteUserUseCase($this->userRepositoryImpl);
-        return $user->deleteUser($idUser);
+        return $user->deleteUser($data);
     }
 }

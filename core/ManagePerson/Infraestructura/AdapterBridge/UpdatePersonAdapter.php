@@ -20,8 +20,8 @@ class UpdatePersonAdapter
         $this->personRepositoryImpl = $personRepositoryImpl;
     }
 
-    public function updatePerson(PersonEntity $personEntity) {
+    public function updatePerson(PersonEntity $personEntity, $perfil) {
         $person = new UpdatePersonUseCase($this->personRepositoryImpl);
-        return $person->updatePerson($personEntity);
+        return $person->updatePerson($personEntity, $perfil);
     }
 }

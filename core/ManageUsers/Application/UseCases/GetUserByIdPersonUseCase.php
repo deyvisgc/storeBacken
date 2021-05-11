@@ -17,19 +17,11 @@ class GetUserByIdPersonUseCase
     {
         $this->userRepository = $userRepository;
     }
+    function getUserByIdPerson(int $idUsers) {
+        return  $this->userRepository->getUserByIdPerson($idUsers);
+    }
+    function SearchUser(string  $params) {
+        return  $this->userRepository->SearchUser($params);
 
-    public function getUserInfoByIdPerson(int $idPerson): \Illuminate\Http\JsonResponse
-    {
-        if ($idPerson <= 0) {
-            return response()->json(['status' => false, 'code' => 400, 'message' => 'Usuario no encontrado']);
-        }
-
-        $user = $this->userRepository->getUserByIdPerson($idPerson);
-
-        if ($user->count() > 0) {
-            return response()->json(['status' => true, 'code' => 200, 'message' => 'Usuario encontrado', 'user' => $user[0]]);
-        } else {
-            return response()->json(['status' => false, 'code' => 400, 'message' => 'Usuario no encontrado']);
-        }
     }
 }

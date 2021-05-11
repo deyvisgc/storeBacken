@@ -18,10 +18,13 @@ class GetUserByIdPersonAdapter
     {
         $this->userRepositoryImpl = $userRepositoryImpl;
     }
-
-    public function getUserInfoByIdPerson(int $idPerson): \Illuminate\Http\JsonResponse
+    function getUserByIdPerson(int $idUsers) {
+        $user = new GetUserByIdPersonUseCase($this->userRepositoryImpl);
+        return $user->getUserByIdPerson($idUsers);
+    }
+    function SearchUser(string $params)
     {
         $user = new GetUserByIdPersonUseCase($this->userRepositoryImpl);
-        return $user->getUserInfoByIdPerson($idPerson);
+        return $user->SearchUser($params);
     }
 }

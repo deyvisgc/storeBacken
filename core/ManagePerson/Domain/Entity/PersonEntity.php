@@ -168,4 +168,13 @@ class PersonEntity
             'per_numero_documento' => $this->getPerDocNumber(),
         ];
     }
+    public function toArrayPerfil(): array {
+        return [
+            'per_nombre' => $this->getPerName(),
+            'per_apellido' => $this->getPerLastName(),
+            'per_direccion' => $this->getPerAddress(),
+            'per_celular' => $this->getPerPhone(),
+            'per_numero_documento' => $this->getPerDocNumber(),
+        ];
+    }
 }

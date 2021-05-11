@@ -17,8 +17,7 @@ class GetPeopleUseCase
     {
         $this->personRepository = $personRepository;
     }
-
-    public function getPeople() {
-        return $this->personRepository->getPeople();
-    }
+   function getPerson() {
+        return $this->personRepository->getPerson();
+   }
 }

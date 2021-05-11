@@ -15,7 +15,7 @@ class UserEntity
     private int $idRol;
     private int $idUser;
 
-    public function __construct(int $idUser, string $userName, string $userPassword, string $userStatus, string $userToken, int $idPersona, int $idRol)
+    public function __construct(int $idUser, string $userName, string $userPassword, string $userStatus, string $userToken, int $idPersona, int $idRol, string $userPasswordview)
     {
         $this->userName = $userName;
         $this->userPassword = $userPassword;
@@ -24,6 +24,15 @@ class UserEntity
         $this->idPersona = $idPersona;
         $this->idRol = $idRol;
         $this->idUser = $idUser;
+        $this->userPasswordview = $userPasswordview;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserPasswordview(): string
+    {
+        return $this->userPasswordview;
     }
 
     /**
