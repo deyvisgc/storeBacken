@@ -54,9 +54,9 @@ class PersonRepositoryImpl implements PersonRepository
                 }
                 return $excepcion->SendStatus();
             } else {
-                $status = DB::table('persona')->
-                       where('id_persona', '=', $personEntity->getIdPersona())
-                       ->update($personEntity->toArray());
+                $status = DB::table('persona')
+                         ->where('id_persona', '=', $personEntity->getIdPersona())
+                         ->update($personEntity->toArray());
                 if ($status === 1) {
                     $message = 'Actualizado correctamente';
                     $excepcion = new Exepciones(true, $message,200, []);
@@ -75,60 +75,51 @@ class PersonRepositoryImpl implements PersonRepository
      function deletePerson(int $idPerson)
     {
         try {
-            $exist = DB::table('user')
-                ->where('id_persona', '=', $idPerson)
-                ->exists();
-            if ($exist == true) {
-                DB::table('user')
-                    ->where('id_persona', '=', $idPerson)
-                    ->update([
-                        'us_status' => 'DISABLED',
-                    ]);
+            $query = DB::table('persona')
+                     ->where('id_persona', $idPerson)
+                     ->delete();
+            if ($query === 1) {
+                $exepcion = new Exepciones(true,'Proveedor Eliminado correctamente',200,[]);
+            } else {
+                $exepcion = new Exepciones(false,'Error al  Eliminar este proveedor',403,[]);
             }
-
-            return DB::table('persona')
-                ->where('id_persona', '=', $idPerson)
-                ->update([
-                    'per_status' => 'DISABLED'
-                ]);
+            return $exepcion->SendStatus();
         } catch (QueryException $exception) {
-            return $exception->getMessage();
+            $exepcion = new Exepciones(false,$exception->getMessage(),$exception->getCode(),[]);
+            return $exepcion->SendStatus();
         }
     }
 
      function getPersonById(int $idPerson)
     {
         try {
-            return DB::table('persona')
-                ->where('id_persona', '=', $idPerson)
-                ->get();
+            $lista = DB::table('persona')
+                        ->where('id_persona', '=', $idPerson)
+                        ->get();
+            $exepcion = new Exepciones(true, 'Lista encontrada', 200, $lista[0]);
+            return $exepcion->SendStatus();
         } catch (QueryException $exception) {
-            return $exception->getMessage();
+            $exepcion = new Exepciones(false, 'Lista no encontrada', 403, []);
+            return $exepcion->SendStatus();
         }
     }
 
-     function changeStatusPerson(int $idPerson)
+     function changeStatusPerson($person)
     {
         try {
-            $exist = DB::table('user')
-                ->where('id_persona', '=', $idPerson)
-                ->exists();
-
-            if ($exist == true) {
-                DB::table('user')
-                    ->where('id_persona', '=', $idPerson)
-                    ->update([
-                        'us_status' => 'ACTIVE',
-                    ]);
+            $status = $person['per_status'] === 'active' ? 'disabled' : 'active';
+            $query = DB::table('persona as per')
+                     ->where('per.id_persona', $person['id_persona'])
+                     ->update(['per.per_status'=>$status]);
+            if ($query === 1) {
+                $excepcion = new Exepciones(true,'Estado Actualizado Correctamente', 200, []);
+            } else {
+                $excepcion = new Exepciones(false,'Error al Actualizar estado', 403, []);
             }
-
-            return DB::table('persona')
-                ->where('id_persona', '=', $idPerson)
-                ->update([
-                    'per_status' => 'ACTIVE'
-                ]);
+            return $excepcion->SendStatus();
         } catch (QueryException $exception) {
-            return $exception->getMessage();
+            $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
+            return $excepcion->SendStatus();
         }
     }
 

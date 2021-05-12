@@ -22,5 +22,9 @@ class GetPersonAdapter
       $getCase = new GetPeopleUseCase($this->personRepositoryImpl);
       return $getCase->getPerson();
     }
+    function getPersonById(int $idPerson) {
+        $getCase = new GetPeopleUseCase($this->personRepositoryImpl);
+        return $getCase->getPersonById($idPerson);
+    }
 
 }

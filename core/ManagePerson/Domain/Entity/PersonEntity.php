@@ -6,17 +6,20 @@ namespace Core\ManagePerson\Domain\Entity;
 
 class PersonEntity
 {
-    private string $perName;
-    private string $perLastName;
-    private string $perAddress;
-    private string $perPhone;
-    private string $perType;
-    private string $perTypeDocument;
-    private string $perDocNumber;
-    private int $idPersona;
 
-    public function __construct(int $idPersona,string $perName, string $perLatName, string $perAddress, string $perPhone, string $perType, string $perTypeDocument, string $perDocNumber)
+
+    private ?int $idPersona;
+    private ?string $perName;
+    private ?string $perLastName;
+    private ?string $perAddress;
+    private ?string $perPhone;
+    private ?string $perType;
+    private ?string $perTypeDocument;
+    private ?string $perDocNumber;
+    private ?string $razonSocial;
+    public function __construct(?int $idPersona, ?string $perName, ?string $perLatName, ?string $perAddress, ?string $perPhone, ?string $perType, ?string $perTypeDocument, ?string $perDocNumber, ?string $razonSocial)
     {
+        $this->idPersona = $idPersona;
         $this->perName = $perName;
         $this->perLastName = $perLatName;
         $this->perAddress = $perAddress;
@@ -24,13 +27,29 @@ class PersonEntity
         $this->perType = $perType;
         $this->perTypeDocument = $perTypeDocument;
         $this->perDocNumber = $perDocNumber;
-        $this->idPersona = $idPersona;
+        $this->razonSocial = $razonSocial;
     }
 
     /**
      * @return string
      */
-    public function getPerName(): string
+    public function getRazonSocial(): ?string
+    {
+        return $this->razonSocial;
+    }
+
+    /**
+     * @param string $razonSocial
+     */
+    public function setRazonSocial(string $razonSocial): void
+    {
+        $this->razonSocial = $razonSocial;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPerName(): ?string
     {
         return $this->perName;
     }
@@ -64,7 +83,7 @@ class PersonEntity
     /**
      * @return string
      */
-    public function getPerLastName(): string
+    public function getPerLastName(): ?string
     {
         return $this->perLastName;
     }
@@ -80,7 +99,7 @@ class PersonEntity
     /**
      * @return string
      */
-    public function getPerAddress(): string
+    public function getPerAddress(): ?string
     {
         return $this->perAddress;
     }
@@ -96,7 +115,7 @@ class PersonEntity
     /**
      * @return string
      */
-    public function getPerPhone(): string
+    public function getPerPhone(): ?string
     {
         return $this->perPhone;
     }
@@ -112,7 +131,7 @@ class PersonEntity
     /**
      * @return string
      */
-    public function getPerType(): string
+    public function getPerType(): ?string
     {
         return $this->perType;
     }
@@ -128,7 +147,7 @@ class PersonEntity
     /**
      * @return string
      */
-    public function getPerTypeDocument(): string
+    public function getPerTypeDocument(): ?string
     {
         return $this->perTypeDocument;
     }
@@ -144,7 +163,7 @@ class PersonEntity
     /**
      * @return string
      */
-    public function getPerDocNumber(): string
+    public function getPerDocNumber(): ?string
     {
         return $this->perDocNumber;
     }
@@ -163,9 +182,9 @@ class PersonEntity
             'per_apellido' => $this->getPerLastName(),
             'per_direccion' => $this->getPerAddress(),
             'per_celular' => $this->getPerPhone(),
-            'per_tipo' => $this->getPerType(),
             'per_tipo_documento' => $this->getPerTypeDocument(),
             'per_numero_documento' => $this->getPerDocNumber(),
+            'per_razon_social' =>$this->getRazonSocial()
         ];
     }
     public function toArrayPerfil(): array {
@@ -174,7 +193,7 @@ class PersonEntity
             'per_apellido' => $this->getPerLastName(),
             'per_direccion' => $this->getPerAddress(),
             'per_celular' => $this->getPerPhone(),
-            'per_numero_documento' => $this->getPerDocNumber(),
+            'per_numero_documento' => $this->getPerDocNumber()
         ];
     }
 }

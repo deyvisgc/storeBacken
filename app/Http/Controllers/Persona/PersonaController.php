@@ -67,32 +67,26 @@ class PersonaController extends Controller
         $typePerson = $request->person['typePeron'];
         return response()->json($this->createPersonAdapter->createPerson($razonSocial,$tipoDocumento,$numerDocumento,$telefono,$direccion,$typePerson));
     }
-
-    function deletePerson($idPersona) {
-        return response()->json($this->deletePersonAdapter->deletePerson($idPersona));
+    function deletePerson(Request $request) {
+        return response()->json($this->deletePersonAdapter->deletePerson($request->idPerson));
     }
-
-     function getPersonById(int $idPersona) {
-        return response()->json($this->getPersonByIdAdapter->getPersonById($idPersona));
+    function getPersonById(int $idPersona) {
+        return response()->json($this->getPersonAdapter->getPersonById($idPersona));
     }
-
     function updatePerson(Request $request) {
         $perfil = $request['person']['perfil'];
-        $idPersona = $request['person']['idPersona'];
+        $idPersona = $request['person']['idPerson'];
         $name = $request['person']['name'];
         $lastName = $request['person']['lastName'];
         $address = $request['person']['address'];
         $phone = $request['person']['phone'];
-        $typePerson = $request['person']['typePerson'];
         $typeDocument = $request['person']['typeDocument'];
         $docNumber = $request['person']['docNumber'];
-
-        $person = new PersonEntity($idPersona,$name,$lastName,$address,$phone,$typePerson,$typeDocument,$docNumber);
-
+        $razonSocial = $request['person']['per_razon_social'];
+        $person = new PersonEntity($idPersona,$name,$lastName,$address,$phone,null,$typeDocument,$docNumber,$razonSocial);
         return response()->json($this->updatePersonAdapter->updatePerson($person, $perfil));
     }
-     function changeStatusPerson(Request $request) {
-        $idPersona = $request['idPerson'];
-        return response()->json($this->changeStatusPersonAdapter->changeStatusPerson($idPersona));
+    function updateStatusPerson(Request $request) {
+        return response()->json($this->updatePersonAdapter->updateStatusPerson($request->person));
     }
 }

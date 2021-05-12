@@ -13,5 +13,5 @@ interface PersonRepository
      function deletePerson(int $idPerson);
      function getPersonById(int $idPerson);
      function getPerson();
-     function changeStatusPerson(int $idPerson);
+     function changeStatusPerson($data);
 }

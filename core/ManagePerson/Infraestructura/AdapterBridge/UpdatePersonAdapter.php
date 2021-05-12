@@ -15,13 +15,17 @@ class UpdatePersonAdapter
      */
     private PersonRepositoryImpl $personRepositoryImpl;
 
-    public function __construct(PersonRepositoryImpl $personRepositoryImpl)
+     function __construct(PersonRepositoryImpl $personRepositoryImpl)
     {
         $this->personRepositoryImpl = $personRepositoryImpl;
     }
 
-    public function updatePerson(PersonEntity $personEntity, $perfil) {
+     function updatePerson(PersonEntity $personEntity, $perfil) {
         $person = new UpdatePersonUseCase($this->personRepositoryImpl);
         return $person->updatePerson($personEntity, $perfil);
+    }
+    function updateStatusPerson($person) {
+        $pers = new UpdatePersonUseCase($this->personRepositoryImpl);
+        return $pers->updateStatusPerson($person);
     }
 }

@@ -19,8 +19,11 @@ class UpdatePersonUseCase
         $this->personRepository = $personRepository;
     }
 
-    public function updatePerson(PersonEntity $personRepository, $perfil)
+     function updatePerson(PersonEntity $personRepository, $perfil)
     {
         return $this->personRepository->updatePerson($personRepository, $perfil);
+    }
+    function updateStatusPerson($data) {
+        return $this->personRepository->changeStatusPerson($data);
     }
 }

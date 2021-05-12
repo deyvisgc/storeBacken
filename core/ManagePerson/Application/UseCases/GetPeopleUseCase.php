@@ -20,4 +20,7 @@ class GetPeopleUseCase
    function getPerson() {
         return $this->personRepository->getPerson();
    }
+   function getPersonById(int $idPerson) {
+       return $this->personRepository->getPersonById($idPerson);
+   }
 }
