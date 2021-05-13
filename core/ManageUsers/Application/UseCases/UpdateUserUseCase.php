@@ -19,9 +19,9 @@ class UpdateUserUseCase
         $this->userRepository = $userRepository;
     }
 
-     function editUser(UserEntity $userEntity)
+     function editUser(UserEntity $userEntity, $perfil)
     {
-        return $this->userRepository->editUser($userEntity);
+        return $this->userRepository->editUser($userEntity, $perfil);
     }
      function actualizarPassword($passwordActual,$passwordNueva,$us_usuario, $passwordView)
     {

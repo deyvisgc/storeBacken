@@ -10,7 +10,7 @@ use Core\ManageUsers\Domain\Entity\UserEntity;
 interface UserRepository
 {
     public function createUser(UserEntity $userEntity, PersonEntity $personEntity);
-    public function editUser(UserEntity $userEntity);
+    public function editUser(UserEntity $userEntity,$perfil);
     public function deleteUser($data);
     public function listUsers();
     public function getUserById(int $idUser);

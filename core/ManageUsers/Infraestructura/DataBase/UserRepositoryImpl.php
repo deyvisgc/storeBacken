@@ -63,21 +63,41 @@ class UserRepositoryImpl implements UserRepository
         }
     }
 
-    public function editUser(UserEntity $userEntity)
+    public function editUser(UserEntity $userEntity, $perfil)
     {
         try {
-            $status = DB::table('users') ->where('id_persona', '=', $userEntity->getIdPersona())
+            $exist = DB::table('users')
+                     ->where('us_usuario', $userEntity->getUserName()
+                     )->where('id_user',  $userEntity->getIdUser())->exists();
+            if ($exist) {
+                $excepcion = new Exepciones(false,'El usuario '.$userEntity->getUserName().' ya te pertenece Dijite otro', 402, []);
+            } else {
+                if ($perfil) {
+                    $status = DB::table('users') ->where('id_user', '=', $userEntity->getIdUser())
+                        ->update([ 'us_usuario' => $userEntity->getUserName()
+                        ]);
+                } else {
+                    $status = DB::table('users') ->where('id_persona', '=', $userEntity->getIdPersona())
                         ->update([ 'us_usuario' => $userEntity->getUserName(),  'id_rol' => $userEntity->getIdRol()
                         ]);
-            if ($status === 1 ) {
-                $excepcion = new Exepciones(true,'Credenciales actualizado correctamente', 200, []);
-                return $excepcion->SendStatus();
-            } else {
-                $excepcion = new Exepciones(false,'Error al actualizar credenciales', 403, []);
-                return $excepcion->SendStatus();
+                }
+                if ($status === 1 ) {
+                    $excepcion = new Exepciones(true,'Credenciales actualizado correctamente', 200, []);
+                } else {
+                    $excepcion = new Exepciones(false,'Error al actualizar credenciales', 403, []);
+                }
             }
+            return $excepcion->SendStatus();
         } catch (QueryException $exception) {
-            $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
+            $message = $exception->getMessage();
+            $error = explode(" ", $message);
+            $duplicate = $error[5].' '. $error[6];
+            if ($duplicate === 'Duplicate entry') {
+                $message = 'El usuario '.$userEntity->getUserName(). ' ya existe en el sistema';
+                $excepcion = new Exepciones(false,$message, $exception->getCode(), []);
+            } else {
+                $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
+            }
             return $excepcion->SendStatus();
         }
     }

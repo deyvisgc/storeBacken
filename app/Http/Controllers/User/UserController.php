@@ -80,7 +80,8 @@ class UserController extends Controller
         $typeDocument = $request['people']['typeDocument'];
         $docNumber = $request['people']['docNumber'];
         $user = new UserEntity(0, $nameUser,Hash::make($password),'active',$token, 0, $idRol,$passwordView);
-        $person = new PersonEntity(0, $name,$lastName,$address,$phone,$typePerson,$typeDocument,$docNumber);
+        $razonSocial = empty($request['person']['per_razon_social']) ? null : $request['person']['per_razon_social'];
+        $person = new PersonEntity(0, $name,$lastName,$address,$phone,$typePerson,$typeDocument,$docNumber,$razonSocial);
         return response()->json($this->createUserAdapter->createUser($user,$person));
     }
     function getUser()
@@ -91,14 +92,16 @@ class UserController extends Controller
     {
         return response()->json($this->getUserByIdAdapter->getUserById($idUser));
     }
-    function updateUser(Request $request): \Illuminate\Http\JsonResponse
+    function updateUser(Request $request)
     {
         $userName = $request['user']['nameUser'];
         $idRol = $request['user']['idRol'];
-        $idPersona = $request['user']['idPersona'];
-        $user = new UserEntity(0, $userName, '', '', '', $idPersona, $idRol, '');
+        $idPersona = empty($request['user']['idPersona']) ? 0 : $request['user']['idPersona'];
+        $idUsuario = empty($request['user']['idUsuario']) ? 0 : $request['user']['idUsuario'];
+        $perfil = $request['user']['perfil'];
+        $user = new UserEntity($idUsuario, $userName, '', '', '', $idPersona, $idRol, '');
 
-        return response()->json($this->updateUserAdapter->updateUser($user));
+        return response()->json($this->updateUserAdapter->updateUser($user, $perfil));
     }
     function getUserByIdPerson(int $idUsers)
     {

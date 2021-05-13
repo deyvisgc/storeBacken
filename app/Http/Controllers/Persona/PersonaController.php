@@ -30,10 +30,6 @@ class PersonaController extends Controller
      */
     private DeletePersonAdapter $deletePersonAdapter;
     /**
-     * @var GetPersonByIdAdapter
-     */
-    private GetPersonByIdAdapter $getPersonByIdAdapter;
-    /**
      * @var GetPersonAdapter
      */
     private GetPersonAdapter $getPersonAdapter;
@@ -82,7 +78,7 @@ class PersonaController extends Controller
         $phone = $request['person']['phone'];
         $typeDocument = $request['person']['typeDocument'];
         $docNumber = $request['person']['docNumber'];
-        $razonSocial = $request['person']['per_razon_social'];
+        $razonSocial = empty($request['person']['per_razon_social']) ? null : $request['person']['per_razon_social'];
         $person = new PersonEntity($idPersona,$name,$lastName,$address,$phone,null,$typeDocument,$docNumber,$razonSocial);
         return response()->json($this->updatePersonAdapter->updatePerson($person, $perfil));
     }

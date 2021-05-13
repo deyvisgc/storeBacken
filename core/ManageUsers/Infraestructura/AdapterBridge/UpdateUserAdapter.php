@@ -20,9 +20,9 @@ class UpdateUserAdapter
         $this->userRepositoryImpl = $userRepositoryImpl;
     }
 
-    public function updateUser(UserEntity $userEntity) {
+    public function updateUser(UserEntity $userEntity, $perfil) {
         $user = new UpdateUserUseCase($this->userRepositoryImpl);
-        return $user->editUser($userEntity);
+        return $user->editUser($userEntity, $perfil);
     }
     function ActualizarPassword($passwordActual,$passwordNueva,$us_usuario, $passwordView) {
         $user = new UpdateUserUseCase($this->userRepositoryImpl);
