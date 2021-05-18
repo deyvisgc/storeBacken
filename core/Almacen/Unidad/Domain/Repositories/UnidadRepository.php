@@ -12,11 +12,13 @@ interface UnidadRepository
 
     function Update(UnidadEntity $unidadEntity, int $id,$fecha_Creacion);
 
-    function Read();
+    function Read($params);
 
     function Readxid(int $id);
 
     function delete(int $id);
 
     function CambiarStatus(int $id, string $status);
+
+    function SearchUnidad($params);
 }

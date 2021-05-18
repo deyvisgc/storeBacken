@@ -20,12 +20,16 @@ class ReadBridge
     {
         $this->lotesql = $loteSql;
     }
-    public function __invoke()
+     function __invoke($request)
     {
         $readcase= new ReadCase($this->lotesql);
-        return $readcase->__invoke();
+        return $readcase->__invoke($request);
     }
-    public function __invokexid(int $idproducto)
+    function SearchLotes($params) {
+        $readcase= new ReadCase($this->lotesql);
+        return $readcase->SearchLotes($params);
+    }
+     function __invokexid(int $idproducto)
     {
         $readcase= new ReadCase($this->lotesql);
         return $readcase->__invokexid($idproducto);

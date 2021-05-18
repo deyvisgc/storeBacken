@@ -13,11 +13,13 @@ interface LoteRepository
 
     function Update(LoteEntity $loteEntity, int $id);
 
-    function Read();
+    function Read($request);
 
     function Readxid(int $id);
 
     function delete(int $id);
 
     function CambiarStatus(int $id, string $status);
+
+    function SearchLotes($params);
 }

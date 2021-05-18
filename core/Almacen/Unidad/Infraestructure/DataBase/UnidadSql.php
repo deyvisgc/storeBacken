@@ -4,8 +4,10 @@
 namespace Core\Almacen\Unidad\Infraestructure\DataBase;
 
 
+use App\Http\Excepciones\Exepciones;
 use Core\Almacen\Unidad\Domain\Entity\UnidadEntity;
 use Core\Almacen\Unidad\Domain\Repositories\UnidadRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
 class UnidadSql implements UnidadRepository
@@ -48,9 +50,30 @@ class UnidadSql implements UnidadRepository
         }
     }
 
-    function Read()
+    function Read($params)
     {
-        return DB::table('unidad_medida')->get();
+        try {
+            $numeroRecnum = $params['numeroRecnum'];
+            $cantidadRegistros = 5;
+            $query = DB::table('unidad_medida')
+                ->where('um_status', '=', 'active')
+                ->skip($numeroRecnum)
+                ->take($cantidadRegistros)
+                ->orderBy('id_unidad_medida', 'asc')
+                ->get();
+            if (count($query) < $cantidadRegistros) {
+                $numberRecnum = 0;
+                $noMore = true;
+            } else {
+                $numberRecnum = (int)$numeroRecnum + count($query);
+                $noMore = false;
+            }
+            $excepcion = new Exepciones(true,'Lotes Encontrados', 200,['lista'=>$query, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore]);
+            return $excepcion->SendStatus();
+        } catch (QueryException $exception) {
+            $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);
+            return $excepcion->SendStatus();
+        }
     }
 
     function Readxid(int $id)
@@ -85,6 +108,22 @@ class UnidadSql implements UnidadRepository
             }
         }catch (\Exception $exception) {
             return $exception->getMessage();
+        }
+    }
+
+    function SearchUnidad($params)
+    {
+        try {
+            $search = DB::table('unidad_medida')
+                ->where('um_name', 'like', '%'.$params.'%')
+                ->orWhere('um_code','like', '%'.$params.'%')
+                ->where('um_status', '=', 'active')
+                ->get();
+            $ecepciones = new Exepciones(true, 'Unidad Encontradas', 200, $search);
+            return $ecepciones->SendStatus();
+        } catch (QueryException $exception) {
+            $ecepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $ecepciones->SendStatus();
         }
     }
 }

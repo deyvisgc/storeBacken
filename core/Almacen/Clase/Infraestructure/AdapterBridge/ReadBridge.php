@@ -22,10 +22,14 @@ class ReadBridge
 
         $this->clase = $claseSql;
     }
-    public function __invoke()
+     function getCategoria($params)
     {
         $readcase= new ReadCase($this->clase);
-        return $readcase->__invoke();
+        return $readcase->getCategoria($params);
+    }
+    function searchCategoria($params) {
+        $readcase= new ReadCase($this->clase);
+        return $readcase->searchCategoria($params);
     }
     public function __invokexid(int $id)
     {

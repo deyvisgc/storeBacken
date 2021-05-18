@@ -21,12 +21,16 @@ class ReadBridge
 
         $this->unidadSql = $unidadSql;
     }
-    public function __invoke()
+     function __invoke($params)
     {
         $readcase= new ReadCase($this->unidadSql);
-        return $readcase->__invoke();
+        return $readcase->__invoke($params);
     }
-    public function __invokexid(int $idproducto)
+    function SearchUnidad($params) {
+        $readcase= new ReadCase($this->unidadSql);
+        return $readcase->SearchUnidad($params);
+    }
+     function __invokexid(int $idproducto)
     {
         $readcase= new ReadCase($this->unidadSql);
         return $readcase->__invokexid($idproducto);

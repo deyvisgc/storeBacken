@@ -4,9 +4,11 @@
 namespace Core\Almacen\Clase\Infraestructure\DataBase;
 
 
+use App\Http\Excepciones\Exepciones;
 use Core\Almacen\Clase\Domain\Entity\ClaseEntity;
 use Core\Almacen\Clase\Domain\Repositories\ClaseRepository;
 use Core\Traits\QueryTraits;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
 class ClaseSql implements ClaseRepository
@@ -24,9 +26,29 @@ class ClaseSql implements ClaseRepository
         return $regis;
     }
 
-    function Read()
+    function getCategoria($params)
     {
-        return DB::table('clase_producto')->get();
+        try {
+            $numeroRecnum = $params['numeroRecnum'];
+            $cantidadRegistros = 5;
+            $query = DB::table('clase_producto')
+                ->where('clas_status', '=', 'active')
+                ->skip($numeroRecnum)
+                ->take($cantidadRegistros)
+                ->orderBy('id_clase_producto', 'asc')
+                ->get();
+            if (count($query) < $cantidadRegistros) {
+                $numberRecnum = 0;
+                $noMore = true;
+
+            } else {
+                $numberRecnum = (int)$numeroRecnum + count($query);
+                $noMore = false;
+            }
+            return ['lista'=>$query, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore];
+        } catch (QueryException $exception) {
+            return $exception->getMessage();
+        }
     }
     function getclasepadre()
     {
@@ -128,6 +150,22 @@ class ClaseSql implements ClaseRepository
             }
         }catch (\Exception $exception) {
             return $exception->getMessage();
+        }
+    }
+
+    function searchCategoria($params)
+    {
+        try {
+            $search = DB::table('clase_producto')
+                ->where('clas_name', 'like', '%'.$params.'%')
+                ->orWhere('class_code','like', '%'.$params.'%')
+                ->where('clas_status', '=', 'active')
+                ->get();
+            $ecepciones = new Exepciones(true, 'Categoria Encontradas', 200, $search);
+            return $ecepciones->SendStatus();
+        } catch (QueryException $exception) {
+            $ecepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $ecepciones->SendStatus();
         }
     }
 }

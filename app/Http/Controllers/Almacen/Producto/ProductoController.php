@@ -39,7 +39,15 @@ class ProductoController extends Controller
          $this->deleteBridge =$deleteBridge;
          $this->middleware('auth');
      }
+    function Read(Request $request)
+    {
+        return response()->json($this->readBridge->__invoke($request));
+    }
 
+    function Edit(Request $request)
+    {
+        return response()->json($this->readBridge->Edit($request));
+    }
     function Store(Request $request)
     {
         try {
@@ -52,16 +60,6 @@ class ProductoController extends Controller
     function Update(Request $request)
     {
         return response()->json($this->updateBridge->__invoke($request));
-    }
-
-    function Read()
-    {
-        return response()->json($this->readBridge->__invoke());
-    }
-
-    function Readxid(int $id)
-    {
-        return response()->json($this->readBridge->__invokexid($id));
     }
 
     function delete(int $id)

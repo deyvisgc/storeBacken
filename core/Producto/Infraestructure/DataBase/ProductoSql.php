@@ -49,51 +49,71 @@ class ProductoSql implements ProductoRepository
     {
         try {
             if ($idproducto > 0) {
-                DB::table('product')->where('id_product', $idproducto)->update($productoEntity->Array($pro_code));
-                return ['status' => true, 'message' => 'Actualizado Correctamente'];
+               $status = DB::table('product')->where('id_product', $idproducto)->update($productoEntity->Array($pro_code));
+               if ($status === 1) {
+                   $exepcion = new Exepciones(true,'Producto Actualizado Correctamente',200,[]);
+               } else {
+                   $exepcion = new Exepciones(false,'Error al Actualizar Producto',403,[]);
+
+               }
             } else {
-                return ['status' => false, 'message' => 'Error al Actualizar'];
+                $exepcion = new Exepciones(false,'Este producto no existe en nuestra base de datos',403,[]);
             }
+            return $exepcion->SendStatus();
         } catch (\Exception $exception) {
-            return $exception->getMessage();
+            $exepcion = new Exepciones(false,$exception->getMessage(),$exception->getCode(),[]);
+            return $exepcion->SendStatus();
         }
     }
 
-    function Read()
+    function Read($params)
     {
-        return DB::table('product as pro')
-            ->join('lote as l', 'pro.id_lote', '=', 'l.id_lote')
-            ->join('clase_producto as cp', 'pro.id_clase_producto', '=', 'cp.id_clase_producto')
-            ->join('unidad_medida as um', 'pro.id_unidad_medida', '=', 'um.id_unidad_medida')
-            ->select('pro.*', 'cp.clas_name as clase', 'l.lot_name as lote', 'um.um_name as unidad')
-            ->orderBy('id_product', 'Asc')
-            ->get();
-    }
-
-    function Readxid(int $id)
-    {
-        if ($id > 0) {
-            $lote = DB::table('lote')->get();
-            $padre = $this->ClasePadre();
-            $hijo = $this->Clasehijoxidpadre($id);
-            $unidad = DB::table('unidad_medida')->get();
-            $product = DB::table('product')->where('id_product', $id)->first();
-            return array('lote' => $lote, 'clapadre' => $padre,'clahijo'=>$hijo, 'unidad' => $unidad,
-                         'product' => $product);
-        } else {
-            return ['status' => false, 'message' => 'id inexistente'];
+        try {
+            $numeroRecnum = $params['numeroRecnum'];
+            $cantidadRegistros = $params['numeroCantidad'];
+            $query = DB::table('product as pro')
+                    ->join('lote as l', 'pro.id_lote', '=', 'l.id_lote')
+                    ->join('clase_producto as cp', 'pro.id_clase_producto', '=', 'cp.id_clase_producto')
+                    ->join('unidad_medida as um', 'pro.id_unidad_medida', '=', 'um.id_unidad_medida')
+                    ->select('pro.*', 'cp.clas_name as clase', 'l.lot_name as lote', 'um.um_name as unidad')
+                    ->skip($numeroRecnum)
+                    ->take($cantidadRegistros)
+                    ->orderBy('id_product', 'Asc')
+                    ->get();
+            if (count($query) < $cantidadRegistros) {
+                $numberRecnum = 0;
+                $noMore = true;
+            } else {
+                $numberRecnum = (int)$numeroRecnum + count($query);
+                $noMore = false;
+            }
+            $excepcion = new Exepciones(true,'Productos Encontrados', 200,['lista'=>$query, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore]);
+            return $excepcion->SendStatus();
+        } catch (QueryException $exception) {
+            $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);
+            return $excepcion->SendStatus();
         }
-
     }
 
     function delete(int $idproducto)
     {
-        if ($idproducto > 0) {
-            DB::table('product')->where('id_product', $idproducto)->delete();
-            return ['status' => true, 'message' => 'Elimiando Correctamente'];
-        } else {
-            return ['status' => false, 'message' => 'Error al Eliminar'];
+        try {
+            if ($idproducto > 0) {
+               $status = DB::table('product')->where('id_product', $idproducto)->delete();
+               if ($status === 1) {
+                   $exepcion = new Exepciones(true,'Elimiando Correctamente', 200, []);
+               } else {
+                   $exepcion = new Exepciones(false,'Error al Eliminar este producto', 403, []);
+               }
+            } else {
+                $exepcion = new Exepciones(false,'Este Producto no existe', 403, []);
+            }
+            return $exepcion->SendStatus();
+        } catch (QueryException $exception) {
+            $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $exepcion->SendStatus();
         }
+
     }
 
     function CambiarStatus(string $status, int $id)
@@ -122,6 +142,32 @@ class ProductoSql implements ProductoRepository
         } catch (QueryException $exception){
             $Status = new Exepciones(false, $exception->getMessage(), $exception->getCode(),null);
             return $Status->SendError();
+        }
+    }
+
+    function Edit($params)
+    {
+        try {
+            $idClase = $params['idClase'];
+            $idProduct = $params['idProduct'];
+            if ($idClase > 0 && $idProduct > 0) {
+                $padre = $this->ClasePadre();
+                $hijo = $this->Clasehijoxidpadre($idClase);
+                $lote = DB::table('lote')
+                        ->where('lot_status', '=', 'active')
+                        ->get();
+                $unidad = DB::table('unidad_medida')
+                         ->where('um_status', '=', 'active')
+                         ->get();
+                $product = DB::table('product')->where('id_product', $idProduct)->first();
+                $exepcion= new Exepciones(true, 'Producto Encontrado', 200, ['lote' => $lote, 'clapadre' => $padre,'clahijo'=>$hijo, 'unidad' => $unidad, 'product' => $product]);
+            } else {
+                $exepcion= new Exepciones(false, 'Producto no existe', 403, []);
+            }
+            return $exepcion->SendStatus();
+        } catch (QueryException $exception) {
+            $exepcion= new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $exepcion->SendStatus();
         }
     }
 }

@@ -20,11 +20,14 @@ class ReadCase
         $this->repository = $repository;
     }
 
-    public function __invoke()
+     function __invoke($request)
     {
-        return $this->repository->Read();
+        return $this->repository->Read($request);
     }
-    public function __invokexid(int $idproducto)
+    function SearchLotes($params) {
+        return $this->repository->SearchLotes($params);
+    }
+     function __invokexid(int $idproducto)
     {
         return $this->repository->Readxid($idproducto);
     }

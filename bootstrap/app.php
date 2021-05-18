@@ -128,6 +128,10 @@ $app->router->group([
     require __DIR__.'/../routes/Compras.php';
     require __DIR__.'/../routes/Reportes.php';
     require __DIR__.'/../routes/Permisos.php';
+    require __DIR__.'/../routes/Categorias.php';
+    require __DIR__.'/../routes/Lotes.php';
+    require __DIR__.'/../routes/UnidadMedida.php';
+    require __DIR__.'/../routes/Producto.php';
 });
 
 return $app;

@@ -12,10 +12,9 @@ interface ProductoRepository
 
     function Update(ProductoEntity $productoEntity, int $idproducto, $pro_code);
 
-    function Read();
+    function Read($params);
     function LastIdProduct();
-    function Readxid(int $id);
-
+    function Edit($params);
     function delete(int $id);
 
     function CambiarStatus(string $status,int $id);

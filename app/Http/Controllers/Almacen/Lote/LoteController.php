@@ -37,8 +37,11 @@ class LoteController extends Controller
         $this->deleteBridge =$deleteBridge;
         $this->middleware('auth');
     }
-    public function Read() {
-        return response()->json($this->readBridge->__invoke());
+     function getLotes(Request $request) {
+        return response()->json($this->readBridge->__invoke($request));
+    }
+     function SearchLotes(Request $request) {
+        return response()->json($this->readBridge->SearchLotes($request->params));
     }
     public function store(Request $request) {
 

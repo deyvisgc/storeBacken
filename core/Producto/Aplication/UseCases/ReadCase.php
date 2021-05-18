@@ -23,13 +23,13 @@ class ReadCase
         $this->repository = $repository;
     }
 
-    public function __invoke()
+    public function __invoke($params)
     {
-        return $this->repository->Read();
+        return $this->repository->Read($params);
     }
-    public function __invokexid(int $idproducto)
+    public function Edit($params)
     {
-        return $this->repository->Readxid($idproducto);
+        return $this->repository->Edit($params);
     }
     public function __invokeLastId() {
         return $this->repository->LastIdProduct();

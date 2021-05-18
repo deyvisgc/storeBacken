@@ -16,9 +16,12 @@ class ReadCase
         $this->repository = $repository;
     }
 
-    public function __invoke()
+    public function getCategoria($params)
     {
-        return $this->repository->Read();
+        return $this->repository->getCategoria($params);
+    }
+    function searchCategoria($params) {
+        return $this->repository->searchCategoria($params);
     }
     public function __invokexid(int $idproducto)
     {

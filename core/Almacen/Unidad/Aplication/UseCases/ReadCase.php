@@ -19,9 +19,12 @@ class ReadCase
         $this->repository = $repository;
     }
 
-    public function __invoke()
+     function __invoke($params)
     {
-        return $this->repository->Read();
+        return $this->repository->Read($params);
+    }
+    function SearchUnidad($params) {
+        return $this->repository->SearchUnidad($params);
     }
     public function __invokexid(int $idproducto)
     {

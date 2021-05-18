@@ -16,26 +16,10 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-//Producto
-$router->post('api/v1/Almacen/Producto','Almacen\Producto\ProductoController@Store');
-$router->patch('api/v1/Almacen/Producto','Almacen\Producto\ProductoController@Update');
-$router->get('api/v1/Almacen/Producto','Almacen\Producto\ProductoController@Read');
-$router->get('api/v1/Almacen/Producto/{id}','Almacen\Producto\ProductoController@Readxid');
-$router->delete('api/v1/Almacen/Producto/{id}','Almacen\Producto\ProductoController@delete');
-$router->patch('api/v1/Almacen/Producto/changestatus','Almacen\Producto\ProductoController@changestatus');
-$router->get('api/v1/Almacen/LastIdProducto','Almacen\Producto\ProductoController@LastIdProducto');
-
-
-//SEARCHTRAITS
-$router->post('api/v1/Almacen/Producto/SearchxType','Almacen\Producto\ProductoController@SearchxType');
-
-
-//Unidad Medida
-$router->get('api/v1/Almacen/Unidad','Almacen\Unidad\UnidadMedidaController@Read');
-$router->post('api/v1/Almacen/Unidad','Almacen\Unidad\UnidadMedidaController@store');
-$router->patch('api/v1/Almacen/Unidad','Almacen\Unidad\UnidadMedidaController@update');
-$router->delete('api/v1/Almacen/Unidad/{id}','Almacen\Unidad\UnidadMedidaController@delete');
-$router->patch('api/v1/Almacen/Unidad/ChangestatusUnidad','Almacen\Unidad\UnidadMedidaController@ChangestatusUnidad');
+$router->group(['prefix'=>'api/v1/'], function ($app) {
+    $app->get('obtener-categoria','Almacen\Clase\ClaseController@getCategoria');
+    $app->post('search-categoria', 'Almacen\Clase\ClaseController@searchCategoria');
+});
 
 //Clase
 $router->get('api/v1/Almacen/Clase','Almacen\Clase\ClaseController@Read');

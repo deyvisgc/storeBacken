@@ -10,7 +10,8 @@ interface ClaseRepository
 {
     function Create(ClaseEntity $claseEntity);
     function Update(array $data);
-    function Read();
+    function getCategoria($params);
+    function searchCategoria($params);
     function getclasepadre();
     function delete(int $id);
     function CambiarStatus(int $id);

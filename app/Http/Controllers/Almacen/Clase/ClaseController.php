@@ -47,9 +47,12 @@ class ClaseController extends Controller
         $this->middleware('auth');
     }
 
-    public function Read()
+     function getCategoria(Request $request)
     {
-        return response()->json($this->readBridge->__invoke());
+        return response()->json($this->readBridge->getCategoria($request));
+    }
+    function searchCategoria(Request $request) {
+        return response()->json($this->readBridge->searchCategoria($request->params));
     }
 
     public function store(Request $request)

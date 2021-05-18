@@ -42,8 +42,11 @@ class UnidadMedidaController extends Controller
        */
         $this->middleware('auth');
     }
-    public function Read() {
-        return response()->json($this->readBridge->__invoke());
+     function Read(Request $request) {
+        return response()->json($this->readBridge->__invoke($request));
+    }
+    function SearchUnidad(Request $request) {
+        return response()->json($this->readBridge->SearchUnidad($request->params));
     }
     public function store(Request $request) {
         return response()->json($this->createBridge->__invoke($request));

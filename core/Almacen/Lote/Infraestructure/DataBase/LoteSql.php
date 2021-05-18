@@ -4,8 +4,10 @@
 namespace Core\Almacen\Lote\Infraestructure\DataBase;
 
 
+use App\Http\Excepciones\Exepciones;
 use Core\Almacen\Lote\Domain\Entity\LoteEntity;
 use Core\Almacen\Lote\Domain\Repositories\LoteRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
 class LoteSql implements LoteRepository
@@ -39,9 +41,31 @@ class LoteSql implements LoteRepository
         return ['status' => false, 'message' => 'Error al Actualizar Este lote'];
     }
 
-    function Read()
+    function Read($params)
     {
-        return DB::table('lote')->get();
+        try {
+            $numeroRecnum = $params['numeroRecnum'];
+            $cantidadRegistros = 5;
+            $query = DB::table('lote')
+                     ->where('lot_status', '=', 'active')
+                     ->skip($numeroRecnum)
+                     ->take($cantidadRegistros)
+                     ->orderBy('id_lote', 'DESC')
+                     ->get();
+            if (count($query) < $cantidadRegistros) {
+                $numberRecnum = 0;
+                $noMore = true;
+
+            } else {
+                $numberRecnum = (int)$numeroRecnum + count($query);
+                $noMore = false;
+            }
+            $excepcion = new Exepciones(true,'Lotes Encontrados', 200,['lista'=>$query, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore]);
+            return $excepcion->SendStatus();
+        } catch (QueryException $exception) {
+            $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);
+            return $excepcion->SendStatus();
+        }
     }
 
     function Readxid(int $id)
@@ -79,6 +103,22 @@ class LoteSql implements LoteRepository
             }
         }catch (\Exception $exception) {
             return $exception->getMessage();
+        }
+    }
+
+    function SearchLotes($params)
+    {
+        try {
+            $search = DB::table('lote')
+                ->where('lot_name', 'like', '%'.$params.'%')
+                ->orWhere('lot_code','like', '%'.$params.'%')
+                ->where('lot_status', '=', 'active')
+                ->get();
+            $ecepciones = new Exepciones(true, 'Lote Encontrados', 200, $search);
+            return $ecepciones->SendStatus();
+        } catch (QueryException $exception) {
+            $ecepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $ecepciones->SendStatus();
         }
     }
 }
