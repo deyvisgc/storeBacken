@@ -20,6 +20,10 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('obtener-categoria','Almacen\Clase\ClaseController@getCategoria');
     $app->post('search-categoria', 'Almacen\Clase\ClaseController@searchCategoria');
 });
+//subCategorias
+$router->group(['prefix'=>'api/v1/'], function ($app) {
+    $app->get('obtener-sub-categorias','Almacen\Clase\ClaseController@ObtenerSubCategorias');
+});
 
 //Clase
 $router->get('api/v1/Almacen/Clase','Almacen\Clase\ClaseController@Read');

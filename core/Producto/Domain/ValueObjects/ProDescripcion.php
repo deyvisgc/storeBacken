@@ -7,9 +7,9 @@ namespace Core\Producto\Domain\ValueObjects;
 class ProDescripcion
 {
 
-    private string $ProDescripcion;
+    private ?string $ProDescripcion;
 
-    public function __construct(string $ProDescripcion)
+    public function __construct(?string $ProDescripcion)
     {
 
         $this->ProDescripcion = $ProDescripcion;

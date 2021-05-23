@@ -88,8 +88,8 @@ class ClaseController extends Controller
     public function ChangestatusCateRecursiva(Request $request) {
         return response()->json($this->updateBridge->__ChangestatuRecursiva($request->data));
     }
-    public function filtrarxclasepadre(int $idpadre) {
-        return response()->json($this->Padreehijoclasexid($idpadre));
+     function ObtenerSubCategorias(Request $request) {
+        return response()->json($this->Padreehijoclasexid($request));
     }
 
 }

@@ -6,9 +6,9 @@ namespace Core\Producto\Domain\ValueObjects;
 
 class ProCantidadMinima
 {
-    private int $ProCantidadMinima;
+    private ?int $ProCantidadMinima;
 
-    public function __construct(int $ProCantidadMinima)
+    public function __construct(? int $ProCantidadMinima)
     {
 
         $this->ProCantidadMinima = $ProCantidadMinima;

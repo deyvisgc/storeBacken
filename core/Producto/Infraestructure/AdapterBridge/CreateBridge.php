@@ -16,20 +16,20 @@ class CreateBridge
     {
         $this->productoSql = $productoSql;
     }
-    public function __invoke(Request $request)
+    public function __invoke($params)
     {
-        $pro_nombre=$request->data['pro_nombre'];
-        $pro_precio_compra=$request->data['pro_precio_compra'];
-        $pro_precio_venta=$request->data['pro_precio_venta'];
-        $pro_cantidad=$request->data['cantidad'];
-        $pro_cantidad_min=$request->data['cantidad_minima'];
-        $pro_description=$request->data['descripcion'];
-        $id_lote=$request->data['lote'];
-        $id_clase_producto=$request->data['clase'];
-        $id_sub_clase=$request->data['subclase'];
-        $id_unidad_medida=$request->data['unidad'];
-        $pro_cod_barra=$request->data['codigo_barra'];
+        $pro_nombre=$params['pro_nombre'];
+        $pro_precio_compra=$params['pro_precio_compra'];
+        $pro_precio_venta=$params['pro_precio_venta'];
+        $pro_cantidad=$params['cantidad'];
+        $pro_cantidad_min=$params['cantidad_minima'];
+        $pro_description=$params['descripcion'];
+        $pro_cod_barra=$params['codigo_barra'];
+        $id_clase_producto=$params['clase'];
+        $id_lote=$params['lote'];
+        $id_sub_clase=$params['sub_clase'];
+        $id_unidad_medida=$params['unidad'];
         $createProducto= new CreateCase($this->productoSql);
-      return  $createProducto->__invoke($pro_nombre, $pro_precio_compra, $pro_precio_venta, $pro_cantidad, $pro_cantidad_min, $pro_description, $id_lote, $id_clase_producto, $id_unidad_medida, $pro_cod_barra,$id_sub_clase);
+      return  $createProducto->__invoke($pro_nombre, $pro_precio_compra, $pro_precio_venta, $pro_cantidad, $pro_cantidad_min, $pro_description, $id_lote, $id_clase_producto, $id_unidad_medida, $pro_cod_barra,$id_sub_clase,$params);
     }
 }

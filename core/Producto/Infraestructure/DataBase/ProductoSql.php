@@ -10,15 +10,34 @@ use Core\Producto\Domain\Repositories\ProductoRepository;
 use Core\Traits\QueryTraits;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
 const   Code = '775820300317';
+use Illuminate\Support\Facades\File;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 class ProductoSql implements ProductoRepository
 {
     Use QueryTraits;
-    function Create(ProductoEntity $productoEntity)
+    function Create(ProductoEntity $productoEntity, $data)
     {
         try {
-              $create = DB::table('product')->insertGetId(
+
+              /* $fileExtension = $data->file('file')->getClientOriginalName();
+              $file = pathinfo($fileExtension, PATHINFO_FILENAME);
+              $extension = $data->file('file')->getClientOriginalExtension();
+              $fileStore = $file . '_' . time() . '.' . $extension;
+              $path = $data->file('file')->storeAs('Productos', $fileStore);
+              Storage::disk('public') -> put('productos',$data->file('file'));
+              */
+                $file      = $data->file('file');
+                $filename  = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $picture   = date('His').'-'.$filename;
+                $path = $file->move(base_path('public'), $picture);
+                $url= URL::asset('public/'.$filename); // => http://example.com/stoage/file.im
+            // $url = URL::asset($path);
+            $create = DB::table('product')->insertGetId(
                     ['pro_name' => $productoEntity->Nombre()->getProNombre(),
                         'pro_precio_compra' => $productoEntity->PrecioCompra()->getProPrecioCompra(),
                         'pro_precio_venta' => $productoEntity->PrecioVenta()->getProPrecioVenta(),
@@ -30,17 +49,22 @@ class ProductoSql implements ProductoRepository
                         'id_clase_producto' => $productoEntity->IDClaseProducto()->getIdclaseProducto(),
                         'id_unidad_medida' => $productoEntity->UnidadMedida()->getIdunidadmedida(),
                         'pro_cod_barra' => $productoEntity->Barra()->getBarra(),
-                        'id_subclase' =>$productoEntity->IdSubclase()->getIdsubclase()
+                        'id_subclase' =>$productoEntity->IdSubclase()->getIdsubclase(),
+                        'pro_file' => $url
                     ]);
+
               $code = DB::select("SELECT concat('P', (LPAD($create, 4, '0'))) as codigo");
               $updaecode = DB::table('product')->where('id_product', $create)->update(['pro_code'=>$code[0]->codigo]);
             if ($updaecode == 1) {
-                return ['status' => true, 'message' => 'Registro existo'];
+                $exepcion = new Exepciones(true, 'Producto registrado correctamnete', 200, []);
             } else {
-                return ['status' => false, 'message' => 'Error al registrar'];
+                $exepcion = new Exepciones(false, 'Error al registrar producto', 403, []);
+
             }
+            return $exepcion->SendStatus();
         } catch (\Exception $exception) {
-            return $exception->getMessage();
+            $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $exepcion->SendStatus();
         }
 
     }
@@ -151,16 +175,15 @@ class ProductoSql implements ProductoRepository
             $idClase = $params['idClase'];
             $idProduct = $params['idProduct'];
             if ($idClase > 0 && $idProduct > 0) {
-                $padre = $this->ClasePadre();
                 $hijo = $this->Clasehijoxidpadre($idClase);
-                $lote = DB::table('lote')
-                        ->where('lot_status', '=', 'active')
-                        ->get();
-                $unidad = DB::table('unidad_medida')
-                         ->where('um_status', '=', 'active')
-                         ->get();
-                $product = DB::table('product')->where('id_product', $idProduct)->first();
-                $exepcion= new Exepciones(true, 'Producto Encontrado', 200, ['lote' => $lote, 'clapadre' => $padre,'clahijo'=>$hijo, 'unidad' => $unidad, 'product' => $product]);
+                $product = DB::table('product as p')
+                           ->join('clase_producto as cp', 'p.id_clase_producto', '=', 'cp.id_clase_producto')
+                           ->join('clase_producto as subclase', 'p.id_subclase', 'subclase.id_clase_producto')
+                           ->join('lote as l', 'p.id_lote', '=', 'l.id_lote')
+                           ->join('unidad_medida as u', 'p.id_unidad_medida', 'u.id_unidad_medida')
+                           ->select('p.*','cp.clas_name as clasPadre', 'subclase.clas_name as classHijo', 'l.lot_name', 'u.um_name')
+                           ->where('id_product', $idProduct)->first();
+                $exepcion= new Exepciones(true, 'Producto Encontrado', 200, ['clahijo'=>$hijo, 'product' => $product]);
             } else {
                 $exepcion= new Exepciones(false, 'Producto no existe', 403, []);
             }

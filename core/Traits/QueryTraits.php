@@ -4,7 +4,9 @@
 namespace Core\Traits;
 
 
+use App\Http\Excepciones\Exepciones;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -45,20 +47,39 @@ trait QueryTraits
        clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior
        order by cp.id_clase_producto asc");
     }
-    public function Padreehijoclasexid(int $idpadre)
+    public function Padreehijoclasexid($params)
     {
-        return DB::select("select cp.clas_name as clasepadre,
-       subclase.clas_name as clasehijo,
-       subclase.clas_status as statushijo,
-       cp.clas_status as statuspadre,
-       cp.id_clase_producto as idpadre,
-       cp.clas_id_clase_superior,
-       subclase.id_clase_producto as idhijo
-       from
-       (select clas_name,clas_id_clase_superior, clas_status,id_clase_producto from
-       clase_producto where clas_id_clase_superior <> 0) as subclase,
-       clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior and cp.id_clase_producto =$idpadre
-       order by cp.id_clase_producto asc");
+        try {
+            $numeroRecnum      = $params['numeroRecnum']; // este valor se va a sumar con el total de registros en cada iteracion
+            $cantidadRegistros = $params['cantidadRegistros']; // este es el numero de limite de registros que voy a traer
+            $idClase           = $params['idClase'];
+            $query = DB::select("select cp.clas_name as clasepadre,
+                                       subclase.clas_name as clasehijo,
+                                       subclase.clas_status as statushijo,
+                                       cp.clas_status as statuspadre,
+                                       cp.id_clase_producto as idpadre,
+                                       cp.clas_id_clase_superior,
+                                       subclase.id_clase_producto as idhijo,
+                                       subclase.class_code
+                                       from
+                                       (select clas_name,clas_id_clase_superior, clas_status,id_clase_producto, class_code from
+                                       clase_producto where clas_id_clase_superior <> 0) as subclase,
+                                       clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior and cp.id_clase_producto = $idClase
+                                       order by cp.id_clase_producto asc LIMIT $cantidadRegistros OFFSET $numeroRecnum");
+            if (count($query) < $cantidadRegistros) {
+                $numberRecnum = 0;
+                $noMore = true;
+            } else {
+                $numberRecnum = (int)$numeroRecnum + count($query);
+                $noMore = false;
+            }
+            $excepcion = new Exepciones(true,'Sub categoria encontradas', 200,[$query, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore]);
+            return $excepcion->SendStatus();
+        } catch (QueryException $exception) {
+            $exepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(),[]);
+            return $exepciones->SendStatus();
+        }
+
     }
     public function ReadCompraxid(int $idCompra) {
        return DB::table('detalle_compra as dt')

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DRIVER', 'local'),
+    'default' => env('FILESYSTEM_DRIVER', 'public'),
 
     /*
     |--------------------------------------------------------------------------
@@ -45,17 +45,24 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            'root' => base_path('app'),
             'visibility' => 'public',
         ],
 
-        'public' => [
+      'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root' => base_path('app/public'),
             'url' => env('APP_URL').'/public',
             'visibility' => 'public',
         ],
-
+        /*
+            'public' => [
+                'driver' => 'local',
+                'root'   => public_path() . '/uploads',
+                'url' => env('APP_URL').'/public',
+                'visibility' => 'public',
+            ],
+        */
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

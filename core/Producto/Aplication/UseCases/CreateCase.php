@@ -33,8 +33,7 @@ class CreateCase
         $this->repository = $repository;
     }
 
-    public function __invoke(string $pro_nombre, float $pro_precio_compra, float $pro_precio_venta, int $pro_cantidad, int $pro_cantidad_min,
-                             string $pro_description, int $id_lote, int $id_clase_producto, int $id_unidad_medida, string $pro_cod_barra, int $subclase)
+    public function __invoke(string $pro_nombre, float $pro_precio_compra, float $pro_precio_venta, int $pro_cantidad, int $pro_cantidad_min, string $pro_description, int $id_lote, int $id_clase_producto, int $id_unidad_medida, string $pro_cod_barra, int $subclase, $file)
     {
         $nomb = new ProNombre($pro_nombre);
         $pre_compra = new ProPrecioCompra($pro_precio_compra);
@@ -58,7 +57,7 @@ class CreateCase
             $id_unida_ned,
             $proco_barra,
             $idsubclase);
-        return $this->repository->Create($Producto);
+        return $this->repository->Create($Producto, $file);
     }
 
 }

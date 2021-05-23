@@ -45,7 +45,7 @@ class LoteSql implements LoteRepository
     {
         try {
             $numeroRecnum = $params['numeroRecnum'];
-            $cantidadRegistros = 5;
+            $cantidadRegistros = $params['cantidadRegistros'];
             $query = DB::table('lote')
                      ->where('lot_status', '=', 'active')
                      ->skip($numeroRecnum)

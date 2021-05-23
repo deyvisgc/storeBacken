@@ -9,6 +9,7 @@ use Core\Producto\Infraestructure\AdapterBridge\DeleteBridge;
 use Core\Producto\Infraestructure\AdapterBridge\ReadBridge;
 use Core\Producto\Infraestructure\AdapterBridge\UpdateBridge;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 class ProductoController extends Controller
@@ -50,11 +51,7 @@ class ProductoController extends Controller
     }
     function Store(Request $request)
     {
-        try {
-            return response()->json($this->createBridge->__invoke($request));
-        }catch (\Exception $exception) {
-            return $exception->getMessage();
-        }
+        return response()->json($this->createBridge->__invoke($request));
     }
 
     function Update(Request $request)

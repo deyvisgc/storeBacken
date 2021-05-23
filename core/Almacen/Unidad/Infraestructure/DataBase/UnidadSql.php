@@ -54,7 +54,7 @@ class UnidadSql implements UnidadRepository
     {
         try {
             $numeroRecnum = $params['numeroRecnum'];
-            $cantidadRegistros = 5;
+            $cantidadRegistros = $params['cantidadRegistros'];
             $query = DB::table('unidad_medida')
                 ->where('um_status', '=', 'active')
                 ->skip($numeroRecnum)

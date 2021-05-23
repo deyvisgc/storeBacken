@@ -8,7 +8,7 @@ use Core\Producto\Domain\Entity\ProductoEntity;
 
 interface ProductoRepository
 {
-    function Create(ProductoEntity $productoEntity);
+    function Create(ProductoEntity $productoEntity, $data);
 
     function Update(ProductoEntity $productoEntity, int $idproducto, $pro_code);
 

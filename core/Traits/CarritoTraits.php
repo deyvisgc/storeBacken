@@ -99,6 +99,7 @@ trait CarritoTraits
         }
     }
     public function PagarCompra($data) {
+
         $subtotal = (double)$data->subtotal;
         $total = (double)$data->total;
         $igv = (double) $data->igv;

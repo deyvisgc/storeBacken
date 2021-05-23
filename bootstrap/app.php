@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__.'/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -110,7 +109,7 @@ $app->configure('dompdf');
 |
 */
 $app->configure('database');
-
+$app->configure('helpers.php');
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {

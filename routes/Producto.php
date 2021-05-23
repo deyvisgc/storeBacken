@@ -22,12 +22,12 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->patch('update-producto','Almacen\Producto\ProductoController@Update');
     $app->delete('delete-producto/{id}','Almacen\Producto\ProductoController@delete');
     $app->patch('ChangeStatus-proudcto','Almacen\Producto\ProductoController@changestatus');
+    $app->post('create-product','Almacen\Producto\ProductoController@Store');
 
 
 
 
 
 });
-$router->post('api/v1/Almacen/Producto','Almacen\Producto\ProductoController@Store');
 $router->get('api/v1/Almacen/LastIdProducto','Almacen\Producto\ProductoController@LastIdProducto');
 

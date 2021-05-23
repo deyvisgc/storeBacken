@@ -30,7 +30,7 @@ class ClaseSql implements ClaseRepository
     {
         try {
             $numeroRecnum = $params['numeroRecnum'];
-            $cantidadRegistros = 5;
+            $cantidadRegistros = $params['cantidadRegistros'];
             $query = DB::table('clase_producto')
                 ->where('clas_status', '=', 'active')
                 ->skip($numeroRecnum)
