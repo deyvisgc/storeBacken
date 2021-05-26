@@ -8,9 +8,9 @@ use Core\Producto\Domain\Entity\ProductoEntity;
 
 interface ProductoRepository
 {
-    function Create(ProductoEntity $productoEntity, $data);
+    function Create(ProductoEntity $productoEntity, $lote);
 
-    function Update(ProductoEntity $productoEntity, int $idproducto, $pro_code);
+    function Update(ProductoEntity $productoEntity, $lote);
 
     function Read($params);
     function LastIdProduct();

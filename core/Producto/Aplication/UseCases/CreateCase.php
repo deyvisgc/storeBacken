@@ -6,8 +6,10 @@ namespace Core\Producto\Aplication\UseCases;
 
 use Core\Producto\Domain\Entity\ProductoEntity;
 use Core\Producto\Domain\Repositories\ProductoRepository;
+use Core\Producto\Domain\ValueObjects\FECHA;
 use Core\Producto\Domain\ValueObjects\IDClaseProducto;
 use Core\Producto\Domain\ValueObjects\IDLOTE;
+use Core\Producto\Domain\ValueObjects\IDPRODUCTO;
 use Core\Producto\Domain\ValueObjects\IDSUBLCASE;
 use Core\Producto\Domain\ValueObjects\IDUnidadMedida;
 use Core\Producto\Domain\ValueObjects\ProCantidad;
@@ -33,31 +35,21 @@ class CreateCase
         $this->repository = $repository;
     }
 
-    public function __invoke(string $pro_nombre, float $pro_precio_compra, float $pro_precio_venta, int $pro_cantidad, int $pro_cantidad_min, string $pro_description, int $id_lote, int $id_clase_producto, int $id_unidad_medida, string $pro_cod_barra, int $subclase, $file)
+    public function __invoke(int $id_producto, string $pro_nombre, float $pro_precio_compra, float $pro_precio_venta, int $pro_cantidad, string $pro_descripcion, string $pro_cod_barra,  int $id_clase_producto, int $id_sub_clase, int $id_unidad_medida, $lote, string $fecha)
     {
+        $id_prod = new IDPRODUCTO($id_producto);
         $nomb = new ProNombre($pro_nombre);
         $pre_compra = new ProPrecioCompra($pro_precio_compra);
         $pre_venta = new ProPrecioVenta($pro_precio_venta);
         $pro_can = new ProCantidad($pro_cantidad);
-        $pro_can_min = new ProCantidadMinima($pro_cantidad_min);
-        $pro_descri = new ProDescripcion($pro_description);
-        $idlote = new IDLOTE($id_lote);
+        $pro_descri = new ProDescripcion($pro_descripcion);
         $idclase_prod = new IDClaseProducto($id_clase_producto);
-        $id_unida_ned = new IDUnidadMedida($id_unidad_medida);
+        $id_unida_medi = new IDUnidadMedida($id_unidad_medida);
         $proco_barra = new ProCodeBarra($pro_cod_barra);
-        $idsubclase = new IDSUBLCASE($subclase);
-        $Producto = ProductoEntity::create($nomb,
-            $pre_compra,
-            $pre_venta,
-            $pro_can,
-            $pro_can_min,
-            $pro_descri,
-            $idlote,
-            $idclase_prod,
-            $id_unida_ned,
-            $proco_barra,
-            $idsubclase);
-        return $this->repository->Create($Producto, $file);
+        $idsubclase = new IDSUBLCASE($id_sub_clase);
+        $fecha = new FECHA($fecha);
+        $producto = new ProductoEntity($id_prod, $nomb, $pre_compra, $pre_venta, $pro_can, $pro_descri, $idclase_prod, $id_unida_medi, $proco_barra, $idsubclase, $fecha);
+        return $this->repository->Create($producto, $lote);
     }
 
 }

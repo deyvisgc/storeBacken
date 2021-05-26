@@ -121,4 +121,51 @@ class LoteSql implements LoteRepository
             return $ecepciones->SendStatus();
         }
     }
+
+    function obtenerCode($params)
+    {
+        try {
+            $nombreProducto= $params['pro_nombre'];
+            $idLote = DB::table('lote as l')
+                ->join('product as p', 'l.id_product','=', 'p.id_product')
+                ->where('p.pro_name',$nombreProducto)
+                ->max('l.lot_code');
+            // $lote = 'LYOG0000001';
+            if(empty($idLote)) {
+                $idLote = 0;
+            } else {
+                $res =  substr($idLote, 4, 9);
+                $numOne = (int)substr($res, 0, 1);
+                $numTwo = (int)substr($res, 1, 2);
+                $numTree = (int)substr($res, 2, 3);
+                $numFor = (int)substr($res, 3, 4);
+                if ($numOne > 0) {
+                    $rpta =  substr($res, 0, 5);
+                } else if ($numTwo > 0) {
+                    $rpta =  substr($res, 1, 4);
+                } else if ($numTree > 0) {
+                    $rpta =  substr($res, 2, 3);
+                } else if ($numFor > 0) {
+                    $rpta =  substr($res, 3, 2);
+                } else {
+                    $rpta =  substr($res, 4, 1);
+                }
+                $idLote = $rpta;
+            }
+            if ($idLote > 0 && $idLote < 9) {
+                $lot = $idLote + 1;
+                $lote =  $idLote === 0 ? '01' : '0'. $lot;
+            } else {
+                $lote = $idLote + 1;
+            }
+            $alias = 'L'.substr(strtoupper($nombreProducto), 0,3);
+            $lastId = $idLote + 1;
+            $code = DB::select("SELECT concat('".$alias."', (LPAD($lastId, 5, '0'))) as codigo");
+            $exepciones = new Exepciones(true,'Codigo obtenido', 200,[$code[0], 'lot_name'=>$lote]);
+            return $exepciones->SendStatus();
+        } catch (QueryException $exception) {
+            $exepciones = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);
+            return $exepciones->SendStatus();
+        }
+    }
 }

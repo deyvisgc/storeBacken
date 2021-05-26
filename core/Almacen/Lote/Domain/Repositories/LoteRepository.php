@@ -15,6 +15,8 @@ interface LoteRepository
 
     function Read($request);
 
+    function obtenerCode($params);
+
     function Readxid(int $id);
 
     function delete(int $id);

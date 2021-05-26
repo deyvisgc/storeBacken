@@ -19,15 +19,12 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('obtener-producto','Almacen\Producto\ProductoController@Read');
     $app->get('edit-producto','Almacen\Producto\ProductoController@Edit');
-    $app->patch('update-producto','Almacen\Producto\ProductoController@Update');
-    $app->delete('delete-producto/{id}','Almacen\Producto\ProductoController@delete');
-    $app->patch('ChangeStatus-proudcto','Almacen\Producto\ProductoController@changestatus');
+    $app->get('obtener-last-idProducto','Almacen\Producto\ProductoController@LastIdProducto');
     $app->post('create-product','Almacen\Producto\ProductoController@Store');
-
-
-
-
+    $app->patch('update-producto','Almacen\Producto\ProductoController@Update');
+    $app->patch('ChangeStatus-proudcto','Almacen\Producto\ProductoController@changestatus');
+    $app->delete('delete-producto/{id}','Almacen\Producto\ProductoController@delete');
 
 });
-$router->get('api/v1/Almacen/LastIdProducto','Almacen\Producto\ProductoController@LastIdProducto');
+
 

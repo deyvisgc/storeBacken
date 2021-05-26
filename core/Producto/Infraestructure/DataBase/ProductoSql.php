@@ -19,58 +19,43 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class ProductoSql implements ProductoRepository
 {
     Use QueryTraits;
-    function Create(ProductoEntity $productoEntity, $data)
+    function Create(ProductoEntity $productoEntity, $lote)
     {
         try {
-
-              /* $fileExtension = $data->file('file')->getClientOriginalName();
-              $file = pathinfo($fileExtension, PATHINFO_FILENAME);
-              $extension = $data->file('file')->getClientOriginalExtension();
-              $fileStore = $file . '_' . time() . '.' . $extension;
-              $path = $data->file('file')->storeAs('Productos', $fileStore);
-              Storage::disk('public') -> put('productos',$data->file('file'));
-              */
-                $file      = $data->file('file');
-                $filename  = $file->getClientOriginalName();
-                $extension = $file->getClientOriginalExtension();
-                $picture   = date('His').'-'.$filename;
-                $path = $file->move(base_path('public'), $picture);
-                $url= URL::asset('public/'.$filename); // => http://example.com/stoage/file.im
-            // $url = URL::asset($path);
-            $create = DB::table('product')->insertGetId(
-                    ['pro_name' => $productoEntity->Nombre()->getProNombre(),
-                        'pro_precio_compra' => $productoEntity->PrecioCompra()->getProPrecioCompra(),
-                        'pro_precio_venta' => $productoEntity->PrecioVenta()->getProPrecioVenta(),
-                        'pro_cantidad' => $productoEntity->Cantidad()->getProCantidad(),
-                        'pro_cantidad_min' => $productoEntity->CantidadMinima()->getProCantidadMinima(),
-                        'pro_status' => 'active',
-                        'pro_description' => $productoEntity->Descripcion()->getProDescripcion(),
-                        'id_lote' => $productoEntity->IDLOTE()->getIdlote(),
-                        'id_clase_producto' => $productoEntity->IDClaseProducto()->getIdclaseProducto(),
-                        'id_unidad_medida' => $productoEntity->UnidadMedida()->getIdunidadmedida(),
-                        'pro_cod_barra' => $productoEntity->Barra()->getBarra(),
-                        'id_subclase' =>$productoEntity->IdSubclase()->getIdsubclase(),
-                        'pro_file' => $url
-                    ]);
-
-              $code = DB::select("SELECT concat('P', (LPAD($create, 4, '0'))) as codigo");
-              $updaecode = DB::table('product')->where('id_product', $create)->update(['pro_code'=>$code[0]->codigo]);
-            if ($updaecode == 1) {
-                $exepcion = new Exepciones(true, 'Producto registrado correctamnete', 200, []);
+            DB::beginTransaction();
+            if ($productoEntity->getIdProducto() === 0) {
+                $create = DB::table('product')->insertGetId($productoEntity->Create());
+                $idProducto = $create;
+                $code = DB::select("SELECT concat('P', (LPAD($create, 4, '0'))) as codigo");
+                DB::table('product')->where('id_product', $create)->update(['pro_code'=>$code[0]->codigo]);
             } else {
-                $exepcion = new Exepciones(false, 'Error al registrar producto', 403, []);
-
+                $create = DB::table('product')->where('id_product', $productoEntity->getIdProducto())->update($productoEntity->Update());
+                DB::table('lote')->where('id_product', $productoEntity->getIdProducto())->delete();
+                $idProducto = $productoEntity->getIdProducto();
             }
+            foreach ($lote as $l) {
+                DB::table('lote')->insertGetId([
+                    'lot_name'=>$l['lot_name'],
+                    'lot_code'=>$l['lot_code'],
+                    'cantidad'=>$l['cantidad'],
+                    'lot_expiration_date'=>$l['lot_expiration_date'],
+                    'lot_creation_date'=>$productoEntity->getFecha(),
+                    'id_product'=>$idProducto
+                ]);
+            }
+            DB::commit();
+            $exepcion = new Exepciones(true, 'Producto registrado correctamnete', 200, []);
             return $exepcion->SendStatus();
-        } catch (\Exception $exception) {
+        } catch (QueryException $exception) {
             $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            DB::rollBack();
             return $exepcion->SendStatus();
         }
-
     }
 
-    function Update(ProductoEntity $productoEntity, int $idproducto,$pro_code)
+    function Update(ProductoEntity $productoEntity,$pro_code)
     {
+        $idproducto = 0;
         try {
             if ($idproducto > 0) {
                $status = DB::table('product')->where('id_product', $idproducto)->update($productoEntity->Array($pro_code));
@@ -96,10 +81,10 @@ class ProductoSql implements ProductoRepository
             $numeroRecnum = $params['numeroRecnum'];
             $cantidadRegistros = $params['numeroCantidad'];
             $query = DB::table('product as pro')
-                    ->join('lote as l', 'pro.id_lote', '=', 'l.id_lote')
-                    ->join('clase_producto as cp', 'pro.id_clase_producto', '=', 'cp.id_clase_producto')
-                    ->join('unidad_medida as um', 'pro.id_unidad_medida', '=', 'um.id_unidad_medida')
-                    ->select('pro.*', 'cp.clas_name as clase', 'l.lot_name as lote', 'um.um_name as unidad')
+                    ->leftJoin('clase_producto as subclase', 'pro.id_subclase', 'subclase.id_clase_producto')
+                    ->leftJoin('clase_producto as cp', 'pro.id_clase_producto', '=', 'cp.id_clase_producto')
+                    ->leftJoin('unidad_medida as um', 'pro.id_unidad_medida', '=', 'um.id_unidad_medida')
+                    ->select('pro.*', 'cp.clas_name as clasePadre', 'subclase.clas_name as classHijo', 'um.um_name as unidad')
                     ->skip($numeroRecnum)
                     ->take($cantidadRegistros)
                     ->orderBy('id_product', 'Asc')
@@ -161,11 +146,11 @@ class ProductoSql implements ProductoRepository
             $lastId = DB::table('product')->max('id_product');
             $lastId = $lastId + 1;
             $codigoBarra = Code.$lastId;
-            $Status = new Exepciones(true,'Su codigo de Barra es'.$codigoBarra,200,$codigoBarra);
-            return $Status->SendError();
+            $Status = new Exepciones(true,'Su codigo de Barra es'.$codigoBarra,200,['codigo'=>$codigoBarra]);
+            return $Status->SendStatus();
         } catch (QueryException $exception){
             $Status = new Exepciones(false, $exception->getMessage(), $exception->getCode(),null);
-            return $Status->SendError();
+            return $Status->SendStatus();
         }
     }
 
@@ -178,12 +163,12 @@ class ProductoSql implements ProductoRepository
                 $hijo = $this->Clasehijoxidpadre($idClase);
                 $product = DB::table('product as p')
                            ->join('clase_producto as cp', 'p.id_clase_producto', '=', 'cp.id_clase_producto')
-                           ->join('clase_producto as subclase', 'p.id_subclase', 'subclase.id_clase_producto')
-                           ->join('lote as l', 'p.id_lote', '=', 'l.id_lote')
-                           ->join('unidad_medida as u', 'p.id_unidad_medida', 'u.id_unidad_medida')
-                           ->select('p.*','cp.clas_name as clasPadre', 'subclase.clas_name as classHijo', 'l.lot_name', 'u.um_name')
-                           ->where('id_product', $idProduct)->first();
-                $exepcion= new Exepciones(true, 'Producto Encontrado', 200, ['clahijo'=>$hijo, 'product' => $product]);
+                           ->leftJoin('clase_producto as subclase', 'p.id_subclase', 'subclase.id_clase_producto')
+                           ->leftJoin('unidad_medida as u', 'p.id_unidad_medida', 'u.id_unidad_medida')
+                           ->select('p.*','cp.clas_name as clasPadre', 'subclase.clas_name as classHijo', 'u.um_name')
+                           ->where('p.id_product', $idProduct)->first();
+                $lote = DB::table('lote')->where('id_product', $idProduct)->get();
+                $exepcion= new Exepciones(true, 'Producto Encontrado', 200, ['clahijo'=>$hijo, 'product' => $product, 'lote'=>$lote]);
             } else {
                 $exepcion= new Exepciones(false, 'Producto no existe', 403, []);
             }

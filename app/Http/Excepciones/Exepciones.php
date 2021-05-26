@@ -6,11 +6,11 @@ namespace App\Http\Excepciones;
 class Exepciones
 {
     private string $Message;
-    private int $Codigo;
+    private $Codigo;
     private $Status;
     private $data;
 
-    public function __construct($Status, string $Message, int $Codigo, $data)
+    public function __construct($Status, string $Message, $Codigo, $data)
     {
 
         $this->Status = $Status;

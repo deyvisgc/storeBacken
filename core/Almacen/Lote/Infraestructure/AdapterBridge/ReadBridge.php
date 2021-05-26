@@ -25,6 +25,10 @@ class ReadBridge
         $readcase= new ReadCase($this->lotesql);
         return $readcase->__invoke($request);
     }
+    function obtenerCode($params) {
+        $readcase= new ReadCase($this->lotesql);
+        return $readcase->obtenerCode($params);
+    }
     function SearchLotes($params) {
         $readcase= new ReadCase($this->lotesql);
         return $readcase->SearchLotes($params);

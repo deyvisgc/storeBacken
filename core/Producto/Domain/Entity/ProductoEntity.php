@@ -4,8 +4,11 @@
 namespace Core\Producto\Domain\Entity;
 
 
+use Carbon\Carbon;
+use Core\Producto\Domain\ValueObjects\FECHA;
 use Core\Producto\Domain\ValueObjects\IDClaseProducto;
 use Core\Producto\Domain\ValueObjects\IDLOTE;
+use Core\Producto\Domain\ValueObjects\IDPRODUCTO;
 use Core\Producto\Domain\ValueObjects\IDSUBLCASE;
 use Core\Producto\Domain\ValueObjects\IDUnidadMedida;
 use Core\Producto\Domain\ValueObjects\ProCantidad;
@@ -20,215 +23,110 @@ use Core\Producto\Domain\ValueObjects\ProStatus;
 
 class ProductoEntity
 {
-    /**
-     * @var ProNombre
-     */
-    private ProNombre $nombre;
-    /**
-     * @var ProPrecioCompra
-     */
-    private ProPrecioCompra $precioCompra;
-    /**
-     * @var ProPrecioVenta
-     */
-    private ProPrecioVenta $precioVenta;
-    /**
-     * @var ProCantidad
-     */
-    private ProCantidad $cantidad;
-    /**
-     * @var ProCantidadMinima
-     */
-    private ProCantidadMinima $cantidadMinima;
-    /**
-     * @var ProDescripcion
-     */
-    private ProDescripcion $descripcion;
-    /**
-     * @var IDLOTE
-     */
-    private IDLOTE $IDLOTE;
-    /**
-     * @var IDClaseProducto
-     */
-    private IDClaseProducto $IDClaseProducto;
-    /**
-     * @var IDUnidadMedida
-     */
-    private IDUnidadMedida $unidadMedida;
-    private ProCodeBarra $barra;
-    private ?int $id_producto;
-    /**
-     * @var IDSUBLCASE
-     */
-    private IDSUBLCASE $id_subclase;
 
-    public function __construct(ProNombre  $nombre, ProPrecioCompra $precioCompra, ProPrecioVenta $precioVenta, ProCantidad $cantidad,
-                                ProCantidadMinima $cantidadMinima, ProDescripcion $descripcion, IDLOTE $IDLOTE,
-                                IDClaseProducto $IDClaseProducto, IDUnidadMedida $unidadMedida,ProCodeBarra $barra, IDSUBLCASE $id_subclase)
+    private ProNombre $nombre;
+    private ProPrecioCompra $precioCompra;
+    private ProPrecioVenta $precioVenta;
+    private ? ProCantidad $cantidad;
+    private ? ProDescripcion $descripcion;
+    private IDClaseProducto $IDClaseProducto;
+    private ? IDUnidadMedida $unidadMedida;
+    private ? ProCodeBarra $barra;
+    private $id_producto;
+    private ? IDSUBLCASE $id_subclase;
+    private  $fecha;
+    public function __construct(IDPRODUCTO  $id_producto,ProNombre  $nombre, ProPrecioCompra $precioCompra, ProPrecioVenta $precioVenta,
+                                 ?ProCantidad $cantidad, ?ProDescripcion $descripcion, IDClaseProducto $IDClaseProducto,
+                                ?IDUnidadMedida $unidadMedida,?ProCodeBarra $barra, ?IDSUBLCASE $id_subclase, FECHA $fecha)
     {
         $this->nombre = $nombre;
         $this->precioCompra = $precioCompra;
         $this->precioVenta = $precioVenta;
         $this->cantidad = $cantidad;
-        $this->cantidadMinima = $cantidadMinima;
         $this->descripcion = $descripcion;
-        $this->IDLOTE = $IDLOTE;
         $this->IDClaseProducto = $IDClaseProducto;
         $this->unidadMedida = $unidadMedida;
         $this->barra = $barra;
         $this->id_subclase = $id_subclase;
+        $this->fecha = $fecha;
+        $this->id_producto = $id_producto;
+
     }
 
-    /**
-     * @return IDSUBLCASE
-     */
-    public function IdSubclase(): IDSUBLCASE
+    public function getNombre(): string
     {
-        return $this->id_subclase;
+        return $this->nombre->getProNombre();
+    }
+    public function getPrecioCompra(): float
+    {
+        return $this->precioCompra->getProPrecioCompra();
     }
 
-
-     static function create ( ProNombre  $nombre, ProPrecioCompra $precioCompra, ProPrecioVenta $precioVenta, ProCantidad $cantidad,
-                             ProCantidadMinima $cantidadMinima,ProDescripcion $descripcion,IDLOTE $IDLOTE,
-                             IDClaseProducto $IDClaseProducto, IDUnidadMedida $unidadMedida,ProCodeBarra $codeBarra, IDSUBLCASE $IDSUBLCASE) {
-                              return new self($nombre, $precioCompra, $precioVenta, $cantidad, $cantidadMinima,$descripcion, $IDLOTE,$IDClaseProducto,$unidadMedida,$codeBarra,$IDSUBLCASE);
-     }
-    static function update (ProNombre  $nombre, ProPrecioCompra $precioCompra, ProPrecioVenta $precioVenta, ProCantidad $cantidad,
-                            ProCantidadMinima $cantidadMinima, ProDescripcion $descripcion,IDLOTE $IDLOTE,
-                            IDClaseProducto $IDClaseProducto, IDUnidadMedida $unidadMedida,ProCodeBarra $codeBarra, IDSUBLCASE $IDSUBLCASE) {
-        return new self($nombre, $precioCompra, $precioVenta, $cantidad, $cantidadMinima,$descripcion, $IDLOTE,$IDClaseProducto,$unidadMedida,$codeBarra,$IDSUBLCASE);
+    public function getPrecioVenta(): float
+    {
+        return $this->precioVenta->getProPrecioVenta();
     }
-    public function Array($pro_code){
+    public function getCantidad(): ?int
+    {
+        return $this->cantidad->getProCantidad();
+    }
+    public function getDescripcion(): ?string
+    {
+        return $this->descripcion->getProDescripcion();
+    }
+    public function getIDClaseProducto(): int
+    {
+        return $this->IDClaseProducto->getIdclaseProducto();
+    }
+    public function getUnidadMedida(): ?int
+    {
+        return $this->unidadMedida->getIdunidadmedida();
+    }
+    public function getBarra(): ?string
+    {
+        return $this->barra->getBarra();
+    }
+    public function getIdProducto(): int
+    {
+        return $this->id_producto->getIDProducto();
+    }
+    public function getIdSubclase(): ?int
+    {
+        return $this->id_subclase->getIdsubclase();
+    }
+
+    public function getFecha(): string
+    {
+        return $this->fecha-> getFecha();
+    }
+     function Create(): array {
         return [
-            'pro_name' => $this->Nombre()->getProNombre(),
-            'pro_precio_compra' => $this->PrecioCompra()->getProPrecioCompra(),
-            'pro_precio_venta' => $this->PrecioVenta()->getProPrecioVenta(),
-            'pro_cantidad' => $this->Cantidad()->getProCantidad(),
-            'pro_cantidad_min' => $this->CantidadMinima()->getProCantidadMinima(),
-            'pro_description' => $this->Descripcion()->getProDescripcion(),
-            'id_lote' => $this->IDLOTE()->getIdlote(),
-            'id_clase_producto' => $this->IDClaseProducto()->getIdclaseProducto(),
-            'id_unidad_medida' => $this->UnidadMedida()->getIdunidadmedida(),
-            'pro_cod_barra' => $this->Barra()->getBarra(),
-            'pro_code' => $pro_code,
-            'id_subclase' =>$this->IdSubclase()->getIdsubclase()
+            'pro_name' => ucwords(strtolower($this->nombre->getProNombre())),//agregar la primera letra en mayuscula
+            'pro_precio_compra' => $this->getPrecioCompra(),
+            'pro_precio_venta' => $this->getPrecioVenta(),
+            'pro_cantidad' => $this->getCantidad(),
+            'pro_description' => ucwords(strtolower($this->getDescripcion())),
+            'id_clase_producto' => $this->getIDClaseProducto(),
+            'id_unidad_medida' => $this->getUnidadMedida() === 0 ? null: $this->getUnidadMedida(),
+            'pro_cod_barra' => $this->getBarra(),
+            'id_subclase' =>$this->getIdSubclase() === 0 ? null: $this->getIdSubclase(),
+            'pro_fecha_creacion' => $this->getFecha(),
+            'pro_status'=> 'active'
+        ];
+    }
+     function Update(): array {
+        return [
+            'pro_name' => ucwords(strtolower($this->nombre->getProNombre())),//agregar la primera letra en mayuscula
+            'pro_precio_compra' => $this->getPrecioCompra(),
+            'pro_precio_venta' => $this->getPrecioVenta(),
+            'pro_cantidad' => $this->getCantidad(),
+            'pro_description' => ucwords(strtolower($this->getDescripcion())),
+            'id_clase_producto' => $this->getIDClaseProducto(),
+            'id_unidad_medida' => $this->getUnidadMedida() === 0 ? null: $this->getUnidadMedida(),
+            'pro_cod_barra' => $this->getBarra(),
+            'id_subclase' =>$this->getIdSubclase() === 0 ? null: $this->getIdSubclase(),
+            'pro_fecha_creacion' => $this->getFecha()
         ];
     }
 
-    public function Nombre(): ProNombre
-    {
-        return $this->nombre;
-    }
-
-
-    /**
-     * @return ProPrecioCompra
-     */
-    public function PrecioCompra(): ProPrecioCompra
-    {
-        return $this->precioCompra;
-    }
-
-
-    /**
-     * @return ProPrecioVenta
-     */
-    public function PrecioVenta(): ProPrecioVenta
-    {
-        return $this->precioVenta;
-    }
-    public function Cantidad(): ProCantidad
-    {
-        return $this->cantidad;
-    }
-    /**
-     * @return ProCantidadMinima
-     */
-    public function CantidadMinima(): ProCantidadMinima
-    {
-        return $this->cantidadMinima;
-    }
-
-
-    /**
-     * @return ProDescripcion
-     */
-    public function Descripcion(): ProDescripcion
-    {
-        return $this->descripcion;
-    }
-
-
-    /**
-     * @return IDLOTE
-     */
-    public function IDLOTE(): IDLOTE
-    {
-        return $this->IDLOTE;
-    }
-
-    /**
-     * @param IDLOTE $IDLOTE
-     */
-    public function setIDLOTE(IDLOTE $IDLOTE): void
-    {
-        $this->IDLOTE = $IDLOTE;
-    }
-
-    /**
-     * @return IDClaseProducto
-     */
-    public function IDClaseProducto(): IDClaseProducto
-    {
-        return $this->IDClaseProducto;
-    }
-
-    /**
-     * @param IDClaseProducto $IDClaseProducto
-     */
-    public function setIDClaseProducto(IDClaseProducto $IDClaseProducto): void
-    {
-        $this->IDClaseProducto = $IDClaseProducto;
-    }
-
-    /**
-     * @return IDUnidadMedida
-     */
-    public function UnidadMedida(): IDUnidadMedida
-    {
-        return $this->unidadMedida;
-    }
-
-    /**
-     * @return ProCode
-     */
-    public function Code(): ProCode
-    {
-        return $this->code;
-    }
-
-
-    /**
-     * @return ProCodeBarra
-     */
-    public function Barra(): ProCodeBarra
-    {
-        return $this->barra;
-    }
-
-    /**
-     * @param ProCodeBarra $barra
-     */
-    public function setBarra(ProCodeBarra $barra): void
-    {
-        $this->barra = $barra;
-    }
-    /**
-     * @param IDUnidadMedida $unidadMedida
-     */
-    public function setUnidadMedida(IDUnidadMedida $unidadMedida): void
-    {
-        $this->unidadMedida = $unidadMedida;
-    }
 }

@@ -40,6 +40,9 @@ class LoteController extends Controller
      function getLotes(Request $request) {
         return response()->json($this->readBridge->__invoke($request));
     }
+    function ObtenerCode(Request $request) {
+        return response()->json($this->readBridge->obtenerCode($request));
+    }
      function SearchLotes(Request $request) {
         return response()->json($this->readBridge->SearchLotes($request->params));
     }

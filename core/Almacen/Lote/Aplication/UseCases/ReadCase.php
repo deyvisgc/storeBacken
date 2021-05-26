@@ -24,6 +24,9 @@ class ReadCase
     {
         return $this->repository->Read($request);
     }
+    function obtenerCode($params) {
+        return $this->repository->obtenerCode($params);
+    }
     function SearchLotes($params) {
         return $this->repository->SearchLotes($params);
     }
