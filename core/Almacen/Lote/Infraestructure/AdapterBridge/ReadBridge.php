@@ -33,7 +33,7 @@ class ReadBridge
         $readcase= new ReadCase($this->lotesql);
         return $readcase->SearchLotes($params);
     }
-     function __invokexid(int $idproducto)
+     function getLoteXid(int $idproducto)
     {
         $readcase= new ReadCase($this->lotesql);
         return $readcase->__invokexid($idproducto);

@@ -32,36 +32,6 @@ class UpdateCase
     {
         $this->repository = $repository;
     }
-
-    public function __invoke(int $idproducto,string $pro_nombre, float $pro_precio_compra, float $pro_precio_venta, int $pro_cantidad, int $pro_cantidad_min,
-                             string $pro_description, int $id_lote, int $id_clase_producto, int $id_unidad_medida, string $pro_cod_barra, string $pro_code,int $id_sub_clase)
-    {
-        $nomb = new ProNombre($pro_nombre);
-        $pre_compra = new ProPrecioCompra($pro_precio_compra);
-        $pre_venta = new ProPrecioVenta($pro_precio_venta);
-        $pro_can = new ProCantidad($pro_cantidad);
-        $pro_can_min = new ProCantidadMinima($pro_cantidad_min);
-        $pro_descri = new ProDescripcion($pro_description);
-        $idlote = new IDLOTE($id_lote);
-        $idclase_prod = new IDClaseProducto($id_clase_producto);
-        $id_unida_ned = new IDUnidadMedida($id_unidad_medida);
-        $proco_barra = new ProCodeBarra($pro_cod_barra);
-        $idsubclase = new IDSUBLCASE($id_sub_clase);
-        $Producto = ProductoEntity::update($nomb,
-            $pre_compra,
-            $pre_venta,
-            $pro_can,
-            $pro_can_min,
-            $pro_descri,
-            $idlote,
-            $idclase_prod,
-            $id_unida_ned,
-            $proco_barra,
-            $idsubclase
-           );
-
-        return $this->repository->Update($Producto,$idproducto,$pro_code);
-    }
      public function ChangeStatus(string $status, int $id) {
          return $this->repository->CambiarStatus($status, $id);
      }

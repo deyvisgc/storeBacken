@@ -70,7 +70,23 @@ class LoteSql implements LoteRepository
 
     function Readxid(int $id)
     {
-        // TODO: Implement Readxid() method.
+        try {
+            if ($id > 0) {
+              $lotes =  DB::table('lote')->where('id_product',$id)->get();
+              if (count($lotes) > 0) {
+                  $exepciones = new Exepciones(true,'Lotes encontrados', 200, ['lotes'=>$lotes]);
+              } else {
+                  $exepciones = new Exepciones(false,'No existe lotes para este producto', 403, []);
+              }
+              return $exepciones->SendStatus();
+            } else {
+                $exepciones = new Exepciones(false,'Este lote no existe en nuestra base de datos', 403, []);
+                return $exepciones->SendStatus();
+            }
+        } catch (QueryException $exception) {
+            $exepciones = new Exepciones(false,$exception->getMessage(), $exception->getMessage(), []);
+            return $exepciones->SendStatus();
+        }
     }
 
     function delete(int $id)
@@ -126,43 +142,39 @@ class LoteSql implements LoteRepository
     {
         try {
             $nombreProducto= $params['pro_nombre'];
+            $typeRegistro= $params['typoRegistro'];
             $idLote = DB::table('lote as l')
                 ->join('product as p', 'l.id_product','=', 'p.id_product')
                 ->where('p.pro_name',$nombreProducto)
                 ->max('l.lot_code');
-            // $lote = 'LYOG0000001';
             if(empty($idLote)) {
                 $idLote = 0;
-            } else {
-                $res =  substr($idLote, 4, 9);
-                $numOne = (int)substr($res, 0, 1);
-                $numTwo = (int)substr($res, 1, 2);
-                $numTree = (int)substr($res, 2, 3);
-                $numFor = (int)substr($res, 3, 4);
-                if ($numOne > 0) {
-                    $rpta =  substr($res, 0, 5);
-                } else if ($numTwo > 0) {
-                    $rpta =  substr($res, 1, 4);
-                } else if ($numTree > 0) {
-                    $rpta =  substr($res, 2, 3);
-                } else if ($numFor > 0) {
-                    $rpta =  substr($res, 3, 2);
-                } else {
-                    $rpta =  substr($res, 4, 1);
+                if ($idLote >= 0 && $idLote < 9) {
+                    $lot = $idLote + 1;
+                    $lote =  $idLote === 0 ? '01' : '0'. $lot;
+                    $alias = 'L'.substr(strtoupper($nombreProducto), 0,3).$lote;
+                    $exepciones = new Exepciones(true,'Codigo obtenido', 200,['codigo'=>$alias, 'lot_name'=>$lote]);
+                    return $exepciones->SendStatus();
                 }
-                $idLote = $rpta;
-            }
-            if ($idLote > 0 && $idLote < 9) {
-                $lot = $idLote + 1;
-                $lote =  $idLote === 0 ? '01' : '0'. $lot;
             } else {
-                $lote = $idLote + 1;
+                if ($typeRegistro === 'RegisProducto') {
+                    $exepciones = new Exepciones(false,'Este producto ya tiene registrado lotes. Registre desde la compra nuevos lotes', 403,[]);
+                    return $exepciones->SendStatus();
+                } else {
+                    $numberSubstring = substr($idLote, 4,10000);
+                    $primerNumber = (int)substr($numberSubstring, 0,1); // si el primer numero es cero se saca el numero que sigue y se suma mas uno
+                    if ($primerNumber === 0) {
+                        $number = (int)substr($numberSubstring, 1,1) + 1;
+                        $lote = '0'.$number;
+                    } else {
+                        $lote = (int)substr($numberSubstring, 0,10000) + 1;
+                    }
+                    $alias = 'L'.substr(strtoupper($nombreProducto), 0,3).$lote;
+                    $exepciones = new Exepciones(true,'Codigo obtenido', 200,['codigo'=>$alias, 'lot_name'=>$lote]);
+                    return $exepciones->SendStatus();
+                }
+
             }
-            $alias = 'L'.substr(strtoupper($nombreProducto), 0,3);
-            $lastId = $idLote + 1;
-            $code = DB::select("SELECT concat('".$alias."', (LPAD($lastId, 5, '0'))) as codigo");
-            $exepciones = new Exepciones(true,'Codigo obtenido', 200,[$code[0], 'lot_name'=>$lote]);
-            return $exepciones->SendStatus();
         } catch (QueryException $exception) {
             $exepciones = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);
             return $exepciones->SendStatus();

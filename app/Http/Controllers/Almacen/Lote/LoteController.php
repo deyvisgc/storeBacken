@@ -58,8 +58,11 @@ class LoteController extends Controller
 
         return response()->json($this->deleteBridge->__invokexid($id));
     }
-    public function ChangestatusLote(Request $request) {
+     function ChangestatusLote(Request $request) {
         return response()->json($this->updateBridge->__changestatus($request));
+    }
+    function getLotesXid(int $id) {
+        return response()->json($this->readBridge->getLoteXid($id));
     }
 
 }

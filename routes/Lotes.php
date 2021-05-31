@@ -18,6 +18,7 @@ $router->get('/', function () use ($router) {
 });
 $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('obtener-lotes','Almacen\Lote\LoteController@getLotes');
+    $app->get('obtener-lotes-id/{id}','Almacen\Lote\LoteController@getLotesXid');
     $app->post('search-lotes', 'Almacen\Lote\LoteController@SearchLotes');
     $app->get('obtener-codigo-lote', 'Almacen\Lote\LoteController@ObtenerCode');
 });

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 const   Code = '775820300317';
 use Illuminate\Support\Facades\File;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use const Core\Reportes\Infraestructure\Database\result;
 
 class ProductoSql implements ProductoRepository
 {
@@ -53,35 +54,24 @@ class ProductoSql implements ProductoRepository
         }
     }
 
-    function Update(ProductoEntity $productoEntity,$pro_code)
-    {
-        $idproducto = 0;
-        try {
-            if ($idproducto > 0) {
-               $status = DB::table('product')->where('id_product', $idproducto)->update($productoEntity->Array($pro_code));
-               if ($status === 1) {
-                   $exepcion = new Exepciones(true,'Producto Actualizado Correctamente',200,[]);
-               } else {
-                   $exepcion = new Exepciones(false,'Error al Actualizar Producto',403,[]);
-
-               }
-            } else {
-                $exepcion = new Exepciones(false,'Este producto no existe en nuestra base de datos',403,[]);
-            }
-            return $exepcion->SendStatus();
-        } catch (\Exception $exception) {
-            $exepcion = new Exepciones(false,$exception->getMessage(),$exception->getCode(),[]);
-            return $exepcion->SendStatus();
-        }
-    }
-
     function Read($params)
     {
         try {
             $numeroRecnum = $params['numeroRecnum'];
-            $cantidadRegistros = $params['numeroCantidad'];
-            $query = DB::table('product as pro')
-                    ->leftJoin('clase_producto as subclase', 'pro.id_subclase', 'subclase.id_clase_producto')
+            $cantidadRegistros = 20;
+            $query = DB::table('product as pro');
+            if ($params->idClase > 0) {
+                $query->where('pro.id_clase_producto',$params->idClase);
+            }
+            if ($params->idUnidad > 0) {
+                $query->where('pro.id_unidad_medida',$params->idUnidad);
+            }
+            if ($params->desde && $params->hasta) {
+                $query->whereBetween('pro.pro_fecha_creacion',[$params->desde, $params->hasta]);
+            }
+
+
+            $query->leftJoin('clase_producto as subclase', 'pro.id_subclase', 'subclase.id_clase_producto')
                     ->leftJoin('clase_producto as cp', 'pro.id_clase_producto', '=', 'cp.id_clase_producto')
                     ->leftJoin('unidad_medida as um', 'pro.id_unidad_medida', '=', 'um.id_unidad_medida')
                     ->select('pro.*', 'cp.clas_name as clasePadre', 'subclase.clas_name as classHijo', 'um.um_name as unidad')
@@ -89,14 +79,15 @@ class ProductoSql implements ProductoRepository
                     ->take($cantidadRegistros)
                     ->orderBy('id_product', 'Asc')
                     ->get();
-            if (count($query) < $cantidadRegistros) {
+            $result= $query->get();
+            if (count($result) < $cantidadRegistros) {
                 $numberRecnum = 0;
                 $noMore = true;
             } else {
-                $numberRecnum = (int)$numeroRecnum + count($query);
+                $numberRecnum = (int)$numeroRecnum + count($result);
                 $noMore = false;
             }
-            $excepcion = new Exepciones(true,'Productos Encontrados', 200,['lista'=>$query, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore]);
+            $excepcion = new Exepciones(true,'Productos Encontrados', 200,['lista'=>$result, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore]);
             return $excepcion->SendStatus();
         } catch (QueryException $exception) {
             $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);

@@ -10,12 +10,9 @@ interface ProductoRepository
 {
     function Create(ProductoEntity $productoEntity, $lote);
 
-    function Update(ProductoEntity $productoEntity, $lote);
-
     function Read($params);
     function LastIdProduct();
     function Edit($params);
     function delete(int $id);
-
     function CambiarStatus(string $status,int $id);
 }

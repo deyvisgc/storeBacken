@@ -23,7 +23,7 @@ class InventarioController extends Controller
     public function __construct(InventarioAdapter $inventarioAdapter)
     {
         $this->inventarioAdapter = $inventarioAdapter;
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     public function Inventario(Request $request)
