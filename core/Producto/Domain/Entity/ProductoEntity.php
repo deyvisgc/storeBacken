@@ -4,23 +4,17 @@
 namespace Core\Producto\Domain\Entity;
 
 
-use Carbon\Carbon;
 use Core\Producto\Domain\ValueObjects\FECHA;
 use Core\Producto\Domain\ValueObjects\IDClaseProducto;
-use Core\Producto\Domain\ValueObjects\IDLOTE;
 use Core\Producto\Domain\ValueObjects\IDPRODUCTO;
 use Core\Producto\Domain\ValueObjects\IDSUBLCASE;
 use Core\Producto\Domain\ValueObjects\IDUnidadMedida;
 use Core\Producto\Domain\ValueObjects\ProCantidad;
-use Core\Producto\Domain\ValueObjects\ProCantidadMinima;
-use Core\Producto\Domain\ValueObjects\ProCode;
 use Core\Producto\Domain\ValueObjects\ProCodeBarra;
 use Core\Producto\Domain\ValueObjects\ProDescripcion;
 use Core\Producto\Domain\ValueObjects\ProNombre;
 use Core\Producto\Domain\ValueObjects\ProPrecioCompra;
 use Core\Producto\Domain\ValueObjects\ProPrecioVenta;
-use Core\Producto\Domain\ValueObjects\ProStatus;
-
 class ProductoEntity
 {
 
@@ -35,14 +29,10 @@ class ProductoEntity
     private $id_producto;
     private ? IDSUBLCASE $id_subclase;
     private  $fecha;
-    public function __construct(IDPRODUCTO  $id_producto,ProNombre  $nombre, ProPrecioCompra $precioCompra, ProPrecioVenta $precioVenta,
-                                 ?ProCantidad $cantidad, ?ProDescripcion $descripcion, IDClaseProducto $IDClaseProducto,
+    public function __construct(IDPRODUCTO  $id_producto,ProNombre  $nombre, ?ProDescripcion $descripcion, IDClaseProducto $IDClaseProducto,
                                 ?IDUnidadMedida $unidadMedida,?ProCodeBarra $barra, ?IDSUBLCASE $id_subclase, FECHA $fecha)
     {
         $this->nombre = $nombre;
-        $this->precioCompra = $precioCompra;
-        $this->precioVenta = $precioVenta;
-        $this->cantidad = $cantidad;
         $this->descripcion = $descripcion;
         $this->IDClaseProducto = $IDClaseProducto;
         $this->unidadMedida = $unidadMedida;
@@ -56,19 +46,6 @@ class ProductoEntity
     public function getNombre(): string
     {
         return $this->nombre->getProNombre();
-    }
-    public function getPrecioCompra(): float
-    {
-        return $this->precioCompra->getProPrecioCompra();
-    }
-
-    public function getPrecioVenta(): float
-    {
-        return $this->precioVenta->getProPrecioVenta();
-    }
-    public function getCantidad(): ?int
-    {
-        return $this->cantidad->getProCantidad();
     }
     public function getDescripcion(): ?string
     {
@@ -102,9 +79,6 @@ class ProductoEntity
      function Create(): array {
         return [
             'pro_name' => ucwords(strtolower($this->nombre->getProNombre())),//agregar la primera letra en mayuscula
-            'pro_precio_compra' => $this->getPrecioCompra(),
-            'pro_precio_venta' => $this->getPrecioVenta(),
-            'pro_cantidad' => $this->getCantidad(),
             'pro_description' => ucwords(strtolower($this->getDescripcion())),
             'id_clase_producto' => $this->getIDClaseProducto(),
             'id_unidad_medida' => $this->getUnidadMedida() === 0 ? null: $this->getUnidadMedida(),
@@ -117,9 +91,6 @@ class ProductoEntity
      function Update(): array {
         return [
             'pro_name' => ucwords(strtolower($this->nombre->getProNombre())),//agregar la primera letra en mayuscula
-            'pro_precio_compra' => $this->getPrecioCompra(),
-            'pro_precio_venta' => $this->getPrecioVenta(),
-            'pro_cantidad' => $this->getCantidad(),
             'pro_description' => ucwords(strtolower($this->getDescripcion())),
             'id_clase_producto' => $this->getIDClaseProducto(),
             'id_unidad_medida' => $this->getUnidadMedida() === 0 ? null: $this->getUnidadMedida(),

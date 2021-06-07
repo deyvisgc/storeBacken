@@ -8,9 +8,6 @@ $fecha = date("Y-m-d");
         <th STYLE=" color: black; font-family: Arial; font-weight: bold; width: 100px" >Reporte de Productos del: {{$fecha}}</th></tr>
     <tr>
         <th style="width: 5px; border:2px solid black">Nombre</th>
-        <th style="width: 20px;border:2px solid black">Precio Compra</th>
-        <th style="width: 20px;border:2px solid black">Precio Venta</th>
-        <th style="width: 20px;border:2px solid black">Stock</th>
         <th style="width: 20px;border:2px solid black">Clase</th>
         <th style="width: 20px;border:2px solid black">Sub Clase</th>
         <th style="width: 20px;border:2px solid black">Unidad de Medida</th>
@@ -25,9 +22,6 @@ $fecha = date("Y-m-d");
     @foreach($productos as $pro)
         <tr>
             <td style="">{{ $pro->pro_name}}</td>
-            <td style="">{{ $pro->pro_precio_compra}}</td>
-            <td style="">{{ $pro->pro_precio_venta}}</td>
-            <td style="">{{ $pro->pro_cantidad}}</td>
             <td style="">{{ $pro->clasePadre}}</td>
             <td style="">{{ $pro->classHijo}}</td>
             <td style="">{{ $pro->unidad}}</td>

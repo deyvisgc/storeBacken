@@ -99,7 +99,6 @@ trait QueryTraits
                ->exists();
       return $caja;
     }
-
     function ValidarCaja($idcaja, $idUsers) {
         $query = DB::table('caja')
             ->where([[ 'id_caja', '=', $idcaja], ['id_user', '=', $idUsers], ['ca_status', '=', 'open']])
@@ -184,6 +183,26 @@ trait QueryTraits
             ->where('us.us_status', '=', 'active')
             ->first();
      return [$perfil];
+    }
+    function ObtenerProductos($clase, $unidad, $desde, $hasta) {
+        $query = DB::table('product as pro');
+        if ($clase > 0) {
+            $query->where('pro.id_clase_producto',$clase);
+        }
+        if ($unidad > 0) {
+            $query->where('pro.id_unidad_medida',$unidad);
+        }
+        if ($desde && $hasta) {
+            $query->whereBetween('pro.pro_fecha_creacion',[$desde, $hasta]);
+        }
+
+        $query->leftJoin('clase_producto as subclase', 'pro.id_subclase', 'subclase.id_clase_producto')
+            ->leftJoin('clase_producto as cp', 'pro.id_clase_producto', '=', 'cp.id_clase_producto')
+            ->leftJoin('unidad_medida as um', 'pro.id_unidad_medida', '=', 'um.id_unidad_medida')
+            ->select('pro.*', 'cp.clas_name as clasePadre', 'subclase.clas_name as classHijo', 'um.um_name as unidad')
+            ->orderBy('id_product', 'Asc')
+            ->get();
+        return $query->get();
     }
 
 }

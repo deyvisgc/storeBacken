@@ -23,30 +23,38 @@ class ProductoSql implements ProductoRepository
     function Create(ProductoEntity $productoEntity, $lote)
     {
         try {
-            DB::beginTransaction();
-            if ($productoEntity->getIdProducto() === 0) {
-                $create = DB::table('product')->insertGetId($productoEntity->Create());
-                $idProducto = $create;
-                $code = DB::select("SELECT concat('P', (LPAD($create, 4, '0'))) as codigo");
-                DB::table('product')->where('id_product', $create)->update(['pro_code'=>$code[0]->codigo]);
-            } else {
-                $create = DB::table('product')->where('id_product', $productoEntity->getIdProducto())->update($productoEntity->Update());
-                DB::table('lote')->where('id_product', $productoEntity->getIdProducto())->delete();
-                $idProducto = $productoEntity->getIdProducto();
-            }
-            foreach ($lote as $l) {
-                DB::table('lote')->insertGetId([
-                    'lot_name'=>$l['lot_name'],
-                    'lot_code'=>$l['lot_code'],
-                    'cantidad'=>$l['cantidad'],
-                    'lot_expiration_date'=>$l['lot_expiration_date'],
-                    'lot_creation_date'=>$productoEntity->getFecha(),
-                    'id_product'=>$idProducto
-                ]);
-            }
-            DB::commit();
-            $exepcion = new Exepciones(true, 'Producto registrado correctamnete', 200, []);
-            return $exepcion->SendStatus();
+           $isvalidate = $this->validarLote($lote);
+           if (count($isvalidate) > 0) {
+               $exepcion = new Exepciones(false, 'Error', 200, $isvalidate);
+               return $exepcion->SendStatus();
+           } else {
+               DB::beginTransaction();
+               if ($productoEntity->getIdProducto() === 0) {
+                   $create = DB::table('product')->insertGetId($productoEntity->Create());
+                   $idProducto = $create;
+                   $code = DB::select("SELECT concat('P', (LPAD($create, 4, '0'))) as codigo");
+                   DB::table('product')->where('id_product', $create)->update(['pro_code'=>$code[0]->codigo]);
+               } else {
+                   $create = DB::table('product')->where('id_product', $productoEntity->getIdProducto())->update($productoEntity->Update());
+                   DB::table('lote')->where('id_product', $productoEntity->getIdProducto())->delete();
+                   $idProducto = $productoEntity->getIdProducto();
+               }
+               foreach ($lote as $l) {
+                   DB::table('lote')->insertGetId([
+                       'lot_name'=>$l['lot_name'],
+                       'lot_code'=>$l['lot_code'],
+                       'lot_cantidad'=>$l['lot_cantidad'],
+                       'lot_precio_compra' =>$l['lot_precio_compra'],
+                       'lot_precio_venta' =>$l['lot_precio_venta'],
+                       'lot_expiration_date'=>$l['lot_expiration_date'],
+                       'lot_creation_date'=>$productoEntity->getFecha(),
+                       'id_product'=>$idProducto
+                   ]);
+               }
+               DB::commit();
+               $exepcion = new Exepciones(true, 'Producto registrado correctamnete', 200, []);
+               return $exepcion->SendStatus();
+           }
         } catch (QueryException $exception) {
             $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
             DB::rollBack();
@@ -168,5 +176,37 @@ class ProductoSql implements ProductoRepository
             $exepcion= new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
             return $exepcion->SendStatus();
         }
+    }
+
+    private function validarLote($lote)
+    {
+        $detalleError = array();
+        foreach ($lote as $item) {
+            if ($item['lot_name'] === '') {
+                $error = 'Nombre del lote es requerido';
+                 array_push($detalleError, $error);
+            }
+            if ($item['lot_code'] === '') {
+                $error = 'Codigo del lote'.$item['lot_name']. ' es requerido';
+                array_push($detalleError, $error);
+            }
+            if ($item['precio_compra'] === 0  || !$item['precio_compra']) {
+                $error = 'El precio de compra del lote '.$item['lot_name']. ' debe ser mayor a 0';
+                array_push($detalleError, $error);
+            }
+            if ($item['precio_venta'] === 0 || !$item['precio_venta']) {
+                $error = 'El precio de venta del lote '.$item['lot_name'].' debe ser mayor a 0';
+                array_push($detalleError, $error);
+            }
+            if ($item['cantidad'] === 0 || !$item['cantidad']) {
+                $error = 'El Lote '.$item['lot_name'].' tiene cantidad cero';
+                array_push($detalleError, $error);
+            }
+            if ($item['lot_expiration_date'] === '') {
+                $error = 'Fecha de vencimiento del lote '.$item['lot_name'].' es requerida';
+                array_push($detalleError, $error);
+            }
+        }
+        return $detalleError;
     }
 }

@@ -7,10 +7,12 @@ use App\Exports\Excel\Productos\ExportarProductos;
 use App\Exports\Excel\Reportes\ExportarInventario;
 use App\Http\Controllers\Controller;
 use App\Traits\Search\SeacrhTraits;
+use Barryvdh\DomPDF\Facade as PDF;
 use Core\Producto\Infraestructure\AdapterBridge\CreateBridge;
 use Core\Producto\Infraestructure\AdapterBridge\DeleteBridge;
 use Core\Producto\Infraestructure\AdapterBridge\ReadBridge;
 use Core\Producto\Infraestructure\AdapterBridge\UpdateBridge;
+use Core\Traits\QueryTraits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -46,6 +48,7 @@ class ProductoController extends Controller
              'Exportar'
          ]]);
      }
+     use QueryTraits;
     function Read(Request $request)
     {
         return response()->json($this->readBridge->__invoke($request));
@@ -90,10 +93,13 @@ class ProductoController extends Controller
         $desde = $request->input('desde');
         $hasta = $request->input('hasta');
         $opcion = $request->input('isExport');
+        $query = $this->ObtenerProductos($clase, $unidad, $desde, $hasta);
         if ($opcion === 'excel') {
             return Excel::download(new ExportProduct($clase, $unidad, $desde, $hasta), 'reportesInventario.xlsx')->deleteFileAfterSend (false);
         } else {
-            return 'PDF';
+            $customPaper = array(0,0,710,710);
+            $pdf = PDF::loadView('Exportar.Pdf.Almacen.productos', ['productos'=>$query])->setPaper($customPaper);
+            return $pdf->download('invoice.pdf');
         }
 
     }
