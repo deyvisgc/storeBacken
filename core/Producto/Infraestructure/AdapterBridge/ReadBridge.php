@@ -20,18 +20,27 @@ class ReadBridge
     {
         $this->productoSql = $productoSql;
     }
-    public function __invoke($params)
+     function __invoke($params)
     {
         $readcase= new ReadCase($this->productoSql);
         return $readcase->__invoke($params);
     }
-    public function Edit($params)
+     function Edit($params)
     {
         $readcase= new ReadCase($this->productoSql);
         return $readcase->Edit($params);
     }
-    public function __invokeLastId() {
+     function __invokeLastId() {
         $readcase= new ReadCase($this->productoSql);
         return $readcase->__invokeLastId();
+    }
+     function search($params) {
+        $readcase= new ReadCase($this->productoSql);
+        return $readcase->search($params);
+    }
+     function selectProducto($params)
+    {
+        $readcase= new ReadCase($this->productoSql);
+        return $readcase->selectProducto($params);
     }
 }

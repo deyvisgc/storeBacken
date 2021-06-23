@@ -15,4 +15,7 @@ interface ProductoRepository
     function Edit($params);
     function delete(int $id);
     function CambiarStatus(string $status,int $id);
+    function search(string $params);
+    function selectProducto($params);
+
 }

@@ -87,7 +87,7 @@ class ProductoController extends Controller
     function LastIdProducto () {
         return response()->json($this->readBridge->__invokeLastId());
     }
-   public function Exportar (Request $request) {
+    function Exportar (Request $request) {
         $clase = $request->input('idClase');
         $unidad = $request->input('idUnidad');
         $desde = $request->input('desde');
@@ -102,5 +102,11 @@ class ProductoController extends Controller
             return $pdf->download('invoice.pdf');
         }
 
+    }
+    function Search(Request $request) {
+        return response()->json($this->readBridge->search($request->params));
+    }
+    function selectProducto(Request $request) {
+        return response()->json($this->readBridge->selectProducto($request));
     }
 }

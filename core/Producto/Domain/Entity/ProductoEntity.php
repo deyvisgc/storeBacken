@@ -15,13 +15,11 @@ use Core\Producto\Domain\ValueObjects\ProDescripcion;
 use Core\Producto\Domain\ValueObjects\ProNombre;
 use Core\Producto\Domain\ValueObjects\ProPrecioCompra;
 use Core\Producto\Domain\ValueObjects\ProPrecioVenta;
+
 class ProductoEntity
 {
 
     private ProNombre $nombre;
-    private ProPrecioCompra $precioCompra;
-    private ProPrecioVenta $precioVenta;
-    private ? ProCantidad $cantidad;
     private ? ProDescripcion $descripcion;
     private IDClaseProducto $IDClaseProducto;
     private ? IDUnidadMedida $unidadMedida;
@@ -29,8 +27,12 @@ class ProductoEntity
     private $id_producto;
     private ? IDSUBLCASE $id_subclase;
     private  $fecha;
+    private ProCantidad $cantidad;
+    private ProPrecioCompra $precioCompra;
+    private ProPrecioVenta $precioVenta;
     public function __construct(IDPRODUCTO  $id_producto,ProNombre  $nombre, ?ProDescripcion $descripcion, IDClaseProducto $IDClaseProducto,
-                                ?IDUnidadMedida $unidadMedida,?ProCodeBarra $barra, ?IDSUBLCASE $id_subclase, FECHA $fecha)
+                                ?IDUnidadMedida $unidadMedida,?ProCodeBarra $barra, ?IDSUBLCASE $id_subclase, FECHA $fecha,
+                                ProCantidad $cantidad, ProPrecioCompra $precioCompra, ProPrecioVenta $precioVenta)
     {
         $this->nombre = $nombre;
         $this->descripcion = $descripcion;
@@ -40,7 +42,9 @@ class ProductoEntity
         $this->id_subclase = $id_subclase;
         $this->fecha = $fecha;
         $this->id_producto = $id_producto;
-
+        $this->cantidad = $cantidad;
+        $this->precioCompra = $precioCompra;
+        $this->precioVenta = $precioVenta;
     }
 
     public function getNombre(): string
@@ -76,7 +80,25 @@ class ProductoEntity
     {
         return $this->fecha-> getFecha();
     }
-     function Create(): array {
+    public function getCantidad (): int {
+        return $this->cantidad->getProCantidad();
+    }
+    public function getPrecioCompra () :  float {
+        return $this->precioCompra->getProPrecioCompra();
+    }
+    public function getPrecioVenta () : float {
+        return $this->precioVenta->getProPrecioVenta();
+    }
+
+    /**
+     * @param IDPRODUCTO $id_producto
+     */
+    public function setIdProducto(int $id_producto): void
+    {
+        $this->id_producto = $id_producto;
+    }
+
+    function Create(): array {
         return [
             'pro_name' => ucwords(strtolower($this->nombre->getProNombre())),//agregar la primera letra en mayuscula
             'pro_description' => ucwords(strtolower($this->getDescripcion())),
@@ -88,7 +110,7 @@ class ProductoEntity
             'pro_status'=> 'active'
         ];
     }
-     function Update(): array {
+    function Update(): array {
         return [
             'pro_name' => ucwords(strtolower($this->nombre->getProNombre())),//agregar la primera letra en mayuscula
             'pro_description' => ucwords(strtolower($this->getDescripcion())),
@@ -97,6 +119,14 @@ class ProductoEntity
             'pro_cod_barra' => $this->getBarra(),
             'id_subclase' =>$this->getIdSubclase() === 0 ? null: $this->getIdSubclase(),
             'pro_fecha_creacion' => $this->getFecha()
+        ];
+    }
+    function CreateProductUnidades(): array {
+        return [
+            'id_product' => $this->id_producto,
+            'cantidad' => $this->getCantidad(),
+            'precio_venta' => $this->getPrecioVenta(),
+            'precio_compra' => $this->getPrecioCompra()
         ];
     }
 

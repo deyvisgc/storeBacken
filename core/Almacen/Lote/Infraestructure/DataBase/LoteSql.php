@@ -46,8 +46,8 @@ class LoteSql implements LoteRepository
         try {
             $numeroRecnum = $params['numeroRecnum'];
             $cantidadRegistros = $params['cantidadRegistros'];
-            $query = DB::table('lote')
-                     ->where('lot_status', '=', 'active')
+            $query = DB::table('product_por_lotes as l')
+                     ->where('id_product', $params['idProduct'])
                      ->skip($numeroRecnum)
                      ->take($cantidadRegistros)
                      ->orderBy('id_lote', 'DESC')
@@ -55,7 +55,6 @@ class LoteSql implements LoteRepository
             if (count($query) < $cantidadRegistros) {
                 $numberRecnum = 0;
                 $noMore = true;
-
             } else {
                 $numberRecnum = (int)$numeroRecnum + count($query);
                 $noMore = false;
@@ -143,7 +142,7 @@ class LoteSql implements LoteRepository
         try {
             $nombreProducto= $params['pro_nombre'];
             $typeRegistro= $params['typoRegistro'];
-            $idLote = DB::table('lote as l')
+            $idLote = DB::table('product_por_lotes as l')
                 ->join('product as p', 'l.id_product','=', 'p.id_product')
                 ->where('p.pro_name',$nombreProducto)
                 ->max('l.lot_code');
