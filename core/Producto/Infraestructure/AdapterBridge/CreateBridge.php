@@ -16,7 +16,7 @@ class CreateBridge
     {
         $this->productoSql = $productoSql;
     }
-    public function __invoke($params)
+     function __invoke($params)
     {
         $id_producto = $params['id_producto'];
         $pro_nombre=$params['pro_nombre'];
@@ -33,4 +33,8 @@ class CreateBridge
         $createProducto= new CreateCase($this->productoSql);
       return  $createProducto->__invoke($id_producto, $pro_nombre,$pro_descripcion, $pro_cod_barra,$id_clase_producto, $id_sub_clase, $id_unidad_medida, $lote, $fecha, $precio_compra, $precio_ventra, $cantidad);
     }
+     function ajustarStock($pramas) {
+         $createProducto= new CreateCase($this->productoSql);
+         return  $createProducto->ajustarStock($pramas);
+     }
 }

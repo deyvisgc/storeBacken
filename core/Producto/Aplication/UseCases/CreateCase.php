@@ -32,7 +32,7 @@ class CreateCase
         $this->repository = $repository;
     }
 
-    public function __invoke($id_producto, $pro_nombre,$pro_descripcion, $pro_cod_barra,$id_clase_producto, $id_sub_clase, $id_unidad_medida, $lote, $fecha, $precio_compra, $precio_ventra, $cantidad)
+     function __invoke($id_producto, $pro_nombre,$pro_descripcion, $pro_cod_barra,$id_clase_producto, $id_sub_clase, $id_unidad_medida, $lote, $fecha, $precio_compra, $precio_ventra, $cantidad)
     {
         $id_prod = new IDPRODUCTO($id_producto);
         $nomb = new ProNombre($pro_nombre);
@@ -47,6 +47,10 @@ class CreateCase
         $precioventa = new ProPrecioVenta($precio_ventra);
         $producto = new ProductoEntity($id_prod, $nomb, $pro_descri, $idclase_prod, $id_unida_medi, $proco_barra, $idsubclase, $fecha,$cantidad_producto, $precioCompra, $precioventa);
         return $this->repository->Create($producto, $lote);
+    }
+     function ajustarStock($prams)
+    {
+        return $this->repository->ajustarStock($prams);
     }
 
 }

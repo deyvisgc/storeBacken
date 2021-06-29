@@ -17,5 +17,6 @@ interface ProductoRepository
     function CambiarStatus(string $status,int $id);
     function search(string $params);
     function selectProducto($params);
+    function ajustarStock($prams);
 
 }

@@ -109,4 +109,7 @@ class ProductoController extends Controller
     function selectProducto(Request $request) {
         return response()->json($this->readBridge->selectProducto($request));
     }
+    function AjustarStock(Request $request) {
+        return response()->json($this->createBridge->ajustarStock($request->params));
+    }
 }
