@@ -47,7 +47,7 @@ class ClaseController extends Controller
         $this->middleware('auth');
     }
 
-     function getCategoria(Request $request)
+    function getCategoria(Request $request)
     {
         return response()->json($this->readBridge->getCategoria($request));
     }
@@ -55,11 +55,13 @@ class ClaseController extends Controller
         return response()->json($this->readBridge->searchCategoria($request->params));
     }
 
-    public function store(Request $request)
+    function store(Request $request)
     {
-        return response()->json($this->createBridge->__invoke($request));
+        return response()->json($this->createBridge->categoria($request['data']));
     }
-
+    function editCategory($id){
+        return response()->json($this->readBridge->editCategory($id));
+    }
     public function getclasesuperior()
     {
         return response()->json($this->readBridge->__clasesuperior());
@@ -70,8 +72,8 @@ class ClaseController extends Controller
         return response()->json($this->readBridge->__getclaserecursiva());
     }
 
-    public function Obtenerclasexid(int $idpadre) {
-        return response()->json($this->readBridge->__Obtenerclasexid($idpadre));
+    public function editCategoria(Request $request) {
+        return response()->json($this->readBridge->editSubcate($request));
     }
     public function update(Request $request) {
         return response()->json($this->updateBridge->__invoke($request->data));

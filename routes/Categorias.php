@@ -18,7 +18,11 @@ $router->get('/', function () use ($router) {
 });
 $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('obtener-categoria','Almacen\Clase\ClaseController@getCategoria');
+    $app->get('obtener-categoria/{id}','Almacen\Clase\ClaseController@editCategory');
     $app->post('search-categoria', 'Almacen\Clase\ClaseController@searchCategoria');
+    $app->get('Almacen-clase','Almacen\Clase\ClaseController@Read');
+    $app->post('Almacen-clase','Almacen\Clase\ClaseController@store');
+    $app->get('Almacen-edit-subCategorias','Almacen\Clase\ClaseController@editCategoria');
 });
 //subCategorias
 $router->group(['prefix'=>'api/v1/'], function ($app) {
@@ -26,8 +30,7 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
 });
 
 //Clase
-$router->get('api/v1/Almacen/Clase','Almacen\Clase\ClaseController@Read');
-$router->post('api/v1/Almacen/Clase','Almacen\Clase\ClaseController@store');
+/*
 $router->get('api/v1/Almacen/Clase/superior','Almacen\Clase\ClaseController@getclasesuperior');
 $router->get('api/v1/Almacen/Clase/recursiveChildren','Almacen\Clase\ClaseController@recursiveChildren');
 $router->get('api/v1/Almacen/Clase/ObtenerclasPadreYhijo/{idpadre}','Almacen\Clase\ClaseController@Obtenerclasexid');
@@ -37,6 +40,6 @@ $router->patch('api/v1/Almacen/Clase/Actualizarcate','Almacen\Clase\ClaseControl
 $router->patch('api/v1/Almacen/Clase/Changestatuscate','Almacen\Clase\ClaseController@Changestatuscate');
 $router->patch('api/v1/Almacen/Clase/ChangestatusCateRecursiva','Almacen\Clase\ClaseController@ChangestatusCateRecursiva');
 $router->get('api/v1/Almacen/Clase/filtrarxclasepadre/{idpadre}','Almacen\Clase\ClaseController@filtrarxclasepadre');
-
+*/
 
 

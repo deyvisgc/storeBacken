@@ -15,15 +15,38 @@ class ClaseSql implements ClaseRepository
 {
     use QueryTraits;
 
-    function Create(ClaseEntity $claseEntity)
+    function Categoria(ClaseEntity $claseEntity)
     {
-        $regis=  DB::table('clase_producto')->insert(
-            [
-                'clas_name'=> $claseEntity->Classname()->getClassName(),
-                'clas_id_clase_superior'=> $claseEntity->IdClasesuperior()->getIdclasesupe(),
-                'clas_status' => 'active'
-            ]);
-        return $regis;
+        try {
+            if ((int)$claseEntity->idPadre->getIdpadre() === 0 ) {
+                $idClase =  DB::table('clase_producto')->insertGetId($claseEntity->createCategoria());
+                $code = DB::select("SELECT concat('CP', (LPAD($idClase, 4, '0'))) as codigo");
+                $update = DB::table('clase_producto')->where('id_clase_producto', $idClase)->update(['class_code'=>$code[0]->codigo]);
+                $message = 'Categoria registrada correctamente';
+                $messageError = 'Error al registrar esta categoria';
+                $codigo = 200;
+            } else {
+                if ((int)$claseEntity->IdClasesuperior()->getIdclasesupe() === 0) {
+                    $update = DB::table('clase_producto')->where('id_clase_producto', (int)$claseEntity->idPadre->getIdpadre())->update($claseEntity->updateCategoria());
+                } else {
+                    $update = DB::table('clase_producto')
+                        ->where('id_clase_producto', $claseEntity->idPadre->getIdpadre())
+                        ->update($claseEntity->updateSubCategoria());
+                }
+                $message = 'Categoria Actualizada correctamente';
+                $messageError = 'Error al Actualizar esta categoria';
+                $codigo = 200;
+            }
+            if ($update === 1) {
+                $exepciones = new Exepciones(true,$message, $codigo, []);
+            } else {
+                $exepciones = new Exepciones(false,$messageError, 403, []);
+            }
+            return $exepciones->SendStatus();
+        } catch (\Exception $exception) {
+            $exepciones = new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
+            return $exepciones->SendStatus();
+        }
     }
 
     function getCategoria($params)
@@ -31,21 +54,9 @@ class ClaseSql implements ClaseRepository
         try {
             $numeroRecnum = $params['numeroRecnum'];
             $cantidadRegistros = $params['cantidadRegistros'];
-            $query = DB::table('clase_producto')
-                ->where('clas_status', '=', 'active')
-                ->skip($numeroRecnum)
-                ->take($cantidadRegistros)
-                ->orderBy('id_clase_producto', 'asc')
-                ->get();
-            if (count($query) < $cantidadRegistros) {
-                $numberRecnum = 0;
-                $noMore = true;
-
-            } else {
-                $numberRecnum = (int)$numeroRecnum + count($query);
-                $noMore = false;
-            }
-            return ['lista'=>$query, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore];
+            $categoria = $this->Categorias($numeroRecnum, $cantidadRegistros);
+            $subCategoria = $this->subCategoria();
+            return $subCategoria;
         } catch (QueryException $exception) {
             return $exception->getMessage();
         }
@@ -72,13 +83,31 @@ class ClaseSql implements ClaseRepository
         return array('categorias'=>$cate, 'padreehijos'=>$query);
     }
 
-    function Obtenerclasexid($idpadre)
+    function editSubcate($params)
     {
-        $padres = $this->ClasePadre();
-        $hijos = $this->Clasehijo();
-        return array('padres' => $padres, 'hijos'=> $hijos);
+        try {
+            $id_hijo = $params['id_hijo'];
+            $id_padre = $params['id_padre'];
+            $subcate = DB::select("select ch.clas_name as clas_hijo, ch.id_clase_producto as id_hijo,
+                                      cp.clas_padre, cp.id_padre from ( select clas_name as clas_padre, id_clase_producto as id_padre
+                                      from clase_producto where id_clase_producto = $id_padre) as cp ,clase_producto as ch
+                                      where id_clase_producto = $id_hijo  and clas_id_clase_superior = $id_padre");
+            if (count($subcate) === 0) {
+                $message = 'no existe Informacion para esta Sub Categoria';
+                $codigo= 403;
+                $status = false;
+            } else {
+                $message = 'Información encontrada';
+                $codigo= 200;
+                $status = true;
+            }
+            $exepciones = new Exepciones($status, $message, $codigo, $subcate[0]);
+            return $exepciones->SendStatus();
+        } catch (\Exception $exception) {
+            $exepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $exepciones->SendStatus();
+        }
     }
-
     function Update(array $data)
     {
         try {
@@ -120,17 +149,21 @@ class ClaseSql implements ClaseRepository
         try {
             if ($status === 'active') {
                 $status = 'disable';
+                $mensaje = 'Categoria Desactivada';
             } else {
                 $status = 'active';
+                $mensaje = 'Categoria Activada';
             }
             $query = DB::table('clase_producto')->where('id_clase_producto',$idclase)->update(['clas_status'=>$status]);
             if ($query === 1) {
-                return ['status'=>true, 'message'=>'Estado de esta categoria canbiada'];
+                $exepciones = new Exepciones(true,$mensaje, 200,[]);
             } else {
-                return ['status'=>false, 'message'=>'Error al  Cambiar el estado de esta actegoria'];
+                $exepciones = new Exepciones(false,'Error al Cambiar estado', 403,[]);
             }
+           return $exepciones->SendStatus();
         }catch (\Exception $exception) {
-            return $exception->getMessage();
+            $exepciones = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);
+            return $exepciones->SendStatus();
         }
     }
 
@@ -166,6 +199,21 @@ class ClaseSql implements ClaseRepository
         } catch (QueryException $exception) {
             $ecepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
             return $ecepciones->SendStatus();
+        }
+    }
+
+    function editCategory($id)
+    {
+        try {
+            $query = DB::table('clase_producto')
+                    ->where('id_clase_producto', $id)
+                    ->first();
+            $excepciones = new Exepciones(true,'',200,$query);
+            return $excepciones->SendStatus();
+        } catch (\Exception $exception) {
+            $excepciones = new Exepciones(false,$exception->getMessage(),$exception->getCode(),[]);
+
+            return $excepciones->SendStatus();
         }
     }
 }

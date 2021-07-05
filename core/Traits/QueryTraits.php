@@ -19,30 +19,67 @@ trait QueryTraits
                               clase_producto where clas_id_clase_superior <> 0) as subclase,
                               clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior and subclase.clas_id_clase_superior=$idpadre group by cp.clas_name, id_clase_producto");
     }
-    public function Clasehijo()
+    public function subCategoria()
     {
-        return DB::select(" select  subclase.clasehijo, subclase.clas_id_clase_superior, subclase.id_clase_producto from
-                              (select clas_name as clasehijo ,clas_id_clase_superior, id_clase_producto  from
-                              clase_producto where clas_id_clase_superior <> 0) as subclase,
-                              clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior  group by cp.clas_name, id_clase_producto");
+
+        $subQuery = DB::table('clase_producto')
+                   ->select('clas_name as clasehijo', 'clas_id_clase_superior', 'id_clase_producto')
+                    ->where('clas_id_clase_superior', '<>', 0)
+                    ->groupBy('clas_name', 'clas_id_clase_superior', 'id_clase_producto');
+        $query = DB::table('clase_producto as cp')
+                 ->joinSub($subQuery, 'sub', function ($join) {
+                     $join->on('cp.id_clase_producto', '=', 'sub.clas_id_clase_superior');
+                 })
+                 ->groupBy('sub.clas_name', 'sub.clas_id_clase_superior', 'sub.id_clase_producto')
+                 ->get();
+        return $query;
     }
-    public function ClasePadre()
+    public function Categorias($numeroRecnum, $cantidadRegistros)
     {
-        return DB::select("select cp.clas_name as clasepadre, cp.id_clase_producto from (select clas_id_clase_superior, clas_status from
-                                  clase_producto where clas_id_clase_superior <> 0) as subclase,
-                                  clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior or cp.clas_id_clase_superior = 0 group by cp.clas_name, id_clase_producto");
+        $subquery = DB::table('clase_producto')
+            ->select("clas_id_clase_superior")
+            ->where('clas_id_clase_superior', '<>', 0)
+            ->groupBy('clas_id_clase_superior');
+
+        $query = DB::table('clase_producto as cp')
+            ->joinSub($subquery, 'sub', function ($join){
+                $join->on('cp.id_clase_producto', '<>', 'sub.clas_id_clase_superior');
+            })
+            ->select('cp.clas_name', 'cp.class_code', 'cp.id_clase_producto', 'cp.clas_status')
+            ->where('clas_status', '=', 'active')
+            ->skip($numeroRecnum)
+            ->take($cantidadRegistros)
+            ->groupBy('cp.clas_name', 'cp.class_code', 'cp.id_clase_producto', 'cp.clas_status')
+            ->get();
+
+        if (count($query) === 0) {
+            $query = DB::table('clase_producto')
+                ->skip($numeroRecnum)
+                ->take($cantidadRegistros)
+                ->get();
+        }
+        if (count($query) < $cantidadRegistros) {
+            $numberRecnum = 0;
+            $noMore = true;
+        }
+        else {
+            $numberRecnum = $numeroRecnum + count($query);
+            $noMore = false;
+        }
+        return ['categoria'=>$query,'numeroRecnum'=>$numberRecnum, 'noMore' => $noMore];
     }
     public function Padreehijoclase()
     {
         return DB::select("select cp.clas_name as clasepadre,
        subclase.clas_name as clasehijo,
        subclase.clas_status as statushijo,
+       subclase.class_code,
        cp.clas_status as statuspadre,
        cp.id_clase_producto as idpadre,
        cp.clas_id_clase_superior,
        subclase.id_clase_producto as idhijo
        from
-       (select clas_name,clas_id_clase_superior, clas_status,id_clase_producto from
+       (select clas_name,clas_id_clase_superior, clas_status,id_clase_producto, class_code from
        clase_producto where clas_id_clase_superior <> 0) as subclase,
        clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior
        order by cp.id_clase_producto asc");

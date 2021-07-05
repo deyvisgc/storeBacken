@@ -16,9 +16,13 @@ class ReadCase
         $this->repository = $repository;
     }
 
-    public function getCategoria($params)
+    function getCategoria($params)
     {
         return $this->repository->getCategoria($params);
+    }
+    function editCategory($id)
+    {
+        return $this->repository->editCategory($id);
     }
     function searchCategoria($params) {
         return $this->repository->searchCategoria($params);
@@ -35,8 +39,8 @@ class ReadCase
     {
         return $this->repository->ObtenerPadreehijoclase();
     }
-    public function Obtenerclasexid($idpadre) {
-        return $this->repository->Obtenerclasexid($idpadre);
+    public function editSubcate($params) {
+        return $this->repository->editSubcate($params);
     }
     public function viewchild($idpadre) {
         return $this->repository->viewchild($idpadre);

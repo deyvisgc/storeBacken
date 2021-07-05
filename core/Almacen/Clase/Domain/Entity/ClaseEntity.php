@@ -25,11 +25,12 @@ class ClaseEntity
      */
     private IDPADRE $IDPADRE;
 
-    public function __construct(CLASSNAME $classname, IDHIJO $id_Clasesuperior)
+    public function __construct(IDPADRE $idPadre,CLASSNAME $classname, IDHIJO $id_Clasesuperior)
     {
 
         $this->classname = $classname;
         $this->id_Clasesuperior = $id_Clasesuperior;
+        $this->idPadre = $idPadre;
     }
 
     /**
@@ -56,14 +57,27 @@ class ClaseEntity
         return $this->IDPADRE;
     }
 
-    static function create(CLASSNAME $classname, IDHIJO $id_Clasesuperior)
+     function createCategoria() : array
     {
-        return new self($classname, $id_Clasesuperior);
+        return [
+            'clas_id_clase_superior' => $this->IdClasesuperior()->getIdclasesupe(),
+            'clas_name' => $this->Classname()->getClassName(),
+            'clas_status' => 'active'
+        ];
     }
 
-    static function update(IDPADRE $IDPADRE,IDHIJO $id_hijo)
+     function updateCategoria(): array
     {
-        return ['id_clase_producto' => $IDPADRE->getIdpadre(),'clas_id_clase_superior' => $id_hijo->getIdclasesupe()];
+        return [
+            'clas_name' => $this->Classname()->getClassName()
+        ];
+    }
+    function updateSubCategoria(): array
+    {
+        return [
+            'clas_name' => $this->Classname()->getClassName(),
+            'clas_id_clase_superior' =>$this->IdClasesuperior()->getIdclasesupe()
+        ];
     }
 
 

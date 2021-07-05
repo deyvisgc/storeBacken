@@ -22,14 +22,12 @@ class CreateBridge
 
         $this->claseSql = $claseSql;
     }
-    public function __invoke(Request $request)
+    public function categoria($request)
     {
-        $classnname=$request['data']['Cla_nombre'];
-        $idclasesupe=$request['data']['clase_superior'];
+        $idclase=$request['id_categoria'];
+        $categoria=$request['nombre_categoria'];
+        $clase_superior=$request['clase_superior'];
         $createClass= new CreateCase($this->claseSql);
-        if ($idclasesupe == '') {
-            $idclasesupe=0;
-        }
-      return  $createClass->__invoke($classnname, $idclasesupe);
+      return  $createClass->create($idclase, $categoria, $clase_superior);
     }
 }

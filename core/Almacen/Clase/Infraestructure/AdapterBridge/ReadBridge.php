@@ -22,10 +22,14 @@ class ReadBridge
 
         $this->clase = $claseSql;
     }
-     function getCategoria($params)
+    function getCategoria($params)
     {
         $readcase= new ReadCase($this->clase);
         return $readcase->getCategoria($params);
+    }
+    function editCategory($id) {
+        $readcase= new ReadCase($this->clase);
+        return $readcase->editCategory($id);
     }
     function searchCategoria($params) {
         $readcase= new ReadCase($this->clase);
@@ -46,9 +50,9 @@ class ReadBridge
         $readcase= new ReadCase($this->clase);
         return $readcase->claserecursiva();
     }
-    public function __Obtenerclasexid($idpadre) {
+    public function editSubcate($idpadre) {
         $readcase= new ReadCase($this->clase);
-        return $readcase->Obtenerclasexid($idpadre);
+        return $readcase->editSubcate($idpadre);
     }
     public function __viewchild($idpadre) {
         $readcase= new ReadCase($this->clase);
