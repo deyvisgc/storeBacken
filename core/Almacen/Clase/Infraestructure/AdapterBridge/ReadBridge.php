@@ -27,35 +27,16 @@ class ReadBridge
         $readcase= new ReadCase($this->clase);
         return $readcase->getCategoria($params);
     }
-    function editCategory($id) {
-        $readcase= new ReadCase($this->clase);
-        return $readcase->editCategory($id);
-    }
     function searchCategoria($params) {
         $readcase= new ReadCase($this->clase);
         return $readcase->searchCategoria($params);
     }
-    public function __invokexid(int $id)
-    {
+    function editCategory($id) {
         $readcase= new ReadCase($this->clase);
-        return $readcase->__invokexid($id);
+        return $readcase->editCategory($id);
     }
-    public function __clasesuperior()
-    {
-        $readcase= new ReadCase($this->clase);
-        return $readcase->clasesuperior();
-    }
-    public function __getclaserecursiva()
-    {
-        $readcase= new ReadCase($this->clase);
-        return $readcase->claserecursiva();
-    }
-    public function editSubcate($idpadre) {
+    function editSubcate($idpadre) {
         $readcase= new ReadCase($this->clase);
         return $readcase->editSubcate($idpadre);
-    }
-    public function __viewchild($idpadre) {
-        $readcase= new ReadCase($this->clase);
-        return $readcase->viewchild($idpadre);
     }
 }

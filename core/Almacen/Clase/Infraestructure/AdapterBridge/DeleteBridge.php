@@ -21,9 +21,4 @@ class DeleteBridge
     {
         $this->clase = $claseSql;
     }
-    public function __invokexid(int $idclase)
-    {
-        $readcase= new DeleteCase($this->clase);
-        return $readcase->__invokexid($idclase);
-    }
 }

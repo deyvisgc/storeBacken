@@ -48,7 +48,6 @@ class ClaseSql implements ClaseRepository
             return $exepciones->SendStatus();
         }
     }
-
     function getCategoria($params)
     {
         try {
@@ -56,33 +55,13 @@ class ClaseSql implements ClaseRepository
             $cantidadRegistros = $params['cantidadRegistros'];
             $categoria = $this->Categorias($numeroRecnum, $cantidadRegistros);
             $subCategoria = $this->subCategoria();
-            return $subCategoria;
+            $exepciones =  new Exepciones(true, 'Categorias Encontradas', 200,['categoria'=>$categoria[0],'numeroRecnum'=>$categoria[1], 'noMore' => $categoria[2], 'subCate'=>$subCategoria]);
+            return $exepciones->SendStatus();
         } catch (QueryException $exception) {
-            return $exception->getMessage();
+            $exepciones =  new Exepciones(false, $exception->getMessage(), $exception->getCode(),[]);
+            return $exepciones->SendStatus();
         }
     }
-    function getclasepadre()
-    {
-        return $this->ClasePadre();
-    }
-
-    function delete(int $id)
-    {
-        // TODO: Implement delete() method.
-    }
-
-    function CambiarStatus(int $id)
-    {
-        // TODO: Implement CambiarStatus() method.
-    }
-
-    function ObtenerPadreehijoclase()
-    {
-        $cate = $this->Read();
-        $query= $this->Padreehijoclase();
-        return array('categorias'=>$cate, 'padreehijos'=>$query);
-    }
-
     function editSubcate($params)
     {
         try {
@@ -108,42 +87,6 @@ class ClaseSql implements ClaseRepository
             return $exepciones->SendStatus();
         }
     }
-    function Update(array $data)
-    {
-        try {
-            $idpadre = $data['id_clase_producto'];
-            $idhijo = $data['clas_id_clase_superior'];
-            $status = DB::table('clase_producto')->where('id_clase_producto',$idhijo)->
-                      update(['clas_id_clase_superior' =>$idpadre]);
-            if ($status === 1) {
-                return ['status'=>true, 'message' => 'Actualizado Correctamente'];
-            } else {
-                return ['status'=>false, 'message' => 'Error al Actualizar'];
-            }
-        }catch (\Exception $exception) {
-            return $exception->getMessage();
-        }
-    }
-
-    function viewchild(int $idpadre)
-    {
-        return $this->Clasehijoxidpadre($idpadre);
-    }
-
-    function Actualizarcate(int $idclase, string $nombrecate)
-    {
-        try {
-            $query = DB::table('clase_producto')->where('id_clase_producto',$idclase)->update(['clas_name'=>$nombrecate]);
-            if ($query === 1) {
-                return ['status'=>true, 'message'=>'Categoria Actualizada Correctamente'];
-            } else {
-                return ['status'=>false, 'message'=>'Error al  Actualizar esta Categoria'];
-            }
-        }catch (\Exception $exception) {
-            return  $exception->getMessage();
-        }
-    }
-
     function ChangeStatusCate(int $idclase, string $status)
     {
         try {
@@ -166,26 +109,30 @@ class ClaseSql implements ClaseRepository
             return $exepciones->SendStatus();
         }
     }
-
-    function ChangeStatusCateRecursiva(int $idclase, string $status)
+    function ChangeStatusSubCate(int $idclase, string $status)
     {
         try {
             if ($status === 'active') {
                 $status = 'disable';
+                $message = 'Sub categoria Desactivada correctamente';
+                $messageError = 'Error al desactivar esta sub categoria';
             } else {
                 $status = 'active';
+                $message = 'Sub categoria Activada correctamente';
+                $messageError = 'Error al activar esta sub categoria';
             }
             $query = DB::table('clase_producto')->where('id_clase_producto',$idclase)->update(['clas_status'=>$status]);
             if ($query === 1) {
-                return ['status'=>true, 'message'=>'Estado de esta categoria canbiada'];
+                $exepciones = new Exepciones(true,$message, 200, []);
             } else {
-                return ['status'=>false, 'message'=>'Error al  Cambiar el estado de esta actegoria'];
+                $exepciones = new Exepciones(false,$messageError, 403, []);
             }
+            return $exepciones->SendStatus();
         }catch (\Exception $exception) {
-            return $exception->getMessage();
+            $exepciones = new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
+            return $exepciones->SendStatus();
         }
     }
-
     function searchCategoria($params)
     {
         try {
@@ -201,7 +148,6 @@ class ClaseSql implements ClaseRepository
             return $ecepciones->SendStatus();
         }
     }
-
     function editCategory($id)
     {
         try {
@@ -212,7 +158,6 @@ class ClaseSql implements ClaseRepository
             return $excepciones->SendStatus();
         } catch (\Exception $exception) {
             $excepciones = new Exepciones(false,$exception->getMessage(),$exception->getCode(),[]);
-
             return $excepciones->SendStatus();
         }
     }

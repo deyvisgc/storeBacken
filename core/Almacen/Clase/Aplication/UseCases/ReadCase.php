@@ -27,23 +27,8 @@ class ReadCase
     function searchCategoria($params) {
         return $this->repository->searchCategoria($params);
     }
-    public function __invokexid(int $idproducto)
-    {
-        return $this->repository->Readxid($idproducto);
-    }
-    public function clasesuperior()
-    {
-        return $this->repository->getclasepadre();
-    }
-    public function claserecursiva()
-    {
-        return $this->repository->ObtenerPadreehijoclase();
-    }
     public function editSubcate($params) {
         return $this->repository->editSubcate($params);
-    }
-    public function viewchild($idpadre) {
-        return $this->repository->viewchild($idpadre);
     }
 
 }

@@ -104,7 +104,7 @@ class ProductoSql implements ProductoRepository
 
 
             $queryXLote->join('product_por_lotes as pl', 'pl.id_product', '=', 'pro.id_product')
-                  ->join('clase_producto as subclase', 'pro.id_subclase', 'subclase.id_clase_producto')
+                  ->leftJoin('clase_producto as subclase', 'pro.id_subclase', 'subclase.id_clase_producto')
                   ->join('clase_producto as cp', 'pro.id_clase_producto', '=', 'cp.id_clase_producto')
                   ->join('unidad_medida as um', 'pro.id_unidad_medida', '=', 'um.id_unidad_medida')
                   ->select('pro.*', 'cp.clas_name as clasePadre', 'subclase.clas_name as classHijo', 'um.um_name as unidad')
@@ -114,8 +114,8 @@ class ProductoSql implements ProductoRepository
                   ->orderBy('pro.id_product', 'Asc')
                   ->get();
             $productoxlote= $queryXLote->get();
-            $queryXunidad->join('clase_producto as subcla', 'pro.id_subclase', 'subcla.id_clase_producto')
-                    ->join('clase_producto as clp', 'pro.id_clase_producto', '=', 'clp.id_clase_producto')
+            $queryXunidad->leftJoin('clase_producto as subcla', 'pro.id_subclase', 'subcla.id_clase_producto')
+                    ->leftJoin('clase_producto as clp', 'pro.id_clase_producto', '=', 'clp.id_clase_producto')
                     ->join('unidad_medida as ume', 'pro.id_unidad_medida', '=', 'ume.id_unidad_medida')
                     ->join('product_por_unidades as proun', 'proun.id_product', '=', 'pro.id_product')
                     ->select('pro.*', 'clp.clas_name as clasePadre', 'subcla.clas_name as classHijo', 'ume.um_name as unidad', 'proun.*')

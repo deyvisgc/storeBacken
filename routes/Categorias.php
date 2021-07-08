@@ -23,23 +23,11 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('Almacen-clase','Almacen\Clase\ClaseController@Read');
     $app->post('Almacen-clase','Almacen\Clase\ClaseController@store');
     $app->get('Almacen-edit-subCategorias','Almacen\Clase\ClaseController@editCategoria');
+    $app->patch('Almacen-clase-changeStatusCate','Almacen\Clase\ClaseController@ChangeStatusCate');
 });
 //subCategorias
 $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('obtener-sub-categorias','Almacen\Clase\ClaseController@ObtenerSubCategorias');
+    $app->patch('Almacen-sub-categorias-channgeStatus','Almacen\Clase\ClaseController@ChangeStatusSubCate');
 });
-
-//Clase
-/*
-$router->get('api/v1/Almacen/Clase/superior','Almacen\Clase\ClaseController@getclasesuperior');
-$router->get('api/v1/Almacen/Clase/recursiveChildren','Almacen\Clase\ClaseController@recursiveChildren');
-$router->get('api/v1/Almacen/Clase/ObtenerclasPadreYhijo/{idpadre}','Almacen\Clase\ClaseController@Obtenerclasexid');
-$router->patch('api/v1/Almacen/Clase/ActualizarclasPadreYhijo','Almacen\Clase\ClaseController@update');
-$router->get('api/v1/Almacen/Clase/viewchild/{idpadre}','Almacen\Clase\ClaseController@viewchild');
-$router->patch('api/v1/Almacen/Clase/Actualizarcate','Almacen\Clase\ClaseController@Actualizarcate');
-$router->patch('api/v1/Almacen/Clase/Changestatuscate','Almacen\Clase\ClaseController@Changestatuscate');
-$router->patch('api/v1/Almacen/Clase/ChangestatusCateRecursiva','Almacen\Clase\ClaseController@ChangestatusCateRecursiva');
-$router->get('api/v1/Almacen/Clase/filtrarxclasepadre/{idpadre}','Almacen\Clase\ClaseController@filtrarxclasepadre');
-*/
-
 

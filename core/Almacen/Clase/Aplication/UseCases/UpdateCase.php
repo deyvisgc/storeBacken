@@ -23,23 +23,11 @@ class UpdateCase
     {
         $this->repository = $repository;
     }
-
-    public function __invoke(string $accion,int $idpadre,int $idhijo)
-    {
-        $id_padre=new IDPADRE($idpadre);
-        $id_hijo= new IDHIJO($idhijo);
-        $Clase = ClaseEntity::update($id_padre, $id_hijo);
-        return $this->repository->Update($Clase);
-    }
-    public function Actualizaracate(int $idclase,string $namecate)
-    {
-        return $this->repository->Actualizarcate($idclase,$namecate);
-    }
      public function ChangeStatus(int $idclase, string $status) {
          return $this->repository->ChangeStatusCate($idclase,$status);
      }
 
-    public function ChangeStatusRecursiva(int $idclase, string $status) {
-        return $this->repository->ChangeStatusCateRecursiva($idclase,$status);
+    public function ChangeStatusSubCate(int $idclase, string $status) {
+        return $this->repository->ChangeStatusSubCate($idclase,$status);
     }
 }

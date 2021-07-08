@@ -23,20 +23,19 @@ trait QueryTraits
     {
 
         $subQuery = DB::table('clase_producto')
-                   ->select('clas_name as clasehijo', 'clas_id_clase_superior', 'id_clase_producto')
+                   ->select('clas_name as clasehijo', 'class_code as codeHijo', 'clas_status as statusHijo', 'clas_id_clase_superior', 'id_clase_producto')
                     ->where('clas_id_clase_superior', '<>', 0)
-                    ->groupBy('clas_name', 'clas_id_clase_superior', 'id_clase_producto');
+                    ->groupBy('clas_name', 'class_code', 'clas_status', 'clas_id_clase_superior', 'id_clase_producto');
         $query = DB::table('clase_producto as cp')
                  ->joinSub($subQuery, 'sub', function ($join) {
                      $join->on('cp.id_clase_producto', '=', 'sub.clas_id_clase_superior');
                  })
-                 ->groupBy('sub.clas_name', 'sub.clas_id_clase_superior', 'sub.id_clase_producto')
                  ->get();
         return $query;
     }
     public function Categorias($numeroRecnum, $cantidadRegistros)
     {
-        $subquery = DB::table('clase_producto')
+        /* $subquery = DB::table('clase_producto')
             ->select("clas_id_clase_superior")
             ->where('clas_id_clase_superior', '<>', 0)
             ->groupBy('clas_id_clase_superior');
@@ -51,7 +50,10 @@ trait QueryTraits
             ->take($cantidadRegistros)
             ->groupBy('cp.clas_name', 'cp.class_code', 'cp.id_clase_producto', 'cp.clas_status')
             ->get();
-
+        */
+        $query = DB::select("select cp.clas_name, cp.id_clase_producto, cp.class_code, cp.clas_status from (select clas_id_clase_superior, clas_status from clase_producto where clas_id_clase_superior <> 0) as subclase,
+                                   clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior or cp.clas_id_clase_superior = 0 group by cp.clas_name, cp.id_clase_producto, cp.class_code, cp.clas_status
+                                   order by cp.id_clase_producto desc LIMIT $cantidadRegistros OFFSET $numeroRecnum ");
         if (count($query) === 0) {
             $query = DB::table('clase_producto')
                 ->skip($numeroRecnum)
@@ -66,7 +68,7 @@ trait QueryTraits
             $numberRecnum = $numeroRecnum + count($query);
             $noMore = false;
         }
-        return ['categoria'=>$query,'numeroRecnum'=>$numberRecnum, 'noMore' => $noMore];
+        return [$query,$numberRecnum,$noMore];
     }
     public function Padreehijoclase()
     {

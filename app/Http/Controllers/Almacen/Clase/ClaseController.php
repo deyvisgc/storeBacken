@@ -54,7 +54,6 @@ class ClaseController extends Controller
     function searchCategoria(Request $request) {
         return response()->json($this->readBridge->searchCategoria($request->params));
     }
-
     function store(Request $request)
     {
         return response()->json($this->createBridge->categoria($request['data']));
@@ -62,35 +61,16 @@ class ClaseController extends Controller
     function editCategory($id){
         return response()->json($this->readBridge->editCategory($id));
     }
-    public function getclasesuperior()
-    {
-        return response()->json($this->readBridge->__clasesuperior());
-    }
-
-    public function recursiveChildren()
-    {
-        return response()->json($this->readBridge->__getclaserecursiva());
-    }
-
-    public function editCategoria(Request $request) {
+    function editCategoria(Request $request) {
         return response()->json($this->readBridge->editSubcate($request));
     }
-    public function update(Request $request) {
-        return response()->json($this->updateBridge->__invoke($request->data));
+    function ChangeStatusCate(Request $request) {
+        return response()->json($this->updateBridge->ChangeStatusCate($request->data));
     }
-    public function viewchild(int $id) {
-        return response()->json($this->readBridge->__viewchild($id));
+    function ChangeStatusSubCate(Request $request) {
+        return response()->json($this->updateBridge->ChangeStatusSubCate($request->data));
     }
-    public function Actualizarcate(Request $request) {
-        return response()->json($this->updateBridge->__Actualizarcate($request->data));
-    }
-    public function Changestatuscate(Request $request) {
-        return response()->json($this->updateBridge->__Changestatu($request->data));
-    }
-    public function ChangestatusCateRecursiva(Request $request) {
-        return response()->json($this->updateBridge->__ChangestatuRecursiva($request->data));
-    }
-     function ObtenerSubCategorias(Request $request) {
+    function ObtenerSubCategorias(Request $request) {
         return response()->json($this->Padreehijoclasexid($request));
     }
 
