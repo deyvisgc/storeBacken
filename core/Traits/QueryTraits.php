@@ -33,7 +33,7 @@ trait QueryTraits
                  ->get();
         return $query;
     }
-    public function Categorias($numeroRecnum, $cantidadRegistros, $fechaDesde, $fechaHasta)
+    public function Categorias($numeroRecnum, $cantidadRegistros)
     {
         /* $subquery = DB::table('clase_producto')
             ->select("clas_id_clase_superior")
