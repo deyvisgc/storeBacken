@@ -17,8 +17,8 @@ class GetPeopleUseCase
     {
         $this->personRepository = $personRepository;
     }
-   function getPerson() {
-        return $this->personRepository->getPerson();
+   function getPerson($request) {
+        return $this->personRepository->getPerson($request);
    }
    function getPersonById(int $idPerson) {
        return $this->personRepository->getPersonById($idPerson);
