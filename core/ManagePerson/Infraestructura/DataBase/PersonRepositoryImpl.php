@@ -131,17 +131,29 @@ class PersonRepositoryImpl implements PersonRepository
             $cantidadRegistros = $request['cantidadRegistros'];
             $searchText = $request['text'];
             $typePersona = $request['typePersona'];
+            $filter = $request['filter'];
             $person = DB::table('persona');
             if ($searchText) {
                 $person->where('per_numero_documento', 'like', '%'.$searchText.'%');
                 $person->orWhere('per_razon_social','like', '%'.$searchText.'%');
             }
+            if ($filter) {
+                if ($filter === 'all') {
+                    $person->where('per_tipo', '=', $typePersona)
+                        ->where('per_status', '=', 'active')
+                        ->orderBy('id_persona', 'desc')
+                        ->get();
+                    $lista = $person->get();
+                    $excepcion = new Exepciones(true,'Informacion encontrada', 200, ['lista'=>$lista, 'numeroRecnum'=>0, 'noMore'=>true, 'cantidad'=> count($lista)]);
+                    return $excepcion->SendStatus();
+                }
+            }
             $person->where('per_tipo', '=', $typePersona)
-                   ->where('per_status', '=', 'active')
-                   ->skip($numeroRecnum)
-                   ->take($cantidadRegistros)
-                   ->orderBy('id_persona', 'desc')
-                   ->get();
+                ->where('per_status', '=', 'active')
+                ->skip($numeroRecnum)
+                ->take($cantidadRegistros)
+                ->orderBy('id_persona', 'desc')
+                ->get();
             $lista = $person->get();
             if (count($lista) < $cantidadRegistros) {
                 $numberRecnum = 0;
