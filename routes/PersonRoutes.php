@@ -7,4 +7,5 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->put('update-status', 'Persona\PersonaController@updateStatusPerson');
     $app->post('delete-person', 'Persona\PersonaController@deletePerson');
     $app->post('crear-person', 'Persona\PersonaController@createPerson');
+    $app->get('search-person', 'Persona\TipoPersonaController@find');
 });
