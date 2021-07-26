@@ -18,9 +18,14 @@ class TipoPersonaController extends Controller
     public function __construct(ComprasRepositoryInterface $repository)
     {
         $this->repository = $repository;
+        $this->middleware('auth');
+
     }
 
     public function find(Request $request) {
-        return $this->repository->find($request->numeroDocumento);
+        return response()->json($this->repository->find($request));
+    }
+    function createPerson(Request $request) {
+        return response()->json($this->repository->create($request->params));
     }
 }

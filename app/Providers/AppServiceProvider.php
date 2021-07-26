@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             'App\Repository\Compras\ComprasRepositoryInterface',
-            'App\Repository\Compras\ComprasRepository'
+            'App\Repository\Compras\TypePersonaRepository'
         );
     }
 }

@@ -8,11 +8,11 @@ interface RepositoryInterface
 {
     public function all();
 
-    public function create(array  $data);
+    public function create($params);
 
     public function update(array $data, $id);
 
     public function delete($id);
 
-    public function find(string $docNumber);
+    public function find($params);
 }

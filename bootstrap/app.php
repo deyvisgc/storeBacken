@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__.'/../vendor/autoload.php';
-
+use \GuzzleHttp\Client;
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
     dirname(__DIR__)
 ))->bootstrap();
@@ -36,7 +36,16 @@ $app->withEloquent();
 | your own bindings here if you like or you can make another file.
 |
 */
-
+$app->singleton(\GuzzleHttp\Client::class, function () {
+    return new Client([
+        'base_uri' => 'https://dniruc.apisperu.com/api/v1/',
+        'headers' => [
+            'Content-Type' => "application/json",
+            'Authorization' => "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRlaXZpc2dhcmNpYUB1cGV1LmVkdS5wZSJ9.UwcemqJBjfujl0Sj1dQrZeUyhFm5PoRHWfEB4bI1pUU"
+        ],
+        'verify' => false
+    ]);
+});
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
