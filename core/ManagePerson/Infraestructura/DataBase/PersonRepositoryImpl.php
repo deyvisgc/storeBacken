@@ -9,6 +9,7 @@ use Core\ManagePerson\Domain\Entity\PersonEntity;
 use Core\ManagePerson\Domain\Repositories\PersonRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PersonRepositoryImpl implements PersonRepository
 {
@@ -123,14 +124,49 @@ class PersonRepositoryImpl implements PersonRepository
         }
     }
 
-    function getPerson()
+    function getPerson($request)
     {
         try {
-            $person = DB::table('persona as p')->get();
-            $excepcion = new Exepciones(true,'Informacion encontrada',200,$person);
+            $numeroRecnum = $request['numeroRecnum'];
+            $cantidadRegistros = $request['cantidadRegistros'];
+            $searchText = $request['text'];
+            $typePersona = $request['typePersona'];
+            $filter = $request['filter'];
+            $person = DB::table('persona');
+            if ($searchText) {
+                $person->where('per_numero_documento', 'like', '%'.$searchText.'%');
+                $person->orWhere('per_razon_social','like', '%'.$searchText.'%');
+            }
+            if ($filter) {
+                if ($filter === 'all') {
+                    $person->where('per_tipo', '=', $typePersona)
+                        ->where('per_status', '=', 'active')
+                        ->orderBy('id_persona', 'desc')
+                        ->get();
+                    $lista = $person->get();
+                    $excepcion = new Exepciones(true,'Informacion encontrada', 200, ['lista'=>$lista, 'numeroRecnum'=>0, 'noMore'=>true, 'cantidad'=> count($lista)]);
+                    return $excepcion->SendStatus();
+                }
+            }
+            $person->where('per_tipo', '=', $typePersona)
+                ->where('per_status', '=', 'active')
+                ->skip($numeroRecnum)
+                ->take($cantidadRegistros)
+                ->orderBy('id_persona', 'desc')
+                ->get();
+            $lista = $person->get();
+            if (count($lista) < $cantidadRegistros) {
+                $numberRecnum = 0;
+                $noMore = true;
+            } else {
+                $numberRecnum = (int)$numeroRecnum + count($lista);
+                $noMore = false;
+            }
+            $excepcion = new Exepciones(true,'Informacion encontrada', 200, ['lista'=>$lista, 'numeroRecnum'=>$numberRecnum, 'noMore'=>$noMore, 'cantidad'=> count($lista)]
+            );
             return $excepcion->SendStatus();
         } catch (QueryException $exception) {
-            $excepcion = new Exepciones(false,'Informacion no encontrada',403,[]);
+            $excepcion = new Exepciones(false,$exception->getMessage(),$exception->getCode(),[]);
             return $excepcion->SendStatus();
         }
     }

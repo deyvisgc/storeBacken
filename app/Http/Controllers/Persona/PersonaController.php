@@ -51,8 +51,8 @@ class PersonaController extends Controller
         $this->getPersonAdapter = $getPersonAdapter;
         $this->middleware('auth');
     }
-    function getPerson() {
-        return response()->json($this->getPersonAdapter->getPerson());
+    function getPerson(Request $request) {
+        return response()->json($this->getPersonAdapter->getPerson($request));
     }
     function createPerson(Request $request) {
         $razonSocial = $request->person['per_razon_social'];

@@ -12,6 +12,6 @@ interface PersonRepository
      function updatePerson(PersonEntity $personEntity, $perfil);
      function deletePerson(int $idPerson);
      function getPersonById(int $idPerson);
-     function getPerson();
+     function getPerson($request);
      function changeStatusPerson($data);
 }
