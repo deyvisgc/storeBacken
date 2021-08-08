@@ -2,6 +2,7 @@
 -- version 5.1.0
 -- https://www.phpmyadmin.net/
 --
+use dbshop;
 -- Servidor: 127.0.0.1
 -- Tiempo de generación: 09-07-2021 a las 05:06:04
 -- Versión del servidor: 10.4.18-MariaDB
@@ -25,7 +26,7 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `addCarrCompra` (IN `in_cantidad` INT, IN `in_precio_compra` DECIMAL(15,2), IN `in_idProducto` INT, IN `in_idProveedor` INT, IN `in_idCaja` INT, IN `in_pro_nombre` VARCHAR(200), IN `in_cantidad_minima` INT, IN `in_codeBarra` VARCHAR(50))  begin
+CREATE PROCEDURE `addCarrCompra` (IN `in_cantidad` INT, IN `in_precio_compra` DECIMAL(15,2), IN `in_idProducto` INT, IN `in_idProveedor` INT, IN `in_idCaja` INT, IN `in_pro_nombre` VARCHAR(200), IN `in_cantidad_minima` INT, IN `in_codeBarra` VARCHAR(50))  begin
     declare subtotalCompra decimal(15,2);
     declare cantidad_update decimal(15,2);
     declare codigo nvarchar(19);
@@ -91,7 +92,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `addCarrCompra` (IN `in_cantidad` IN
      group by car.id,car.idProducto,car.idPersona,car.idCaja,car.cantidad,car.precio, car.subTotal,pro.pro_name, per.per_razon_social;
      end$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `addCompra` (IN `in_subtotal` DECIMAL(15,2), IN `in_total` DECIMAL(15,2), IN `in_igv` DECIMAL(15,2), IN `in_tipoComprobante` VARCHAR(20), IN `in_tipoPago` VARCHAR(20), IN `in_idProveedor` INT, IN `in_cuotas` INT, IN `in_montoPagado` DECIMAL(15,2), IN `in_montoDeudaOrVuelto` DECIMAL(15,2))  begin
+CREATE PROCEDURE `addCompra` (IN `in_subtotal` DECIMAL(15,2), IN `in_total` DECIMAL(15,2), IN `in_igv` DECIMAL(15,2), IN `in_tipoComprobante` VARCHAR(20), IN `in_tipoPago` VARCHAR(20), IN `in_idProveedor` INT, IN `in_cuotas` INT, IN `in_montoPagado` DECIMAL(15,2), IN `in_montoDeudaOrVuelto` DECIMAL(15,2))  begin
     DECLARE in_idproducto int;
     DECLARE in_cantidad int;
     DECLARE in_precio int;
