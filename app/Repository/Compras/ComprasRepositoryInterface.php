@@ -8,5 +8,5 @@ use App\Repository\RepositoryInterface;
 
 interface ComprasRepositoryInterface extends RepositoryInterface
 {
-
+    function getSerie($params);
 }

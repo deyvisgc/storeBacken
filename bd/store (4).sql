@@ -1042,3 +1042,85 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+--por correr
+--19/08/2021
+create table unidad_medida
+(
+    id_unidad_medida  int auto_increment
+        primary key,
+    um_name           varchar(50) not null,
+    um_status         varchar(20) not null,
+    um_fecha_creacion timestamp   null,
+    um_code           varchar(10) null
+)
+    charset = utf8;
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (1, 'BOBINAS', 'active', '2021-08-19 07:59:08', '4A');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (2, 'BALDE', 'active', '2021-08-19 07:59:33', 'BJ');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (3, 'BARRILES', 'active', '2021-08-19 07:59:54', 'BLL');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (4, 'BOLSA', 'active', '2021-08-19 08:00:07', 'BG');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (5, 'BOTELLAS', 'active', '2021-08-19 08:00:30', 'BO');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (6, 'CAJA', 'active', '2021-08-19 08:00:57', 'BX');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (7, 'CARTONES', 'active', '2021-08-19 08:01:15', 'CT');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (8, 'CENTIMETRO CUADRADO', 'active', '2021-08-19 08:01:40', 'CMK');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (9, 'CENTIMETRO CUBICO', 'active', '2021-08-19 08:01:56', 'CMQ');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (10, 'CENTIMETRO LINEAL', 'active', '2021-08-19 08:02:25', 'CMT');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (11, 'CIENTO DE UNIDADES', 'active', '2021-08-19 08:02:40', 'CEN');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (12, 'CILINDRO', 'active', '2021-08-19 08:02:59', 'CY');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (13, 'CONOS', 'active', '2021-08-19 08:03:21', 'CJ');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (14, 'DOCENA', 'active', '2021-08-19 08:03:47', 'DZN');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (15, 'DOCENA POR 10**6', 'active', '2021-08-19 08:04:22', 'DZP');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (16, 'FARDO', 'active', '2021-08-19 08:04:36', 'BE');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (17, 'GALON INGLES (4,545956L)', 'active', '2021-08-19 08:04:55', 'GLI');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (18, 'GRAMO', 'active', '2021-08-19 08:05:17', 'GRM');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (19, 'GRUESA', 'active', '2021-08-19 08:05:30', 'GRO');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (20, 'HECTOLITRO', 'active', '2021-08-19 08:05:51', 'HLT');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (21, 'HOJA
+', 'active', '2021-08-19 08:06:16', 'LEF');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (22, 'JUEGO', 'active', '2021-08-19 08:07:57', 'SET');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (23, 'KILOGRAMO
+', 'active', '2021-08-19 08:08:16', 'KGM');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (24, 'KILOMETRO', 'active', '2021-08-19 08:08:33', 'KTM');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (25, 'KILOVATIO HORA', 'active', '2021-08-19 08:08:54', 'KWH');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (26, 'KIT', 'active', '2021-08-19 08:09:21', 'KT');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (27, 'LATAS', 'active', '2021-08-19 08:09:33', 'CA');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (28, 'LIBRAS', 'active', '2021-08-19 08:09:58', 'LBR');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (29, 'LITRO', 'active', '2021-08-19 08:10:16', 'LTR');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (30, 'MEGAWATT HORA', 'active', '2021-08-19 08:10:35', 'MWH');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (31, 'METRO', 'active', '2021-08-19 08:10:55', 'MTR');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (32, 'METRO CUADRADO
+', 'active', '2021-08-19 08:11:16', 'MTK');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (33, 'METRO CUBICO', 'active', '2021-08-19 08:11:32', 'MTQ');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (34, 'MILIGRAMOS', 'active', '2021-08-19 08:11:49', 'MGM');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (35, 'MILILITRO', 'active', '2021-08-19 08:12:07', 'MLT');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (36, 'MILIMETRO', 'active', '2021-08-19 08:12:20', 'MMT');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (37, 'MILIMETRO CUADRADO', 'active', '2021-08-19 08:12:41', 'MMK');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (38, 'MILIMETRO CUBICO', 'active', '2021-08-19 08:12:59', 'MMQ');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (39, 'MILLARES
+', 'active', '2021-08-19 08:13:14', 'MLL');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (40, 'MILLON DE UNIDADES', 'active', '2021-08-19 08:13:33', 'UM');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (41, 'ONZAS', 'active', '2021-08-19 08:13:53', 'ONZ');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (42, 'PALETAS', 'active', '2021-08-19 08:14:08', 'PF');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (43, 'PAQUETE
+', 'active', '2021-08-19 08:14:29', 'PK');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (44, 'PAR', 'active', '2021-08-19 08:14:51', 'PR');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (45, 'PIES', 'active', '2021-08-19 08:15:05', 'FOT');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (46, 'PIES CUADRADOS', 'active', '2021-08-19 08:15:20', 'FTK');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (47, 'PIES CUBICOS', 'active', '2021-08-19 08:15:37', 'FTQ');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (48, 'PIEZAS', 'active', '2021-08-19 08:15:52', 'C62');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (49, 'PLACAS', 'active', '2021-08-19 08:16:10', 'PG');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (50, 'PLIEGO', 'active', '2021-08-19 08:16:27', 'ST');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (51, 'PULGADAS', 'active', '2021-08-19 08:16:49', 'INH');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (52, 'RESMA', 'active', '2021-08-19 08:17:07', 'RM');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (53, 'TAMBOR', 'active', '2021-08-19 08:17:34', 'DR');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (54, 'TONELADA CORTA', 'active', '2021-08-19 08:17:58', 'STN');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (55, 'TONELADA LARGA', 'active', '2021-08-19 08:18:14', 'LTN');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (56, 'TONELADAS', 'active', '2021-08-19 08:18:28', 'TNE');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (57, 'TUBOS', 'active', '2021-08-19 08:18:48', 'TU');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (58, 'UNIDAD (BIENES)', 'active', '2021-08-19 08:19:06', 'NIU');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (59, 'UNIDAD (SERVICIOS)', 'active', '2021-08-19 08:19:22', 'ZZ');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (60, 'US GALON (3,7843 L)', 'active', '2021-08-19 08:19:50', 'GLL');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (61, 'YARDA', 'active', '2021-08-19 08:20:05', 'YRD');
+insert into sysventas.unidad_medida (id_unidad_medida, um_name, um_status, um_fecha_creacion, um_code) values (62, 'YARDA CUADRADA', 'active', '2021-08-19 08:20:31', 'YDK');
+

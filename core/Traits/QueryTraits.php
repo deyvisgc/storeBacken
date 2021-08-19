@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 trait QueryTraits
 {
-    public function Clasehijoxidpadre(int $idpadre)
+    public function subCategoriaxID(int $idpadre)
     {
         return DB::select("select  subclase.clasehijo, subclase.clas_id_clase_superior, subclase.id_clase_producto from
                               (select clas_name as clasehijo ,clas_id_clase_superior, id_clase_producto  from
@@ -35,30 +35,15 @@ trait QueryTraits
     }
     public function Categorias($numeroRecnum, $cantidadRegistros)
     {
-        /* $subquery = DB::table('clase_producto')
-            ->select("clas_id_clase_superior")
-            ->where('clas_id_clase_superior', '<>', 0)
-            ->groupBy('clas_id_clase_superior');
-
-        $query = DB::table('clase_producto as cp')
-            ->joinSub($subquery, 'sub', function ($join){
-                $join->on('cp.id_clase_producto', '<>', 'sub.clas_id_clase_superior');
-            })
-            ->select('cp.clas_name', 'cp.class_code', 'cp.id_clase_producto', 'cp.clas_status')
-            ->where('clas_status', '=', 'active')
-            ->skip($numeroRecnum)
-            ->take($cantidadRegistros)
-            ->groupBy('cp.clas_name', 'cp.class_code', 'cp.id_clase_producto', 'cp.clas_status')
-            ->get();
-        */
         $query = DB::select("select cp.clas_name, cp.id_clase_producto, cp.class_code, cp.clas_status from (select clas_id_clase_superior, clas_status from clase_producto where clas_id_clase_superior <> 0) as subclase,
                                    clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior or cp.clas_id_clase_superior = 0 group by cp.clas_name, cp.id_clase_producto, cp.class_code, cp.clas_status
-                                   order by cp.id_clase_producto desc LIMIT $cantidadRegistros OFFSET $numeroRecnum ");
+                                   order by cp.id_clase_producto");
+        if ($numeroRecnum && $cantidadRegistros) {
+            $query->skip($numeroRecnum)
+                ->take($cantidadRegistros);
+        }
         if (count($query) === 0) {
-            $query = DB::table('clase_producto')
-                ->skip($numeroRecnum)
-                ->take($cantidadRegistros)
-                ->get();
+            $query = DB::table('clase_producto')->get();
         }
         if (count($query) < $cantidadRegistros) {
             $numberRecnum = 0;
@@ -68,7 +53,11 @@ trait QueryTraits
             $numberRecnum = $numeroRecnum + count($query);
             $noMore = false;
         }
-        return [$query,$numberRecnum,$noMore];
+        if ($numeroRecnum === 0 && $cantidadRegistros === 0) {
+            return  $query;
+        } else {
+            return [$query,$numberRecnum,$noMore];
+        }
     }
     public function Padreehijoclase()
     {

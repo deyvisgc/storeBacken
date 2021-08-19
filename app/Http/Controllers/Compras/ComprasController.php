@@ -5,6 +5,8 @@ use App\Exports\Excel\ComprasCredito;
 use App\Exports\Excel\ComprasCreditoBuyID;
 use App\Exports\HistorialPagosExport;
 use App\Http\Controllers\Controller;
+use App\Repository\Compras\ComprasRepositoryInterface;
+use App\Repository\Compras\ProveedorRepositoryInterface;
 use Core\Compras\Infraestructure\Adapter_Bridge\ReadBridge;
 use Core\Compras\Infraestructure\Adapter_Bridge\UpdateBridge;
 use Core\Traits\CarritoTraits;
@@ -29,11 +31,17 @@ class ComprasController extends Controller
      * @var UpdateBridge
      */
     private UpdateBridge $updateBridge;
+    /**
+     * @var ComprasRepositoryInterface
+     */
+    private ComprasRepositoryInterface $repository;
 
-    public function __construct(ReadBridge $readBridge, UpdateBridge $updateBridge)
+
+    public function __construct(ReadBridge $readBridge, UpdateBridge $updateBridge, ComprasRepositoryInterface $repository)
     {
         $this->redBridge = $readBridge;
         $this->updateBridge = $updateBridge;
+        $this->repository = $repository;
         $this->middleware('auth');
     }
     public function Proveedor() {
@@ -74,6 +82,9 @@ class ComprasController extends Controller
     }
     public function ChangeStatus(int $id) {
         return response()->json($this->updateBridge->__invokeUpdate($id));
+    }
+    public function getSerie(Request  $request) {
+        return response()->json($this->repository->getSerie($request));
     }
 
 }

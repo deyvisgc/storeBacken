@@ -5,17 +5,17 @@ namespace App\Http\Controllers\Persona;
 
 
 use App\Http\Controllers\Controller;
-use App\Repository\Compras\ComprasRepositoryInterface;
+use App\Repository\Compras\ProveedorRepositoryInterface;
 use Illuminate\Http\Request;
 
 class TipoPersonaController extends Controller
 {
     /**
-     * @var ComprasRepositoryInterface
+     * @var ProveedorRepositoryInterface
      */
-    private ComprasRepositoryInterface $repository;
+    private ProveedorRepositoryInterface $repository;
 
-    public function __construct(ComprasRepositoryInterface $repository)
+    public function __construct(ProveedorRepositoryInterface $repository)
     {
         $this->repository = $repository;
         $this->middleware('auth');

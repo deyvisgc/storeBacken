@@ -6,6 +6,8 @@ use App\Exports\Excel\Almacen\ExportProduct;
 use App\Exports\Excel\Productos\ExportarProductos;
 use App\Exports\Excel\Reportes\ExportarInventario;
 use App\Http\Controllers\Controller;
+use App\Repository\Almacen\Productos\ProductoRepositoryInterface;
+use App\Repository\Compras\ComprasRepositoryInterface;
 use App\Traits\Search\SeacrhTraits;
 use Barryvdh\DomPDF\Facade as PDF;
 use Core\Producto\Infraestructure\AdapterBridge\CreateBridge;
@@ -37,13 +39,19 @@ class ProductoController extends Controller
      * @var DeleteBridge
      */
     private DeleteBridge $deleteBridge;
+    /**
+     * @var ProductoRepositoryInterface
+     */
+    private ProductoRepositoryInterface $repository;
 
-    public function __construct(CreateBridge $createBridge,UpdateBridge $updateBridge,ReadBridge $readBridge,DeleteBridge $deleteBridge)
+    public function __construct(CreateBridge $createBridge,UpdateBridge $updateBridge,ReadBridge $readBridge,DeleteBridge $deleteBridge,
+                                ProductoRepositoryInterface $repository)
      {
          $this->createBridge = $createBridge;
          $this->updateBridge = $updateBridge;
          $this->readBridge = $readBridge;
          $this->deleteBridge =$deleteBridge;
+         $this->repository = $repository;
          $this->middleware('auth', ['except' => [
              'Exportar'
          ]]);
@@ -51,16 +59,20 @@ class ProductoController extends Controller
      use QueryTraits;
     function Read(Request $request)
     {
-        return response()->json($this->readBridge->__invoke($request));
+        return response()->json($this->repository->all($request));
     }
 
-    function Edit(Request $request)
+    function Edit(int $id)
     {
-        return response()->json($this->readBridge->Edit($request));
+        return response()->json($this->repository->edit($id));
     }
     function Store(Request $request)
     {
-        return response()->json($this->createBridge->__invoke($request));
+        return response()->json($this->repository->create($request->params));
+
+    }
+    function getSubCategoria($id) {
+        return response()->json($this->repository->show($id));
     }
     function delete(int $id)
     {
@@ -111,5 +123,11 @@ class ProductoController extends Controller
     }
     function AjustarStock(Request $request) {
         return response()->json($this->createBridge->ajustarStock($request->params));
+    }
+    function selectAtributos() {
+        return response()->json($this->repository->getAtributos());
+    }
+    function generarCodigo() {
+        return response()->json($this->repository->generarCodigoBarra());
     }
 }

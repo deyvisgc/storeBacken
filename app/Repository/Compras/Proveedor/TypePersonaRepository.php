@@ -1,14 +1,14 @@
 <?php
 
 
-namespace App\Repository\Compras;
+namespace App\Repository\Compras\Proveedor;;
 use App\Http\Excepciones\Exepciones;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Support\Facades\DB;
 
-class TypePersonaRepository implements ComprasRepositoryInterface
+class TypePersonaRepository implements ProveedorRepositoryInterface
 {
     // VARIABLES INSTANCES
     private $client;
@@ -16,7 +16,7 @@ class TypePersonaRepository implements ComprasRepositoryInterface
     {
         $this->client = $client;
     }
-    public function all()
+    public function all($params)
     {
         // TODO: Implement all() method.
     }
@@ -24,24 +24,30 @@ class TypePersonaRepository implements ComprasRepositoryInterface
     public function create($params)
     {
         try {
-            $status = DB::table('persona')
-                ->insert([
-                    'per_razon_social' => $params['per_razon_social'],
-                    'per_tipo_documento' => $params['typeDocument'],
-                    'per_numero_documento' => $params['docNumber'],
-                    'per_celular' => $params['phone'],
-                    'per_tipo' => $params['typePerson'],
-                    'per_status' => 'active',
-                    'per_direccion' =>$params['address'],
-                    'per_email' => $params['email'],
-                    'per_nombre' => $params['name']
-                ]);
-            if ($status) {
-                $exepciones = new Exepciones(true,'Proveedor registrado correctamente',200,[]);
+            $found = DB::table('persona')->where('per_numero_documento', $params['docNumber'])->exists();
+            if ($found) {
+                $exepciones = new Exepciones(false,'El proveedor ya existe',403,[]);
+                return $exepciones->SendStatus();
             } else {
-                $exepciones = new Exepciones(false,'Error al registrar proveedor',403,[]);
+                $status = DB::table('persona')
+                    ->insert([
+                        'per_razon_social' => $params['per_razon_social'],
+                        'per_tipo_documento' => $params['typeDocument'],
+                        'per_numero_documento' => $params['docNumber'],
+                        'per_celular' => $params['phone'],
+                        'per_tipo' => $params['typePerson'],
+                        'per_status' => 'active',
+                        'per_direccion' =>$params['address'],
+                        'per_email' => $params['email'],
+                        'per_nombre' => $params['name']
+                    ]);
+                if ($status) {
+                    $exepciones = new Exepciones(true,'Proveedor registrado correctamente',200,[]);
+                } else {
+                    $exepciones = new Exepciones(false,'Error al registrar proveedor',403,[]);
+                }
+                return $exepciones->SendStatus();
             }
-            return $exepciones->SendStatus();
 
         } catch (\Exception $exception) {
             $exepciones = new Exepciones(false,$exception->getMessage(),$exception->getCode(),[]);
@@ -99,5 +105,10 @@ class TypePersonaRepository implements ComprasRepositoryInterface
             return $exepeciones->SendStatus();
 
         }
+    }
+
+    public function show(int $id)
+    {
+        // TODO: Implement show() method.
     }
 }

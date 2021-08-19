@@ -208,7 +208,7 @@ class ProductoSql implements ProductoRepository
             $idProduct = $params['idProduct'];
             $typeproduc = $params['typeProducto'];
             if ($idClase > 0 && $idProduct > 0) {
-                $hijo = $this->Clasehijoxidpadre($idClase);
+                $hijo = $this->subCategoriaxID($idClase);
                 $product = DB::table('product as p');
                 if ($typeproduc === 'unidad') {
                     $product->join('product_por_unidades as proun', 'proun.id_product', '=', 'p.id_product')
