@@ -43,28 +43,7 @@ class LoteSql implements LoteRepository
 
     function Read($params)
     {
-        try {
-            $numeroRecnum = $params['numeroRecnum'];
-            $cantidadRegistros = $params['cantidadRegistros'];
-            $query = DB::table('product_por_lotes as l')
-                     ->where('id_product', $params['idProduct'])
-                     ->skip($numeroRecnum)
-                     ->take($cantidadRegistros)
-                     ->orderBy('id_lote', 'DESC')
-                     ->get();
-            if (count($query) < $cantidadRegistros) {
-                $numberRecnum = 0;
-                $noMore = true;
-            } else {
-                $numberRecnum = (int)$numeroRecnum + count($query);
-                $noMore = false;
-            }
-            $excepcion = new Exepciones(true,'Lotes Encontrados', 200,['lista'=>$query, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore]);
-            return $excepcion->SendStatus();
-        } catch (QueryException $exception) {
-            $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);
-            return $excepcion->SendStatus();
-        }
+
     }
 
     function Readxid(int $id)

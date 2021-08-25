@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Almacen\Lote;
 
 use App\Http\Controllers\Controller;
+use App\Repository\Almacen\Lotes\LoteRepository;
 use Core\Almacen\Lote\Infraestructure\AdapterBridge\CreateBridge;
 use Core\Almacen\Lote\Infraestructure\AdapterBridge\DeleteBridge;
 use Core\Almacen\Lote\Infraestructure\AdapterBridge\ReadBridge;
@@ -27,18 +28,24 @@ class LoteController extends Controller
      * @var DeleteBridge
      */
     private DeleteBridge $deleteBridge;
+    /**
+     * @var LoteRepository
+     */
+    private LoteRepository $repository;
 
 
-    public function __construct(CreateBridge $createBridge, UpdateBridge $updateBridge, ReadBridge $readBridge, DeleteBridge $deleteBridge)
+    public function __construct(CreateBridge $createBridge, UpdateBridge $updateBridge, ReadBridge $readBridge,
+                                DeleteBridge $deleteBridge, LoteRepository $repository)
     {
         $this->createBridge = $createBridge;
         $this->updateBridge = $updateBridge;
         $this->readBridge = $readBridge;
         $this->deleteBridge =$deleteBridge;
+        $this->repository = $repository;
         $this->middleware('auth');
     }
      function getLotes(Request $request) {
-        return response()->json($this->readBridge->__invoke($request));
+        return $this->repository->all($request);
     }
     function ObtenerCode(Request $request) {
         return response()->json($this->readBridge->obtenerCode($request));

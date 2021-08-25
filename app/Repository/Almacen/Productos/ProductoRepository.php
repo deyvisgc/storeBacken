@@ -67,16 +67,16 @@ class ProductoRepository implements ProductoRepositoryInterface
             $pro_marca=$params['pro_marca'];
             $pro_modelo=$params['pro_modelo'];
             $pro_fecha_vencimiento=$params['pro_fecha_vencimiento'];
-            $unidad=$params['unidad'];
-            $clase=$params['clase'];
-            $sub_clase=$params['sub_clase'];
+            $unidad=$params['id_unidad'];
+            $clase=$params['id_clase'];
+            $sub_clase=$params['id_sub_clase'];
             $pro_precio_compra=$params['pro_precio_compra'];
             $pro_precio_venta=$params['pro_precio_venta'];
             $pro_stock_inicial=$params['pro_stock_inicial'];
             $pro_stock_minimo=$params['pro_stock_minimo'];
             $tipo_afectacion=$params['tipo_afectacion'];
             $almacen=$params['almacen'];
-            $lote=$params['lote'];
+            $lote=$params['id_lote'];
             $impuesto_igv=$params['impuesto_igv'];
             $moneda=$params['moneda'];
             $impuesto_bolsa=$params['impuesto_bolsa'];
@@ -117,10 +117,6 @@ class ProductoRepository implements ProductoRepositoryInterface
     function getAtributos()
     {
         try {
-            $unidad = DB::table('unidad_medida')
-                      ->orderBy('id_unidad_medida', 'asc')
-                      ->get();
-            $categoria = $this->Categorias(0, 0);
 
             $almacen = DB::table('almacen')
                         ->orderBy('id', 'asc')
@@ -130,14 +126,7 @@ class ProductoRepository implements ProductoRepositoryInterface
                               ->where('tipo_afectacion', '=', 'igv')
                               ->orderBy('id', 'asc')
                               ->get();
-            $lotes = DB::table('product_por_lotes')
-                     ->orderBy('id_lote', 'asc')
-                     ->get();
-            $exepcion = new Exepciones(true, '', 200, [
-                'unidad'=> $unidad, 'categoria'=>$categoria,
-                'almacen'=>$almacen, 'tipoAfectacion' =>$tipoAfectacion,
-                'lote' => $lotes
-            ]);
+            $exepcion = new Exepciones(true, '', 200, ['almacen'=>$almacen, 'tipoAfectacion' =>$tipoAfectacion]);
             return $exepcion->SendStatus();
         } catch (\Exception $exception) {
             $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
@@ -174,15 +163,27 @@ class ProductoRepository implements ProductoRepositoryInterface
 
     function edit($id)
     {
-       /* try {
+       try {
             $producto = DB::table('product')->where('id_product', $id)->first();
-            $lote = DB::table('product_por_lotes')->where('id_product', $id)
-            $exepcion = new Exepciones(true, '', 200, $sub_cate);
+            $unidad   = DB::table('unidad_medida')
+                       ->where('id_unidad_medida', $producto->id_unidad_medida)->first();
+            $clase    = DB::table('clase_producto')
+                        ->where('id_clase_producto', $producto->id_clase_producto)->first();
+            $subClase = DB::table('clase_producto')
+                        ->where('id_clase_producto', $producto->id_subclase)->first();
+            $lote     = DB::table('product_por_lotes')
+                        ->where('id_lote', $producto->id_lote)->first();
+            $almacen = DB::table('almacen')->get();
+            $tipoAfectacion = DB::table('tipo_afectacion')->get();
+            $exepcion = new Exepciones(true, '', 200, [
+                'producto'=> $producto, 'unidad' =>$unidad, 'clase' =>$clase,
+                'subClase'=>$subClase, 'lote'=>$lote, 'almacen'=>$almacen,
+                'tipoAfectacion'=>$tipoAfectacion
+            ]);
             return $exepcion->SendStatus();
         } catch (\Exception $exception) {
             $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), null);
             return $exepcion->SendStatus();
         }
-       */
     }
 }
