@@ -35,7 +35,7 @@ class ProductoRepository implements ProductoRepositoryInterface
                 ->select('pro.*', 'cp.clas_name as clasePadre', 'subclase.clas_name as classHijo', 'um.um_name as unidad')
                 ->skip($numeroRecnum)
                 ->take($cantidadRegistros)
-                ->orderBy('pro.id_product', 'Asc')
+                ->orderByDesc('pro.id_product')
                 ->get();
             $producto= $query->get();
             if (count($producto) < $cantidadRegistros) {
@@ -76,10 +76,11 @@ class ProductoRepository implements ProductoRepositoryInterface
             $pro_stock_minimo=$params['pro_stock_minimo'];
             $tipo_afectacion=$params['tipo_afectacion'];
             $almacen=$params['almacen'];
-            $lote=$params['id_lote'];
+            $lote=$params['id_lote'] === 0 ? null : $params['id_lote'];
             $impuesto_igv=$params['impuesto_igv'];
             $moneda=$params['moneda'];
             $impuesto_bolsa=$params['impuesto_bolsa'];
+
             $producto = new dtoProducto($id_producto, $pro_nombre, $pro_descripcion, $pro_cod_barra, $pro_marca, $pro_modelo, $pro_fecha_vencimiento, $unidad, $clase, $sub_clase, $pro_precio_compra,
                 $pro_precio_venta, $pro_stock_inicial, $pro_stock_minimo, $tipo_afectacion, $almacen,$lote, $impuesto_igv, $moneda, $impuesto_bolsa);
             if ($producto->getIdProducto() === 0) {
@@ -104,9 +105,24 @@ class ProductoRepository implements ProductoRepositoryInterface
         // TODO: Implement update() method.
     }
 
-    public function delete($id)
+    public function delete($idproducto)
     {
-        // TODO: Implement delete() method.
+        try {
+            if ($idproducto > 0) {
+                $status = DB::table('product')->where('id_product', $idproducto)->delete();
+                if ($status === 1) {
+                    $exepcion = new Exepciones(true,'Elimiando Correctamente', 200, []);
+                } else {
+                    $exepcion = new Exepciones(false,'Error al Eliminar este producto', 403, []);
+                }
+            } else {
+                $exepcion = new Exepciones(false,'Este Producto no existe', 403, []);
+            }
+            return $exepcion->SendStatus();
+        } catch (QueryException $exception) {
+            $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $exepcion->SendStatus();
+        }
     }
 
     public function find($params)

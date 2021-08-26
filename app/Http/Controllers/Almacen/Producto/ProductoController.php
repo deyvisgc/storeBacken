@@ -76,6 +76,7 @@ class ProductoController extends Controller
     }
     function delete(int $id)
     {
+        return response()->json($this->repository->delete($id));
      return response()->json($this->deleteBridge->__invokexid($id));
     }
     function SearchxType (Request $request) {
