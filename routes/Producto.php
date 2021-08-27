@@ -24,7 +24,7 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('generar-codigo-barra','Almacen\Producto\ProductoController@generarCodigo');
     $app->post('create-product','Almacen\Producto\ProductoController@Store');
     $app->get('obtener-sub-categoria/{id}', 'Almacen\Producto\ProductoController@getSubCategoria');
-    $app->patch('ChangeStatus-proudcto','Almacen\Producto\ProductoController@changeStatus');
+    $app->post('change-status-prouducto','Almacen\Producto\ProductoController@changeStatus');
     $app->delete('delete-producto/{id}','Almacen\Producto\ProductoController@delete');
     $app->get('productos-exportar','Almacen\Producto\ProductoController@Exportar');
     $app->post('search-producto','Almacen\Producto\ProductoController@Search');

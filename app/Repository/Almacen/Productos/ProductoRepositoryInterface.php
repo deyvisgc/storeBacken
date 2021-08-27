@@ -11,4 +11,5 @@ interface ProductoRepositoryInterface extends RepositoryInterface
     function getAtributos();
     function generarCodigoBarra();
     function edit(int $id);
+    function changeStatus($data);
 }

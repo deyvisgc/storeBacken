@@ -95,7 +95,7 @@ class ProductoController extends Controller
         return response()->json($status);
     }
     function changeStatus (Request $request) {
-        return response()->json($this->updateBridge->changestatus($request));
+        return response()->json($this->repository->changeStatus($request->params));
     }
     function LastIdProducto () {
         return response()->json($this->readBridge->__invokeLastId());

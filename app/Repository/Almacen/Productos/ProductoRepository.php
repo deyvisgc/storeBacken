@@ -202,4 +202,31 @@ class ProductoRepository implements ProductoRepositoryInterface
             return $exepcion->SendStatus();
         }
     }
+
+    function changeStatus($data)
+    {
+        try {
+            if ($data['id'] > 0) {
+                if ($data['status'] === 'active') {
+                    $status = 'disable';
+                } else {
+                    $status = 'active';
+                }
+               $statusUpdate = DB::table('product')->where('id_product', $data['id'])->update(['pro_status'=>$status]);
+                if ($statusUpdate === 1) {
+                    $excepcion= new Exepciones(true,'Estado  Actualizado Correctamente', 200, []);
+                } else {
+                    $excepcion= new Exepciones(false,'Error al cambiar de estado', 403, []);
+
+                }
+                return $excepcion->SendStatus();
+            } else {
+                $excepcion= new Exepciones(false,'Este producto no existe', 403, []);
+                return $excepcion->SendStatus();
+            }
+        } catch (\Exception $exception) {
+            $excepcion= new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
+            return $excepcion->SendStatus();
+        }
+    }
 }
