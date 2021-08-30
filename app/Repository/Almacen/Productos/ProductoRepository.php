@@ -5,6 +5,7 @@ namespace App\Repository\Almacen\Productos;
 
 
 use App\Http\Excepciones\Exepciones;
+use Carbon\Carbon;
 use Core\Traits\QueryTraits;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -16,39 +17,10 @@ class ProductoRepository implements ProductoRepositoryInterface
     public function all($params)
     {
         try {
-            $numeroRecnum = $params['numeroRecnum'];
-            $cantidadRegistros = 20;
-            $query = DB::table('product as pro');
-            if ($params->idClase > 0) {
-                $query->where('pro.id_clase_producto',$params->idClase);
-            }
-            if ($params->idUnidad > 0) {
-                $query->where('pro.id_unidad_medida',$params->idUnidad);
-            }
-            if ($params->desde && $params->hasta) {
-                $query->whereBetween('pro.pro_fecha_creacion',[$params->desde, $params->hasta]);
-            }
-
-            $query->leftJoin('clase_producto as subclase', 'pro.id_subclase', 'subclase.id_clase_producto')
-                ->leftJoin('clase_producto as cp', 'pro.id_clase_producto', '=', 'cp.id_clase_producto')
-                ->join('unidad_medida as um', 'pro.id_unidad_medida', '=', 'um.id_unidad_medida')
-                ->select('pro.*', 'cp.clas_name as clasePadre', 'subclase.clas_name as classHijo', 'um.um_name as unidad')
-                ->skip($numeroRecnum)
-                ->take($cantidadRegistros)
-                ->orderByDesc('pro.id_product')
-                ->get();
-            $producto= $query->get();
-            if (count($producto) < $cantidadRegistros) {
-                $numberRecnum = 0;
-                $noMore = true;
-            } else {
-                $numberRecnum = (int)$numeroRecnum + count($producto);
-                $noMore = false;
-            }
-            $excepcion = new Exepciones(true,'Productos Encontrados', 200,
-                [   'producto'=>$producto, 'numeroRecnum'=>$numberRecnum, 'noMore'=>$noMore
-                ]
-            );
+            $fechaDesde = Carbon::make($params->desde)->format('Y-m-d');
+            $fechaHasta = Carbon::make($params->hasta)->format('Y-m-d');
+            $lista = $this->ObtenerProductos($params->idClase, $params->idUnidad, $fechaDesde, $fechaHasta, $params->fechaVencimiento);
+            $excepcion = new Exepciones(true,'Productos Encontrados', 200, $lista);
             return $excepcion->SendStatus();
         } catch (\Exception $exception) {
             $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);

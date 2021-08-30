@@ -212,22 +212,31 @@ trait QueryTraits
             ->first();
      return [$perfil];
     }
-    function ObtenerProductos($clase, $unidad, $desde, $hasta) {
+    function ObtenerProductos($clase, $unidad, $desde, $hasta, $fechaVencimiento) {
         $query = DB::table('product as pro');
+
+        if ($fechaVencimiento) {
+            $query->where('pro.pro_fecha_vencimiento', Carbon::make($fechaVencimiento)->format('Y-m-d'));
+        }
         if ($clase > 0) {
             $query->where('pro.id_clase_producto',$clase);
         }
         if ($unidad > 0) {
             $query->where('pro.id_unidad_medida',$unidad);
         }
-        if ($desde && $hasta) {
+        if ($desde && $hasta && !$fechaVencimiento) {
             $query->whereBetween('pro.pro_fecha_creacion',[$desde, $hasta]);
         }
 
         $query->leftJoin('clase_producto as subclase', 'pro.id_subclase', 'subclase.id_clase_producto')
             ->leftJoin('clase_producto as cp', 'pro.id_clase_producto', '=', 'cp.id_clase_producto')
             ->leftJoin('unidad_medida as um', 'pro.id_unidad_medida', '=', 'um.id_unidad_medida')
-            ->select('pro.*', 'cp.clas_name as clasePadre', 'subclase.clas_name as classHijo', 'um.um_name as unidad')
+            ->leftJoin('almacen as al', 'pro.id_almacen', '=', 'al.id')
+            ->leftJoin('product_por_lotes as lo', 'pro.id_lote', '=', 'lo.id_lote')
+            ->leftJoin('tipo_afectacion as tp', 'pro.id_afectacion', '=', 'tp.id')
+            ->select('pro.*', 'cp.clas_name as clasePadre', 'subclase.clas_name as classHijo',
+                             'um.um_name as unidad', 'al.descripcion as almacen', 'tp.descripcion as tipo_afectacion',
+                             'lo.lot_name as lote')
             ->orderBy('id_product', 'Asc')
             ->get();
         return $query->get();

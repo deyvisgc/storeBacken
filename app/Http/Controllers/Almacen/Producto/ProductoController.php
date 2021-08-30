@@ -10,6 +10,7 @@ use App\Repository\Almacen\Productos\ProductoRepositoryInterface;
 use App\Repository\Compras\ComprasRepositoryInterface;
 use App\Traits\Search\SeacrhTraits;
 use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
 use Core\Producto\Infraestructure\AdapterBridge\CreateBridge;
 use Core\Producto\Infraestructure\AdapterBridge\DeleteBridge;
 use Core\Producto\Infraestructure\AdapterBridge\ReadBridge;
@@ -103,15 +104,15 @@ class ProductoController extends Controller
     function Exportar (Request $request) {
         $clase = $request->input('idClase');
         $unidad = $request->input('idUnidad');
-        $desde = $request->input('desde');
-        $hasta = $request->input('hasta');
+        $fechaDesde= Carbon::make($request->desde)->format('Y-m-d');
+        $fechaHasta= Carbon::make($request->hasta)->format('Y-m-d');
         $opcion = $request->input('isExport');
-        $query = $this->ObtenerProductos($clase, $unidad, $desde, $hasta);
+        $lita = $this->ObtenerProductos($clase, $unidad, $fechaDesde, $fechaHasta, $request->fechaVencimiento);
         if ($opcion === 'excel') {
-            return Excel::download(new ExportProduct($clase, $unidad, $desde, $hasta), 'reportesInventario.xlsx')->deleteFileAfterSend (false);
+            return Excel::download(new ExportProduct($lita), 'reportesInventario.xlsx')->deleteFileAfterSend (false);
         } else {
             $customPaper = array(0,0,710,710);
-            $pdf = PDF::loadView('Exportar.Pdf.Almacen.productos', ['productos'=>$query])->setPaper($customPaper);
+            $pdf = PDF::loadView('Exportar.Pdf.Almacen.productos', ['productos'=>$lita])->setPaper($customPaper);
             return $pdf->download('invoice.pdf');
         }
 
