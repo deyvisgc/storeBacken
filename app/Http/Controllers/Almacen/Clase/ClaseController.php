@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Almacen\Clase;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClaseProduct;
+use App\Repository\Almacen\Categorias\CategoriaRepository;
 use Core\Almacen\Clase\Infraestructure\AdapterBridge\CreateBridge;
 use Core\Almacen\Clase\Infraestructure\AdapterBridge\DeleteBridge;
 use Core\Almacen\Clase\Infraestructure\AdapterBridge\ReadBridge;
@@ -16,50 +17,33 @@ class ClaseController extends Controller
     use QueryTraits;
 
     /**
-     * @var CreateBridge
+     * @var CategoriaRepository
      */
-    private CreateBridge $createBridge;
-    /**
-     * @var UpdateBridge
-     */
-    private UpdateBridge $updateBridge;
+    private CategoriaRepository $repository;
 
-    /**
-     * @var ReadBridge
-     */
-    private ReadBridge $readBridge;
-    /**
-     * @var DeleteBridge
-     */
-    private DeleteBridge $deleteBridge;
-    /**
-     * @var ClaseProduct
-     */
-    private ClaseProduct $claseProduct;
-
-    public function __construct(CreateBridge $createBridge, UpdateBridge $updateBridge, ReadBridge $readBridge, DeleteBridge $deleteBridge, ClaseProduct $claseProduct)
+    public function __construct(CategoriaRepository $repository)
     {
-        $this->createBridge = $createBridge;
-        $this->updateBridge = $updateBridge;
-        $this->readBridge = $readBridge;
-        $this->deleteBridge = $deleteBridge;
-        $this->claseProduct = $claseProduct;
+        $this->repository = $repository;
         $this->middleware('auth');
     }
 
     function getCategoria(Request $request)
     {
-        return response()->json($this->readBridge->getCategoria($request));
+        return response()->json($this->repository->all($request));
     }
-    function searchCategoria(Request $request) {
-        return response()->json($this->readBridge->searchCategoria($request->params));
-    }
-    function store(Request $request)
+    function create(Request $request)
     {
-        return response()->json($this->createBridge->categoria($request['data']));
+        return response()->json($this->repository->create($request['params']));
     }
     function editCategory($id){
-        return response()->json($this->readBridge->editCategory($id));
+        return response()->json($this->repository->show($id));
+    }
+    function selectCategoria (Request $request) {
+        return response()->json($this->repository->selectCategoria($request));
+    }
+    /*
+    function searchCategoria(Request $request) {
+        return response()->json($this->readBridge->searchCategoria($request->params));
     }
     function editCategoria(Request $request) {
         return response()->json($this->readBridge->editSubcate($request));
@@ -73,5 +57,6 @@ class ClaseController extends Controller
     function ObtenerSubCategorias(Request $request) {
         return response()->json($this->Padreehijoclasexid($request));
     }
+    */
 
 }

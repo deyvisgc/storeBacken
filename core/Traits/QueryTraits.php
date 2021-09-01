@@ -19,13 +19,20 @@ trait QueryTraits
                               clase_producto where clas_id_clase_superior <> 0) as subclase,
                               clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior and subclase.clas_id_clase_superior=$idpadre group by cp.clas_name, id_clase_producto");
     }
-    public function subCategoria()
+    public function subCategoria($desde, $hasta, $clase)
     {
 
-        $subQuery = DB::table('clase_producto')
-                   ->select('clas_name as clasehijo', 'class_code as codeHijo', 'clas_status as statusHijo', 'clas_id_clase_superior', 'id_clase_producto')
+        $subQuery = DB::table('clase_producto');
+        if ($clase > 0) {
+            $subQuery->where('clas_id_clase_superior', $clase);
+        }
+        if ($desde && $hasta) {
+            $subQuery->whereBetween('fecha_creacion',[$desde, $hasta]);
+        };
+        $subQuery->select('clas_name as clasehijo', 'class_code as codeHijo', 'clas_status as statusHijo', 'clas_id_clase_superior', 'id_clase_producto', 'fecha_creacion')
                     ->where('clas_id_clase_superior', '<>', 0)
-                    ->groupBy('clas_name', 'class_code', 'clas_status', 'clas_id_clase_superior', 'id_clase_producto');
+                    ->groupBy(['clas_name', 'class_code', 'clas_status', 'clas_id_clase_superior', 'id_clase_producto', 'fecha_creacion'])
+        ;
         $query = DB::table('clase_producto as cp')
                  ->joinSub($subQuery, 'sub', function ($join) {
                      $join->on('cp.id_clase_producto', '=', 'sub.clas_id_clase_superior');
@@ -33,31 +40,41 @@ trait QueryTraits
                  ->get();
         return $query;
     }
-    public function Categorias($numeroRecnum, $cantidadRegistros)
+    public function Categorias($desde, $hasta, $clase)
     {
-        $query = DB::select("select cp.clas_name, cp.id_clase_producto, cp.class_code, cp.clas_status from (select clas_id_clase_superior, clas_status from clase_producto where clas_id_clase_superior <> 0) as subclase,
-                                   clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior or cp.clas_id_clase_superior = 0 group by cp.clas_name, cp.id_clase_producto, cp.class_code, cp.clas_status
-                                   order by cp.id_clase_producto");
-        if ($numeroRecnum && $cantidadRegistros) {
-            $query->skip($numeroRecnum)
-                ->take($cantidadRegistros);
+        $query1 =  DB::table('clase_producto');
+        $query1->select('clas_id_clase_superior', 'clas_status')
+               ->where('clas_id_clase_superior', '<>', 0);
+        $subquery = DB::table('clase_producto as cp');
+        $cateSinSubcate = DB::table('clase_producto as cp');
+        if ($clase > 0) {
+            $subquery->where('cp.id_clase_producto', '=', $clase);
+            $cateSinSubcate->where('cp.id_clase_producto', '=', $clase);
+
         }
-        if (count($query) === 0) {
-            $query = DB::table('clase_producto')->get();
-        }
-        if (count($query) < $cantidadRegistros) {
-            $numberRecnum = 0;
-            $noMore = true;
-        }
-        else {
-            $numberRecnum = $numeroRecnum + count($query);
-            $noMore = false;
-        }
-        if ($numeroRecnum === 0 && $cantidadRegistros === 0) {
-            return  $query;
+        if ($desde && $hasta) {
+            $subquery->whereBetween('cp.fecha_creacion',[$desde, $hasta]);
+            $cateSinSubcate->whereBetween('cp.fecha_creacion',[$desde, $hasta]);
+        };
+        $subquery->joinSub($query1, 'sub', function($join){
+                       $join->on('cp.id_clase_producto', '=', 'sub.clas_id_clase_superior')
+                             ->orWhere('cp.clas_id_clase_superior', 0);
+                   })->groupBy(['cp.clas_name', 'cp.id_clase_producto', 'cp.class_code', 'cp.clas_status', 'cp.fecha_creacion', 'cp.clas_id_clase_superior'])
+                      ->orderBy('cp.id_clase_producto', 'desc');
+        $lista = $subquery->get();
+        if (count($lista) === 0) {
+            $lista = $cateSinSubcate
+                     ->orderBy('cp.id_clase_producto', 'desc')
+                     ->get();
+            return $lista;
         } else {
-            return [$query,$numberRecnum,$noMore];
+            return $lista;
         }
+        /*$query = DB::select("select cp.clas_name, cp.id_clase_producto, cp.class_code, cp.clas_status, cp.fecha_creacion from (select clas_id_clase_superior, clas_status from clase_producto where clas_id_clase_superior <> 0) as subclase,
+                                   clase_producto as cp where (cp.id_clase_producto = subclase.clas_id_clase_superior or cp.clas_id_clase_superior = 0) and fecha_creacion
+                                   between '$desde' and '$hasta'
+                                   group by cp.clas_name, cp.id_clase_producto, cp.class_code, cp.clas_status, cp.fecha_creacion order by cp.id_clase_producto");
+        */
     }
     public function Padreehijoclase()
     {
