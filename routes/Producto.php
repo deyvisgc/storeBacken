@@ -17,7 +17,7 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 $router->group(['prefix'=>'api/v1/'], function ($app) {
-    $app->get('obtener-producto','Almacen\Producto\ProductoController@Read');
+    $app->get('obtener-producto','Almacen\Producto\ProductoController@read');
     $app->get('obtener-select-producto','Almacen\Producto\ProductoController@selectProducto');
     $app->get('editar-producto/{id}','Almacen\Producto\ProductoController@Edit');
     $app->get('obtener-last-idProducto','Almacen\Producto\ProductoController@LastIdProducto');
@@ -28,7 +28,7 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->delete('delete-producto/{id}','Almacen\Producto\ProductoController@delete');
     $app->get('productos-exportar','Almacen\Producto\ProductoController@Exportar');
     $app->post('search-producto','Almacen\Producto\ProductoController@Search');
-    $app->post('ajustar-stock','Almacen\Producto\ProductoController@AjustarStock');
+    $app->post('ajustar-stock','Almacen\Producto\ProductoController@ajustarStock');
     $app->get('select-atributos-producto','Almacen\Producto\ProductoController@selectAtributos');
 });
 

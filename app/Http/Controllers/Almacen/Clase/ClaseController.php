@@ -26,37 +26,48 @@ class ClaseController extends Controller
         $this->repository = $repository;
         $this->middleware('auth');
     }
-
-    function getCategoria(Request $request)
-    {
-        return response()->json($this->repository->all($request));
-    }
-    function create(Request $request)
-    {
-        return response()->json($this->repository->create($request['params']));
-    }
+    // methodos para Categoria
     function editCategory($id){
         return response()->json($this->repository->show($id));
     }
+
     function selectCategoria (Request $request) {
         return response()->json($this->repository->selectCategoria($request));
     }
-    /*
+
     function searchCategoria(Request $request) {
-        return response()->json($this->readBridge->searchCategoria($request->params));
+        return response()->json($this->repository->searchCategoria($request->params));
     }
-    function editCategoria(Request $request) {
-        return response()->json($this->readBridge->editSubcate($request));
+    function deleteSubCategoria(int $id) {
+        return response()->json($this->repository->delete($id));
     }
-    function ChangeStatusCate(Request $request) {
-        return response()->json($this->updateBridge->ChangeStatusCate($request->data));
-    }
-    function ChangeStatusSubCate(Request $request) {
-        return response()->json($this->updateBridge->ChangeStatusSubCate($request->data));
+
+    // methodos para sub Categoria
+    function editSubCategoria(Request $request) {
+        return response()->json($this->repository->editSubCate($request));
     }
     function ObtenerSubCategorias(Request $request) {
-        return response()->json($this->Padreehijoclasexid($request));
+        return response()->json($this->repository->selectSubCategoria($request));
     }
-    */
+    function searchSubCate(Request $request) {
+        return response()->json($this->repository->searchSubCate($request));
+    }
+    function delete(int $id) { // este metodo elimina una categoria o sub categoria
+        return response()->json($this->repository->delete($id));
+    }
+
+    // methodos universales
+    function getCategoria(Request $request)
+    {
+        // este metodo me trae las categorias y sub categorias
+        return response()->json($this->repository->all($request));
+    }
+    function changeStatus(Request $request) { // este metodo actualiza el estado de una categoria o sub categoria
+        return response()->json($this->repository->changeStatus($request->params));
+    }
+    function create(Request $request)
+    { // este metodo es para crear o actulaizar una categoria o sub categoria
+        return response()->json($this->repository->create($request['params']));
+    }
 
 }

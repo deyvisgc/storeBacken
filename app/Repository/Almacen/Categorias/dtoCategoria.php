@@ -10,13 +10,13 @@ class dtoCategoria
 {
     private $classname;
     private $id_Clasesuperior;
-    private $idPadre;
-    public function __construct($idPadre, $classname, $id_Clasesuperior)
+    private $id;
+    public function __construct($id, $classname, $id_Clasesuperior)
     {
 
         $this->classname = $classname;
         $this->id_Clasesuperior = $id_Clasesuperior;
-        $this->idPadre = $idPadre;
+        $this->id = $id;
     }
 
     /**
@@ -38,9 +38,9 @@ class dtoCategoria
     /**
      * @return mixed
      */
-    public function getIdPadre()
+    public function getId()
     {
-        return $this->idPadre;
+        return $this->id;
     }
 
     function create() : array

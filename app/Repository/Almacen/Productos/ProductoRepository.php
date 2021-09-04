@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Core\Traits\QueryTraits;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+
 const Code = '775820300317';
 class ProductoRepository implements ProductoRepositoryInterface
 {
@@ -200,5 +201,101 @@ class ProductoRepository implements ProductoRepositoryInterface
             $excepcion= new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
             return $excepcion->SendStatus();
         }
+    }
+
+    function selectProducto($params)
+    {
+        try {
+            $numeroRecnum = $params['numeroRecnum'];
+            $cantidadRegistros = 20;
+            $producto = DB::table('product as p')
+                ->where('p.pro_status', '=', 'active')
+                ->skip($numeroRecnum)
+                ->take($cantidadRegistros)
+                ->distinct()
+                ->orderBy('p.id_product', 'desc')
+                ->get();
+            if (count($producto) < $cantidadRegistros) {
+                $numberRecnum = 0;
+                $noMore = true;
+            } else {
+                $numberRecnum = (int)$numeroRecnum + count($producto);
+                $noMore = false;
+            }
+            $excepcion = new Exepciones(true,'Productos Encontrados', 200, ['producto'=>$producto, 'numeroRecnum'=>$numberRecnum, 'noMore'=>$noMore]);
+            return $excepcion->SendStatus();
+
+        } catch (QueryException $exception) {
+            $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);
+            return $excepcion->SendStatus();
+        }
+    }
+
+    function AjustarStock($params) {
+        try {
+            if (count($params['lote']) === 0) {
+                DB::table('product')->where('id_product', $params['id_product_unidades'])
+                    ->update([
+                        'cantidad'=> $params['pro_cantdad'],
+                        'fecha_vencimiento' =>$params['fecha_vencimiento']
+                    ]);
+                $message = 'Producto Ajustado Correctamente';
+            }
+            if (count($params['lote']) > 0) {
+                $status =  $this->validarAjustarStock($params['lote']);
+                if (count($status) > 0) {
+                    $excepciones = new Exepciones(false,'error', 401, ['error'=>$status]);
+                    return $excepciones->SendStatus();
+                } else {
+                    foreach ($params['lote'] as $item) {
+                        DB::table('product_por_lotes')->where('id_lote', $item['id_lote'])
+                            ->update([
+                                'lot_cantidad'=> $item['cantidad'],
+                                'lot_creation_date' =>$item['lot_expiration_date']
+                            ]);
+                    }
+                    $message = 'Lotes Ajustado Correctamente';
+                }
+            } else {
+                DB::table('product')
+                    ->where('id_product_unidades', $params['id_product_unidades'])
+                    ->update([
+                        'cantidad'=> $params['pro_cantdad'],
+                        'fecha_vencimiento' =>$params['fecha_vencimiento']
+                    ]);
+                $message = 'Producto Ajustado Correctamente';
+            }
+            $excepciones = new Exepciones(true,$message, 200, ['error'=>[]]);
+            return $excepciones->SendStatus();
+        } catch (\Exception $exception) {
+            $excepciones = new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
+            return $excepciones->SendStatus();
+        }
+    }
+    function validarAjustarStock($params) {
+        $detalleError = array();
+        foreach ($params as $item) {
+            if ($item['codigo_lote'] === '') {
+                $error = 'Codigo del lote'.$item['codigo_lote']. ' es requerido';
+                array_push($detalleError, $error);
+            }
+            if ($item['cantidad'] === 0 || !$item['cantidad']) {
+                $error = 'El Lote '.$item['codigo_lote'].' tiene cantidad cero';
+                array_push($detalleError, $error);
+            }
+            if ($item['lot_expiration_date'] === '') {
+                $error = 'Fecha de vencimiento del lote '.$item['codigo_lote'].' es requerida';
+                array_push($detalleError, $error);
+            }
+            if ($item['pro_nombre'] === '') {
+                if ($item['codigo_lote'] === '') {
+                    $error = 'El producto  es requerido';
+                } else {
+                    $error = 'El producto del '.$item['codigo_lote'].' es requerido';
+                }
+                array_push($detalleError, $error);
+            }
+        }
+        return $detalleError;
     }
 }

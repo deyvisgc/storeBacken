@@ -3,21 +3,13 @@
 namespace App\Http\Controllers\Almacen\Producto;
 
 use App\Exports\Excel\Almacen\ExportProduct;
-use App\Exports\Excel\Productos\ExportarProductos;
-use App\Exports\Excel\Reportes\ExportarInventario;
 use App\Http\Controllers\Controller;
 use App\Repository\Almacen\Productos\ProductoRepositoryInterface;
-use App\Repository\Compras\ComprasRepositoryInterface;
 use App\Traits\Search\SeacrhTraits;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
-use Core\Producto\Infraestructure\AdapterBridge\CreateBridge;
-use Core\Producto\Infraestructure\AdapterBridge\DeleteBridge;
-use Core\Producto\Infraestructure\AdapterBridge\ReadBridge;
-use Core\Producto\Infraestructure\AdapterBridge\UpdateBridge;
 use Core\Traits\QueryTraits;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -25,40 +17,19 @@ class ProductoController extends Controller
 {
     use SeacrhTraits;
     /**
-     * @var CreateBridge
-     */
-    private CreateBridge $createBridge;
-    /**
-     * @var UpdateBridge
-     */
-    private UpdateBridge $updateBridge;
-    /**
-     * @var ReadBridge
-     */
-    private ReadBridge $readBridge;
-    /**
-     * @var DeleteBridge
-     */
-    private DeleteBridge $deleteBridge;
-    /**
      * @var ProductoRepositoryInterface
      */
     private ProductoRepositoryInterface $repository;
 
-    public function __construct(CreateBridge $createBridge,UpdateBridge $updateBridge,ReadBridge $readBridge,DeleteBridge $deleteBridge,
-                                ProductoRepositoryInterface $repository)
+    public function __construct(ProductoRepositoryInterface $repository)
      {
-         $this->createBridge = $createBridge;
-         $this->updateBridge = $updateBridge;
-         $this->readBridge = $readBridge;
-         $this->deleteBridge =$deleteBridge;
          $this->repository = $repository;
          $this->middleware('auth', ['except' => [
              'Exportar'
          ]]);
      }
      use QueryTraits;
-    function Read(Request $request)
+    function read(Request $request)
     {
         return response()->json($this->repository->all($request));
     }
@@ -78,28 +49,15 @@ class ProductoController extends Controller
     function delete(int $id)
     {
         return response()->json($this->repository->delete($id));
-     return response()->json($this->deleteBridge->__invokexid($id));
     }
-    function SearchxType (Request $request) {
-        $status= '';
-        switch ($request['data'][0]['typesearch']){
-            case 'lote':
-                $status = $this->seachxlote($request['data'][0]['id']);
-                break;
-            case 'clase' :
-                $status = $this->seachxclase($request['data'][0]['id']);
-                break;
-            case 'unidad' :
-                $status = $this->seachxunidad($request['data'][0]['id']);
-                break;
-        }
-        return response()->json($status);
+    function selectProducto(Request $request) {
+        return response()->json($this->repository->selectProducto($request));
+    }
+    function ajustarStock(Request $request) {
+        return response()->json($this->repository->ajustarStock($request));
     }
     function changeStatus (Request $request) {
         return response()->json($this->repository->changeStatus($request->params));
-    }
-    function LastIdProducto () {
-        return response()->json($this->readBridge->__invokeLastId());
     }
     function Exportar (Request $request) {
         $clase = $request->input('idClase');
@@ -115,16 +73,6 @@ class ProductoController extends Controller
             $pdf = PDF::loadView('Exportar.Pdf.Almacen.productos', ['productos'=>$lita])->setPaper($customPaper);
             return $pdf->download('invoice.pdf');
         }
-
-    }
-    function Search(Request $request) {
-        return response()->json($this->readBridge->search($request->params));
-    }
-    function selectProducto(Request $request) {
-        return response()->json($this->readBridge->selectProducto($request));
-    }
-    function AjustarStock(Request $request) {
-        return response()->json($this->createBridge->ajustarStock($request->params));
     }
     function selectAtributos() {
         return response()->json($this->repository->getAtributos());
@@ -132,4 +80,26 @@ class ProductoController extends Controller
     function generarCodigo() {
         return response()->json($this->repository->generarCodigoBarra());
     }
+   /* function SearchxType (Request $request) {
+        $status= '';
+        switch ($request['data'][0]['typesearch']){
+            case 'lote':
+                $status = $this->seachxlote($request['data'][0]['id']);
+                break;
+            case 'clase' :
+                $status = $this->seachxclase($request['data'][0]['id']);
+                break;
+            case 'unidad' :
+                $status = $this->seachxunidad($request['data'][0]['id']);
+                break;
+        }
+        return response()->json($status);
+    }
+    function LastIdProducto () {
+        return response()->json($this->readBridge->__invokeLastId());
+    }
+    function Search(Request $request) {
+        return response()->json($this->readBridge->search($request->params));
+    }
+   */
 }

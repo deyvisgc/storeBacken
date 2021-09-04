@@ -12,13 +12,14 @@ use Illuminate\Support\Facades\DB;
 
 trait QueryTraits
 {
-    public function subCategoriaxID(int $idpadre)
+    /*public function subCategoriaxID(int $idpadre)
     {
         return DB::select("select  subclase.clasehijo, subclase.clas_id_clase_superior, subclase.id_clase_producto from
                               (select clas_name as clasehijo ,clas_id_clase_superior, id_clase_producto  from
                               clase_producto where clas_id_clase_superior <> 0) as subclase,
                               clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior and subclase.clas_id_clase_superior=$idpadre group by cp.clas_name, id_clase_producto");
     }
+    */
     public function subCategoria($desde, $hasta, $clase)
     {
 
@@ -42,27 +43,27 @@ trait QueryTraits
     }
     public function Categorias($desde, $hasta, $clase)
     {
-        $query1 =  DB::table('clase_producto');
-        $query1->select('clas_id_clase_superior', 'clas_status')
+        $query =  DB::table('clase_producto');
+        $query->select('clas_id_clase_superior', 'clas_status')
                ->where('clas_id_clase_superior', '<>', 0);
         $subquery = DB::table('clase_producto as cp');
-        $cateSinSubcate = DB::table('clase_producto as cp');
         if ($clase > 0) {
             $subquery->where('cp.id_clase_producto', '=', $clase);
-            $cateSinSubcate->where('cp.id_clase_producto', '=', $clase);
 
         }
         if ($desde && $hasta) {
             $subquery->whereBetween('cp.fecha_creacion',[$desde, $hasta]);
-            $cateSinSubcate->whereBetween('cp.fecha_creacion',[$desde, $hasta]);
         };
-        $subquery->joinSub($query1, 'sub', function($join){
+
+        $subquery->joinSub($query, 'sub', function($join){
                        $join->on('cp.id_clase_producto', '=', 'sub.clas_id_clase_superior')
                              ->orWhere('cp.clas_id_clase_superior', 0);
-                   })->groupBy(['cp.clas_name', 'cp.id_clase_producto', 'cp.class_code', 'cp.clas_status', 'cp.fecha_creacion', 'cp.clas_id_clase_superior'])
-                      ->orderBy('cp.id_clase_producto', 'desc');
+                   })->select('cp.*')
+                     ->groupBy(['cp.id_clase_producto', 'cp.clas_name', 'cp.clas_id_clase_superior', 'cp.clas_status', 'cp.class_code', 'cp.fecha_creacion'
+                    ])->orderBy('cp.id_clase_producto', 'desc');
         $lista = $subquery->get();
-        if (count($lista) === 0) {
+        return $lista;
+       /* if (count($lista) === 0) {
             $lista = $cateSinSubcate
                      ->orderBy('cp.id_clase_producto', 'desc')
                      ->get();
@@ -70,6 +71,7 @@ trait QueryTraits
         } else {
             return $lista;
         }
+       */
         /*$query = DB::select("select cp.clas_name, cp.id_clase_producto, cp.class_code, cp.clas_status, cp.fecha_creacion from (select clas_id_clase_superior, clas_status from clase_producto where clas_id_clase_superior <> 0) as subclase,
                                    clase_producto as cp where (cp.id_clase_producto = subclase.clas_id_clase_superior or cp.clas_id_clase_superior = 0) and fecha_creacion
                                    between '$desde' and '$hasta'
@@ -92,7 +94,7 @@ trait QueryTraits
        clase_producto as cp where cp.id_clase_producto = subclase.clas_id_clase_superior
        order by cp.id_clase_producto asc");
     }
-    public function Padreehijoclasexid($params)
+    public function obtenerSubCategoriaxIDPadre($params)
     {
         try {
             $numeroRecnum      = $params['numeroRecnum']; // este valor se va a sumar con el total de registros en cada iteracion

@@ -12,4 +12,6 @@ interface ProductoRepositoryInterface extends RepositoryInterface
     function generarCodigoBarra();
     function edit(int $id);
     function changeStatus($data);
+    function selectProducto($params);
+    function ajustarStock($params);
 }
