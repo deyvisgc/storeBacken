@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repository\Almacen\AlmacenRepository;
+use App\Repository\Almacen\AlmacenRepositoryInterface;
 use App\Repository\Almacen\Categorias\CategoriaRepository;
 use App\Repository\Almacen\Categorias\CategoriaRepositoryInterface;
 use App\Repository\Almacen\Lotes\LoteRepository;
@@ -42,6 +44,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             CategoriaRepositoryInterface::class,
             CategoriaRepository::class
+        );
+        $this->app->bind(
+            AlmacenRepositoryInterface::class,
+            AlmacenRepository::class
         );
     }
 }

@@ -54,7 +54,7 @@ class ProductoController extends Controller
         return response()->json($this->repository->selectProducto($request));
     }
     function ajustarStock(Request $request) {
-        return response()->json($this->repository->ajustarStock($request));
+        return response()->json($this->repository->ajustarStock($request->params));
     }
     function changeStatus (Request $request) {
         return response()->json($this->repository->changeStatus($request->params));

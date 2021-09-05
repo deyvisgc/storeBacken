@@ -16,20 +16,24 @@ class LoteRepository implements lotRepositoryInterface
         try {
             $numeroRecnum = $params['numeroRecnum'];
             $cantidadRegistros = $params['cantidadRegistros'];
-            $query = DB::table('product_por_lotes')
-                ->where('lot_status', '=', 'active')
+            $idLote = $params['idLote'];
+            $query = DB::table('product_por_lotes');
+            if($idLote) {
+                $query->where('id_lote', $idLote);
+            }
+            $query->where('lot_status', '=', 'active')
                 ->skip($numeroRecnum)
                 ->take($cantidadRegistros)
-                ->orderBy('id_lote', 'DESC')
-                ->get();
-            if (count($query) < $cantidadRegistros) {
+                ->orderBy('id_lote', 'DESC');
+            $lista = $query->get();
+            if (count($lista) < $cantidadRegistros) {
                 $numberRecnum = 0;
                 $noMore = true;
             } else {
-                $numberRecnum = (int)$numeroRecnum + count($query);
+                $numberRecnum = (int)$numeroRecnum + count($lista);
                 $noMore = false;
             }
-            $excepcion = new Exepciones(true,'Lotes Encontrados', 200,['lista'=>$query, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore]);
+            $excepcion = new Exepciones(true,'Lotes Encontrados', 200,['lista'=>$lista, 'numeroRecnum'=>$numberRecnum,'noMore'=>$noMore]);
             return $excepcion->SendStatus();
         } catch (QueryException $exception) {
             $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);

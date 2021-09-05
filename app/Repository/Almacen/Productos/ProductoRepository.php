@@ -208,23 +208,27 @@ class ProductoRepository implements ProductoRepositoryInterface
         try {
             $numeroRecnum = $params['numeroRecnum'];
             $cantidadRegistros = 20;
-            $producto = DB::table('product as p')
-                ->where('p.pro_status', '=', 'active')
-                ->skip($numeroRecnum)
-                ->take($cantidadRegistros)
-                ->distinct()
-                ->orderBy('p.id_product', 'desc')
-                ->get();
-            if (count($producto) < $cantidadRegistros) {
+            $typeSelect = $params['typeSelect'];
+            $query = DB::table('product');
+            if ($typeSelect === 'lote') {
+                $query->whereNotNull('id_lote');
+            } else {
+                $query->whereNull('id_lote');
+            }
+            $query ->where('pro_status', '=', 'active')
+                    ->skip($numeroRecnum)
+                    ->take($cantidadRegistros)
+                    ->orderBy('id_product', 'desc');
+            $lista = $query->get();
+            if (count($lista) < $cantidadRegistros) {
                 $numberRecnum = 0;
                 $noMore = true;
             } else {
-                $numberRecnum = (int)$numeroRecnum + count($producto);
+                $numberRecnum = (int)$numeroRecnum + count($lista);
                 $noMore = false;
             }
-            $excepcion = new Exepciones(true,'Productos Encontrados', 200, ['producto'=>$producto, 'numeroRecnum'=>$numberRecnum, 'noMore'=>$noMore]);
+            $excepcion = new Exepciones(true,'Productos Encontrados', 200, ['producto'=>$lista, 'numeroRecnum'=>$numberRecnum, 'noMore'=>$noMore]);
             return $excepcion->SendStatus();
-
         } catch (QueryException $exception) {
             $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);
             return $excepcion->SendStatus();
@@ -234,38 +238,45 @@ class ProductoRepository implements ProductoRepositoryInterface
     function AjustarStock($params) {
         try {
             if (count($params['lote']) === 0) {
-                DB::table('product')->where('id_product', $params['id_product_unidades'])
-                    ->update([
-                        'cantidad'=> $params['pro_cantdad'],
-                        'fecha_vencimiento' =>$params['fecha_vencimiento']
-                    ]);
-                $message = 'Producto Ajustado Correctamente';
-            }
-            if (count($params['lote']) > 0) {
+                $history = DB::table('product')->where('id_product', $params['id_product'])->first();
+                if ($history) {
+                    DB::table('product')->where('id_product', $params['id_product'])
+                        ->update([
+                            'pro_stock_inicial'=> $params['pro_stock_inicial'],
+                            'pro_precio_compra' => $params['pro_precio_compra'],
+                            'pro_precio_venta' => $params['pro_precio_venta'],
+                            'id_almacen' => $params['almacen'],
+                            'pro_fecha_vencimiento' =>$params['pro_fecha_vencimiento']
+                        ]);
+                    $this->insertarHistorial($history, $params['pro_stock_inicial']);
+                    $message = 'Exito al Ajustar Stock';
+                } else {
+                    $message = 'El producto no existe';
+                }
+            } else {
                 $status =  $this->validarAjustarStock($params['lote']);
                 if (count($status) > 0) {
                     $excepciones = new Exepciones(false,'error', 401, ['error'=>$status]);
                     return $excepciones->SendStatus();
                 } else {
                     foreach ($params['lote'] as $item) {
-                        DB::table('product_por_lotes')->where('id_lote', $item['id_lote'])
-                            ->update([
-                                'lot_cantidad'=> $item['cantidad'],
-                                'lot_creation_date' =>$item['lot_expiration_date']
-                            ]);
+                        $history = DB::table('product')->where('id_product', $item['id_producto'])->first();
+                        if ($history) {
+                            DB::table('product')->where('id_product', $item['id_producto'])
+                                ->update([
+                                    'pro_stock_inicial'=> $item['stock_inicial'],
+                                    'pro_precio_compra' => $item['pro_precio_compra'],
+                                    'pro_precio_venta' => $item['pro_precio_venta'],
+                                    'id_almacen' => $item['almacen'],
+                                    'pro_fecha_vencimiento' =>$item['lot_expiration_date']
+                                ]);
+                            $this->insertarHistorial($history, $item['stock_inicial']);
+                        }
                     }
-                    $message = 'Lotes Ajustado Correctamente';
+                    $message = 'Exito al Ajustar Stock';
                 }
-            } else {
-                DB::table('product')
-                    ->where('id_product_unidades', $params['id_product_unidades'])
-                    ->update([
-                        'cantidad'=> $params['pro_cantdad'],
-                        'fecha_vencimiento' =>$params['fecha_vencimiento']
-                    ]);
-                $message = 'Producto Ajustado Correctamente';
             }
-            $excepciones = new Exepciones(true,$message, 200, ['error'=>[]]);
+            $excepciones = new Exepciones(true,$message, 200, []);
             return $excepciones->SendStatus();
         } catch (\Exception $exception) {
             $excepciones = new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
@@ -275,27 +286,49 @@ class ProductoRepository implements ProductoRepositoryInterface
     function validarAjustarStock($params) {
         $detalleError = array();
         foreach ($params as $item) {
-            if ($item['codigo_lote'] === '') {
-                $error = 'Codigo del lote'.$item['codigo_lote']. ' es requerido';
+            if ($item['pro_nombre'] === '') {
+                $error = 'El producto  es requerido';
                 array_push($detalleError, $error);
             }
-            if ($item['cantidad'] === 0 || !$item['cantidad']) {
-                $error = 'El Lote '.$item['codigo_lote'].' tiene cantidad cero';
+            if ($item['codigo_lote'] === '') {
+                $error = 'Lote del producto '.$item['pro_nombre']. ' es requerido';
                 array_push($detalleError, $error);
             }
             if ($item['lot_expiration_date'] === '') {
-                $error = 'Fecha de vencimiento del lote '.$item['codigo_lote'].' es requerida';
+                $error = 'La fecha de vencimiento del producto '.$item['pro_nombre'].' es requerido';
                 array_push($detalleError, $error);
             }
-            if ($item['pro_nombre'] === '') {
-                if ($item['codigo_lote'] === '') {
-                    $error = 'El producto  es requerido';
-                } else {
-                    $error = 'El producto del '.$item['codigo_lote'].' es requerido';
-                }
+            if ($item['stock_inicial'] === 0 || !$item['stock_inicial']) {
+                $error = 'El stock Inicial del producto '.$item['pro_nombre'].' debe ser mayor a cero';
+                array_push($detalleError, $error);
+            }
+            if ($item['pro_precio_compra'] === 0 || !$item['pro_precio_compra']) {
+                $error = 'El precio de compra del producto '.$item['pro_nombre'].' debe ser mayor a cero';
+                array_push($detalleError, $error);
+            }
+            if ($item['pro_precio_venta'] === 0 || !$item['pro_precio_venta']) {
+                $error = 'El precio de venta del producto '.$item['pro_nombre'].' debe ser mayor a cero';
+                array_push($detalleError, $error);
+            }
+            if (!$item['almacen']) {
+                $error = 'El almacen del producto '.$item['pro_nombre'].' es requerido';
                 array_push($detalleError, $error);
             }
         }
         return $detalleError;
+    }
+    function insertarHistorial($params, $stockNuevo) {
+        $status = DB::table('product_history')->insertGetId([
+            'id_producto' => $params->id_product,
+            'id_lote' => $params->id_lote,
+            'fecha_vencimiento' => $params->pro_fecha_vencimiento,
+            'fecha_creacion' =>  Carbon::now(new \DateTimeZone('America/Lima'))->format('Y-m-d'),
+            'stock_antiguio' => $params->pro_stock_inicial,
+            'stock_nuevo' => $stockNuevo,
+            'almacen'=> $params->id_almacen,
+            'precio_compra' =>$params->pro_precio_compra,
+            'precio_venta' => $params->pro_precio_venta
+        ]);
+        return $status;
     }
 }
