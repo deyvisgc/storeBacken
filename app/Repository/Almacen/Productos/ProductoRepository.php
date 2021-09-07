@@ -212,7 +212,7 @@ class ProductoRepository implements ProductoRepositoryInterface
             $query = DB::table('product');
             if ($typeSelect === 'lote') {
                 $query->whereNotNull('id_lote');
-            } else {
+            } else if ($typeSelect === 'unidad') {
                 $query->whereNull('id_lote');
             }
             $query ->where('pro_status', '=', 'active')

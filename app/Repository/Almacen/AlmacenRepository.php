@@ -5,6 +5,7 @@ namespace App\Repository\Almacen;
 
 
 use App\Http\Excepciones\Exepciones;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AlmacenRepository implements AlmacenRepositoryInterface
@@ -45,5 +46,42 @@ class AlmacenRepository implements AlmacenRepositoryInterface
     public function show(int $id)
     {
         // TODO: Implement show() method.
+    }
+
+    function getHistorial($params)
+    {
+        try {
+            $desde = Carbon::make($params['desde'])->format('Y-m-d');
+            $hasta = Carbon::make($params['hasta'])->format('Y-m-d');
+            $query = DB::table('product_history as ph');
+            if ($desde && $hasta && !$params['fechaVencimiento']) {
+                $query->whereBetween('ph.fecha_creacion', [$desde, $hasta]);
+            }
+            if ($params['fechaVencimiento']) {
+                $fechaVencimiento = Carbon::make($params['fechaVencimiento'])->format('Y-m-d');
+                $query->where('ph.fecha_vencimiento', $fechaVencimiento);
+            }
+            if ($params['idProducto'] > 0) {
+                $query->where('ph.id_producto', $params['idProducto']);
+            }
+            if ($params['idLote'] > 0) {
+                $query->where('ph.id_lote', $params['idLote']);
+            }
+            if ($params['idAlmacen'] > 0) {
+                $query->where('ph.almacen', $params['idAlmacen']);
+            }
+            $query->join('product as p', 'ph.id_producto', '=', 'p.id_product')
+                  ->join('product_por_lotes as pl', 'ph.id_lote', '=', 'pl.id_lote')
+                  ->join('almacen as al', 'ph.almacen', '=', 'al.id')
+                  ->select('ph.*', 'p.pro_name', 'pl.lot_name', 'al.descripcion',
+                      'p.pro_precio_compra as preciocompranuevo', 'p.pro_precio_venta as precioventanuevo')
+                  ->orderBy('id', 'desc');
+            $lista = $query->get();
+            $exepcion = new Exepciones(true, 'exito', 200, $lista);
+            return $exepcion->SendStatus();
+        } catch (\Exception $exception) {
+            $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $exepcion->SendStatus();
+        }
     }
 }
