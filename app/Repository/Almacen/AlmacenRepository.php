@@ -4,9 +4,13 @@
 namespace App\Repository\Almacen;
 
 
+use App\Exports\Excel\Almacen\ExportHistorial;
+use App\Exports\Excel\Almacen\ExportProduct;
 use App\Http\Excepciones\Exepciones;
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AlmacenRepository implements AlmacenRepositoryInterface
 {
@@ -73,7 +77,7 @@ class AlmacenRepository implements AlmacenRepositoryInterface
             $query->join('product as p', 'ph.id_producto', '=', 'p.id_product')
                   ->join('product_por_lotes as pl', 'ph.id_lote', '=', 'pl.id_lote')
                   ->join('almacen as al', 'ph.almacen', '=', 'al.id')
-                  ->select('ph.*', 'p.pro_name', 'pl.lot_name', 'al.descripcion',
+                  ->select('ph.*', 'p.pro_name', 'pl.lot_name', 'al.descripcion as almacen',
                       'p.pro_precio_compra as preciocompranuevo', 'p.pro_precio_venta as precioventanuevo')
                   ->orderBy('id', 'desc');
             $lista = $query->get();
@@ -83,5 +87,24 @@ class AlmacenRepository implements AlmacenRepositoryInterface
             $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
             return $exepcion->SendStatus();
         }
+    }
+
+    function exportar($params)
+    {
+        try {
+            $lista = $this->getHistorial($params);
+            $opcion = $params->input('isExport');
+            if ($opcion === 'excel') {
+                return Excel::download(new ExportHistorial($lista['data']), 'reportesHistorial.xlsx')->deleteFileAfterSend (false);
+            } else {
+                $customPaper = array(0,0,710,710);
+                $pdf = PDF::loadView('Exportar.Pdf.Almacen.historialProductos', ['historial'=>$lista['data']])->setPaper($customPaper);
+                return $pdf->download('invoice.pdf');
+            }
+        } catch (\Exception $exception) {
+            $excepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $excepcion->SendStatus();
+        }
+
     }
 }

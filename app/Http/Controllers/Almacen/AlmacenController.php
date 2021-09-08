@@ -4,10 +4,14 @@
 namespace App\Http\Controllers\Almacen;
 
 
+use App\Exports\Excel\Almacen\ExportProduct;
 use App\Http\Controllers\Controller;
 use App\Repository\Almacen\AlmacenRepositoryInterface;
 use App\Repository\RepositoryInterface;
+use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AlmacenController extends Controller
 {
@@ -30,5 +34,8 @@ class AlmacenController extends Controller
      }
      public function getHistorial(Request $request) {
          return response()->json($this->repository->getHistorial($request));
+     }
+     public function exportar(Request $request) {
+         return $this->repository->exportar($request);
      }
 }

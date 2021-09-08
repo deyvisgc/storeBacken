@@ -19,6 +19,7 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('obtener-almacen','Almacen\AlmacenController@read');
     $app->get('obtener-historia-producto', 'Almacen\AlmacenController@getHistorial');
+    $app->get('productos-historial-exportar', 'Almacen\AlmacenController@exportar');
 });
 
 //SEARCHTRAITS
