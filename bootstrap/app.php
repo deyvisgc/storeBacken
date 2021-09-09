@@ -140,6 +140,7 @@ $app->router->group([
     require __DIR__.'/../routes/Lotes.php';
     require __DIR__.'/../routes/UnidadMedida.php';
     require __DIR__.'/../routes/Producto.php';
+    require __DIR__.'/../routes/Clientes.php';
 });
 
 return $app;
