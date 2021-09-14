@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Persona;
 
 
 use App\Http\Controllers\Controller;
+use App\Repository\Persona\Direccion\DireccionRepositoryInterface;
 use Core\ManagePerson\Domain\Entity\PersonEntity;
 use Core\ManagePerson\Infraestructura\AdapterBridge\ChangeStatusPersonAdapter;
 use Core\ManagePerson\Infraestructura\AdapterBridge\CreatePersonAdapter;
@@ -37,20 +38,47 @@ class PersonaController extends Controller
      * @var ChangeStatusPersonAdapter
      */
     private ChangeStatusPersonAdapter $changeStatusPersonAdapter;
+    /**
+     * @var DireccionRepositoryInterface
+     */
+    private DireccionRepositoryInterface $repository;
 
     public function __construct(
         CreatePersonAdapter $createPersonAdapter,
         UpdatePersonAdapter $updatePersonAdapter,
         DeletePersonAdapter $deletePersonAdapter,
-        GetPersonAdapter $getPersonAdapter
+        GetPersonAdapter $getPersonAdapter,
+        DireccionRepositoryInterface $repository
     )
     {
         $this->createPersonAdapter = $createPersonAdapter;
         $this->updatePersonAdapter = $updatePersonAdapter;
         $this->deletePersonAdapter = $deletePersonAdapter;
         $this->getPersonAdapter = $getPersonAdapter;
+        $this->repository = $repository;
         $this->middleware('auth');
     }
+    function getDepartamento(Request  $request) {
+        return response()->json($this->repository->getDepartamento($request));
+    }
+    function getProvincia(Request  $request) {
+        return response()->json($this->repository->getProvincia($request));
+    }
+    function getDistrito(Request  $request) {
+        return response()->json($this->repository->getDistrito($request));
+    }
+    function searchDepartamento(Request  $request) {
+        return response()->json($this->repository->searchDepartamento($request->params));
+    }
+    function searchProvincia(Request  $request) {
+        return response()->json($this->repository->searchProvincia($request->params));
+    }
+    function searchDistrito(Request  $request) {
+        return response()->json($this->repository->searchDistrito($request->params));
+    }
+
+
+
     function getPerson(Request $request) {
         return response()->json($this->getPersonAdapter->getPerson($request));
     }

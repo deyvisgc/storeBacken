@@ -10,12 +10,12 @@ use App\Repository\Almacen\Lotes\LoteRepository;
 use App\Repository\Almacen\Lotes\lotRepositoryInterface;
 use App\Repository\Almacen\Productos\ProductoRepository;
 use App\Repository\Almacen\Productos\ProductoRepositoryInterface;
-use App\Repository\CLientes\ClienteRepository;
-use App\Repository\CLientes\ClienteRepositoryInterface;
 use App\Repository\Compras\ComprasRepository;
 use App\Repository\Compras\ComprasRepositoryInterface;
 use App\Repository\Compras\Proveedor\ProveedorRepositoryInterface;
 use App\Repository\Compras\Proveedor\TypePersonaRepository;
+use App\Repository\Persona\Direccion\DireccionRepository;
+use App\Repository\Persona\Direccion\DireccionRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -52,9 +52,8 @@ class AppServiceProvider extends ServiceProvider
             AlmacenRepository::class
         );
         $this->app->bind(
-            ClienteRepositoryInterface::class,
-            ClienteRepository::class
+            DireccionRepositoryInterface::class,
+            DireccionRepository::class
         );
-
     }
 }
