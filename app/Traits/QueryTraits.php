@@ -251,10 +251,13 @@ trait QueryTraits
             ->get();
         return $query->get();
     }
-    function obtenerCliente($idPersona, $desde, $hasta, $numero, $tipoDocumento, $departamento, $provincia, $distrito) {
+    function obtenerCliente($idPersona, $desde, $hasta, $numero, $tipoDocumento, $departamento, $provincia, $distrito, $tipoPersona) {
         $query = DB::table('persona as per');
         if ($idPersona > 0) {
             $query->where('id_persona', $idPersona);
+        }
+        if ($tipoPersona) {
+            $query->where('per_tipo', $tipoPersona);
         }
         if ($desde && $hasta && !$numero && !$tipoDocumento && !$departamento && !$provincia && !$distrito && !$idPersona) {
             $query->whereBetween('per.per_fecha_creacion', [$desde, $hasta]);
@@ -278,7 +281,8 @@ trait QueryTraits
               ->leftJoin('ubigeo_peru_provinces as pro', 'per.id_provincia', '=', 'pro.id')
               ->leftJoin('ubigeo_peru_districts as dis', 'per.id_distrito', '=', 'dis.id')
               ->leftJoin('tipo_cliente_proveedor as tpcl', 'per.id_tipo_cliente_proveedor', '=', 'tpcl.id')
-              ->select('per.*', 'dep.name as departamento', 'pro.name as provincia', 'dis.name as distrito', 'tpcl.descripcion');
+              ->select('per.*', 'dep.name as departamento', 'pro.name as provincia', 'dis.name as distrito', 'tpcl.descripcion')
+              ->orderByDesc('per.id_persona');
         $lista = $query->get();
         return $lista;
     }

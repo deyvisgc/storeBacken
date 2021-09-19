@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Persona;
 use App\Http\Controllers\Controller;
 use App\Repository\Persona\Direccion\DireccionRepositoryInterface;
 use App\Repository\Persona\TipoPersona\PersonaRepository;
+use App\Repository\Persona\TipoPersona\PersonaRepositoryInterface;
 use Core\ManagePerson\Domain\Entity\PersonEntity;
 use Core\ManagePerson\Infraestructura\AdapterBridge\ChangeStatusPersonAdapter;
 use Core\ManagePerson\Infraestructura\AdapterBridge\CreatePersonAdapter;
@@ -14,19 +15,22 @@ use Core\ManagePerson\Infraestructura\AdapterBridge\DeletePersonAdapter;
 use Core\ManagePerson\Infraestructura\AdapterBridge\GetPersonAdapter;
 use Core\ManagePerson\Infraestructura\AdapterBridge\GetPersonByIdAdapter;
 use Core\ManagePerson\Infraestructura\AdapterBridge\UpdatePersonAdapter;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class PersonaController extends Controller
 {
     private DireccionRepositoryInterface $repository;
-    private PersonaRepository $personaRepository;
-
-    public function __construct(DireccionRepositoryInterface $repository, PersonaRepository $personaRepository)
+    private PersonaRepositoryInterface $personaRepository;
+    private $client;
+    public function __construct(DireccionRepositoryInterface $repository, PersonaRepositoryInterface $personaRepository, Client $client)
     {
         $this->repository = $repository;
         $this->personaRepository = $personaRepository;
+        $this->client = $client;
         $this->middleware('auth');
     }
+    // Modulo dirccion
     function getDepartamento(Request  $request) {
         return response()->json($this->repository->getDepartamento($request));
     }
@@ -45,6 +49,7 @@ class PersonaController extends Controller
     function searchDistrito(Request  $request) {
         return response()->json($this->repository->searchDistrito($request->params));
     }
+
     // Modulo Persona
     function createPerson(Request $request) {
         return response()->json($this->personaRepository->create($request->params));
@@ -52,27 +57,16 @@ class PersonaController extends Controller
     function getPerson(Request $request) {
         return response()->json($this->personaRepository->all($request));
     }
-    function deletePerson(Request $request) {
-        // return response()->json($this->deletePersonAdapter->deletePerson($request->idPerson));
+    public function searchPerson(Request $request) {
+        return response()->json($this->personaRepository->searchPerson($this->client,$request));
     }
     function getPersonById(int $idPersona) {
-        // return response()->json($this->getPersonAdapter->getPersonById($idPersona));
+        return response()->json($this->personaRepository->show($idPersona));
     }
-  /*  function updatePerson(Request $request) {
-        $perfil = $request['person']['perfil'];
-        $idPersona = $request['person']['idPerson'];
-        $name = $request['person']['name'];
-        $lastName = $request['person']['lastName'];
-        $address = $request['person']['address'];
-        $phone = $request['person']['phone'];
-        $typeDocument = $request['person']['typeDocument'];
-        $docNumber = $request['person']['docNumber'];
-        $razonSocial = empty($request['person']['per_razon_social']) ? null : $request['person']['per_razon_social'];
-        $person = new PersonEntity($idPersona,$name,$lastName,$address,$phone,null,$typeDocument,$docNumber,$razonSocial);
-        return response()->json($this->updatePersonAdapter->updatePerson($person, $perfil));
+    function deletePerson(int $id) {
+        return response()->json($this->personaRepository->delete($id));
     }
-  */
-    function updateStatusPerson(Request $request) {
-        // return response()->json($this->updatePersonAdapter->updateStatusPerson($request->person));
+    function changeStatus(Request $request) {
+        return response()->json($this->personaRepository->changeStatus($request->params));
     }
 }

@@ -16,6 +16,8 @@ use App\Repository\Compras\Proveedor\ProveedorRepositoryInterface;
 use App\Repository\Compras\Proveedor\TypePersonaRepository;
 use App\Repository\Persona\Direccion\DireccionRepository;
 use App\Repository\Persona\Direccion\DireccionRepositoryInterface;
+use App\Repository\Persona\TipoPersona\PersonaRepository;
+use App\Repository\Persona\TipoPersona\PersonaRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,8 +30,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            ProveedorRepositoryInterface::class,
-            TypePersonaRepository::class
+            PersonaRepositoryInterface::class,
+            PersonaRepository::class
         );
         $this->app->bind(
             ComprasRepositoryInterface::class,

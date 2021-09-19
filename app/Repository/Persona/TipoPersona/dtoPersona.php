@@ -124,7 +124,7 @@ class dtoPersona
             'per_tipo_documento' =>$this->getTipoDocumento(),
             'per_numero_documento' =>$this->getNumeroDocuento(),
             'per_codigo_interno' =>$this->getCodigoInterno(),
-            'id_tipo_cliente_proveedor' =>$this->getTipoCliente(),
+            'id_tipo_cliente_proveedor' =>$this->getTipoCliente() ? $this->getTipoCliente() : null,
             'per_fecha_creacion' => Carbon::make($this->getFechaCreacion())->format('Y-m-d'),
             'id_departamento' => $this->getDepartamento(),
             'id_provincia' => $this->getProvincia(),
