@@ -251,7 +251,7 @@ trait QueryTraits
             ->get();
         return $query->get();
     }
-    function obtenerCliente($idPersona, $desde, $hasta, $numero, $tipoDocumento, $departamento, $provincia, $distrito, $tipoPersona) {
+    function obtenerCliente($idPersona, $desde, $hasta, $numero, $tipoDocumento, $departamento, $provincia, $distrito, $tipoPersona, $tipo) {
         $query = DB::table('persona as per');
         if ($idPersona > 0) {
             $query->where('id_persona', $idPersona);
@@ -267,6 +267,9 @@ trait QueryTraits
         }
         if ($tipoDocumento) {
             $query->where('per.per_tipo_documento', $tipoDocumento);
+        }
+        if ($tipo) {
+            $query->where('per.id_tipo_cliente_proveedor', $tipo);
         }
         if ($departamento) {
             $query->where('per.id_departamento', $departamento);

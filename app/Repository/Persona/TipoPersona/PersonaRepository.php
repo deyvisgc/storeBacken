@@ -6,6 +6,7 @@ namespace App\Repository\Persona\TipoPersona;
 
 use App\Http\Excepciones\Exepciones;
 use App\Traits\QueryTraits;
+use Carbon\Carbon;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -18,15 +19,16 @@ class PersonaRepository implements PersonaRepositoryInterface
     public function all($params)
     {
         try {
-            $desde = $params['desde'];
-            $hasta = $params['hasta'];
+            $desde = Carbon::parse($params['desde'])->format('Y-m-d');
+            $hasta = Carbon::parse($params['hasta'])->format('Y-m-d');
             $numero = $params['numero'];
             $tipoDocumento = $params['tipoDocumento'];
             $departamento = $params['departamento'];
             $provincia = $params['provincia'];
             $distrito = $params['distrito'];
             $tipoPersona = $params['tipoPersona'];
-            $lista = $this->obtenerCliente(0, $desde, $hasta,$numero,$tipoDocumento,$departamento,$provincia,$distrito, $tipoPersona);
+            $tipo = $params['tipo']; // este es el tipo proveedor o tipo cliente
+            $lista = $this->obtenerCliente(0, $desde, $hasta,$numero,$tipoDocumento,$departamento,$provincia,$distrito, $tipoPersona, $tipo);
             $exepeciones = new Exepciones(true, 'Informacion Encontrada', 200, $lista);
             return $exepeciones->SendStatus();
         } catch (\Exception $exception) {
@@ -107,7 +109,7 @@ class PersonaRepository implements PersonaRepositoryInterface
     public function show(int $id)
     {
         try {
-            $cliente = $this->obtenerCliente($id, '', '', '', '', '', '', '', '');
+            $cliente = $this->obtenerCliente($id, '', '', '', '', '', '', '', '', '');
             $tipoCliente = $this->getTypePersona([]);
             $excepciones = new Exepciones(false, 'Información encontrada', 200, ['cliente'=>$cliente, 'tipoCliente'=>$tipoCliente]);
             return $excepciones->SendStatus();
@@ -169,7 +171,6 @@ class PersonaRepository implements PersonaRepositoryInterface
 
         }
     }
-
     function changeStatus($params)
     {
         try {

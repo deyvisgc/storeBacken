@@ -4,19 +4,17 @@
 namespace App\Http\Controllers\Persona;
 
 
+use App\Exports\Excel\Almacen\ExportProduct;
+use App\Exports\Excel\Clientes\ExportClientes;
 use App\Http\Controllers\Controller;
 use App\Repository\Persona\Direccion\DireccionRepositoryInterface;
-use App\Repository\Persona\TipoPersona\PersonaRepository;
 use App\Repository\Persona\TipoPersona\PersonaRepositoryInterface;
-use Core\ManagePerson\Domain\Entity\PersonEntity;
-use Core\ManagePerson\Infraestructura\AdapterBridge\ChangeStatusPersonAdapter;
-use Core\ManagePerson\Infraestructura\AdapterBridge\CreatePersonAdapter;
-use Core\ManagePerson\Infraestructura\AdapterBridge\DeletePersonAdapter;
-use Core\ManagePerson\Infraestructura\AdapterBridge\GetPersonAdapter;
-use Core\ManagePerson\Infraestructura\AdapterBridge\GetPersonByIdAdapter;
-use Core\ManagePerson\Infraestructura\AdapterBridge\UpdatePersonAdapter;
+use App\Traits\QueryTraits;
+use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PersonaController extends Controller
 {
@@ -30,6 +28,7 @@ class PersonaController extends Controller
         $this->client = $client;
         $this->middleware('auth');
     }
+    use QueryTraits;
     // Modulo dirccion
     function getDepartamento(Request  $request) {
         return response()->json($this->repository->getDepartamento($request));
@@ -68,5 +67,30 @@ class PersonaController extends Controller
     }
     function changeStatus(Request $request) {
         return response()->json($this->personaRepository->changeStatus($request->params));
+    }
+    function Exportar (Request $request) {
+        $desde = Carbon::parse($request['desde'])->format('Y-m-d');
+        $hasta = Carbon::parse($request['hasta'])->format('Y-m-d');
+        $numero = $request['numero'];
+        $tipoDocumento = $request['tipoDocumento'];
+        $departamento = $request['departamento'];
+        $provincia = $request['provincia'];
+        $distrito = $request['distrito'];
+        $tipoPersona = $request['tipoPersona'];
+        $tipo = $request['tipo']; // este es el tipo proveedor o tipo cliente
+        $opcion = $request->input('isExport');
+        $lista = $this->obtenerCliente(0, $desde, $hasta,$numero,$tipoDocumento,$departamento,$provincia,$distrito, $tipoPersona, $tipo);
+        if ($tipoPersona === 'cliente') {
+            $titulo = 'Clientes';
+        } else if ($tipoPersona === 'proveedor') {
+            $titulo = 'Proveedores';
+        }
+        if ($opcion === 'excel') {
+            return Excel::download(new ExportClientes($lista, $titulo), 'Clientes.xlsx')->deleteFileAfterSend (false);
+        } else {
+            $customPaper = array(0,0,710,710);
+            $pdf = PDF::loadView('Exportar.Pdf.Cliente.Clientes', ['cliente'=>$lista, 'titulo'=>$titulo])->setPaper($customPaper);
+            return $pdf->download('invoice.pdf');
+        }
     }
 }

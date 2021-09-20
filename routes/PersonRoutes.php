@@ -7,6 +7,7 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('search-person', 'Persona\PersonaController@searchPerson');
     $app->post('change-status-cliente', 'Persona\PersonaController@changeStatus');
     $app->delete('delete-cliente/{id}', 'Persona\PersonaController@deletePerson');
+    $app->get('clientes-exportar', 'Persona\PersonaController@exportar');
     // ubigeo peru
     $app->get('seleccionar-departamento', 'Persona\PersonaController@getDepartamento');
     $app->get('seleccionar-provincia', 'Persona\PersonaController@getProvincia');

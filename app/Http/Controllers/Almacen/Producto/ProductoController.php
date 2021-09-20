@@ -65,12 +65,12 @@ class ProductoController extends Controller
         $fechaDesde= Carbon::make($request->desde)->format('Y-m-d');
         $fechaHasta= Carbon::make($request->hasta)->format('Y-m-d');
         $opcion = $request->input('isExport');
-        $lita = $this->ObtenerProductos($clase, $unidad, $fechaDesde, $fechaHasta, $request->fechaVencimiento);
+        $lista = $this->ObtenerProductos($clase, $unidad, $fechaDesde, $fechaHasta, $request->fechaVencimiento);
         if ($opcion === 'excel') {
-            return Excel::download(new ExportProduct($lita), 'reportesInventario.xlsx')->deleteFileAfterSend (false);
+            return Excel::download(new ExportProduct($lista), 'reportesInventario.xlsx')->deleteFileAfterSend (false);
         } else {
             $customPaper = array(0,0,710,710);
-            $pdf = PDF::loadView('Exportar.Pdf.Almacen.productos', ['productos'=>$lita])->setPaper($customPaper);
+            $pdf = PDF::loadView('Exportar.Pdf.Almacen.productos', ['productos'=>$lista])->setPaper($customPaper);
             return $pdf->download('invoice.pdf');
         }
     }
