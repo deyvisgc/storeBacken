@@ -22,7 +22,29 @@ class TipoClienteRepository implements PersonaRepositoryInterface
 
     function changeStatus($params)
     {
-        // TODO: Implement changeStatus() method.
+        try {
+            if ($params['id'] > 0) {
+                if ($params['status'] === 'active') {
+                    $status = 'disable';
+                } else {
+                    $status = 'active';
+                }
+                $statusUpdate = DB::table('tipo_cliente_proveedor')->where('id', $params['id'])->update(['tipo_estado'=>$status]);
+                if ($statusUpdate === 1) {
+                    $excepcion= new Exepciones(true,'Estado  Actualizado Correctamente', 200, []);
+                } else {
+                    $excepcion= new Exepciones(false,'Error al cambiar de estado', 403, []);
+
+                }
+                return $excepcion->SendStatus();
+            } else {
+                $excepcion= new Exepciones(false,'Este tipo cliente no existe', 403, []);
+                return $excepcion->SendStatus();
+            }
+        } catch (\Exception $exception) {
+            $excepcion= new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
+            return $excepcion->SendStatus();
+        }
     }
 
     public function all($params)
@@ -57,6 +79,7 @@ class TipoClienteRepository implements PersonaRepositoryInterface
             }
         } catch (\Exception $exception) {
             $exepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+
             return $exepciones->SendStatus();
         }
     }
@@ -68,7 +91,23 @@ class TipoClienteRepository implements PersonaRepositoryInterface
 
     public function delete(int $id)
     {
-        // TODO: Implement delete() method.
+
+        try {
+            if ($id > 0) {
+                $status = DB::table('tipo_cliente_proveedor')->where('id', $id)->delete();
+                if ($status === 1) {
+                    $exepcion = new Exepciones(true,'Elimiando Correctamente', 200, []);
+                } else {
+                    $exepcion = new Exepciones(false,'Error al Eliminar', 403, []);
+                }
+            } else {
+                $exepcion = new Exepciones(false,'El tipo cliente a eliminar no existe en la base de datos', 403, []);
+            }
+            return $exepcion->SendStatus();
+        } catch (\Exception $exception) {
+            $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $exepcion->SendStatus();
+        }
     }
 
     public function find($params)

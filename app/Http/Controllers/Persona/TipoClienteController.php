@@ -24,10 +24,14 @@ class TipoClienteController extends Controller
     function getTipoXid(int $id) {
         return response()->json($this->repository->show($id));
     }
-    function find(Request $request) {
-        return response()->json($this->repository->find($request));
-    }
     function create(Request $request) {
         return response()->json($this->repository->create($request->params));
+    }
+    function delete(int $id) {
+        return response()->json($this->repository->delete($id));
+    }
+    function changeStatus(Request $request) {
+        return response()->json($this->repository->changeStatus($request->params));
+
     }
 }

@@ -19,4 +19,7 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('obtener-tipo-cliente', 'Persona\TipoClienteController@getTipo');
     $app->get('obtener-tipo-cliente/{id}', 'Persona\TipoClienteController@getTipoXid');
     $app->post('crear-tipo-cliente', 'Persona\TipoClienteController@create');
+    $app->delete('delete-tipo-cliente/{id}',  'Persona\TipoClienteController@delete');
+    $app->post('change-status-tipo-cliente', 'Persona\TipoClienteController@changeStatus');
+
 });
