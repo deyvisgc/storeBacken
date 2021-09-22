@@ -119,8 +119,8 @@ class dtoPersona
         return $this->perTipo;
     }
     function Person(string $accion) {
-        $datos = array('per_nombre' => $this->getNombre(),
-            'per_razon_social' =>$this->getRazonSocial(),
+        $datos = array('per_nombre' => ucwords(strtolower($this->getNombre())),
+            'per_razon_social' => ucwords(strtolower($this->getRazonSocial())),
             'per_tipo_documento' =>$this->getTipoDocumento(),
             'per_numero_documento' =>$this->getNumeroDocuento(),
             'per_codigo_interno' =>$this->getCodigoInterno(),

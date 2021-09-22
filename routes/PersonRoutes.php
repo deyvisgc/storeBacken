@@ -16,5 +16,7 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->post('search-provincias', 'Persona\PersonaController@searchProvincia');
     $app->post('search-distrito', 'Persona\PersonaController@searchDistrito');
     // Tipo Cliente
-    $app->get('obtener-tipo-cliente', 'Persona\TipoPersonaController@getTipo');
+    $app->get('obtener-tipo-cliente', 'Persona\TipoClienteController@getTipo');
+    $app->get('obtener-tipo-cliente/{id}', 'Persona\TipoClienteController@getTipoXid');
+    $app->post('crear-tipo-cliente', 'Persona\TipoClienteController@create');
 });

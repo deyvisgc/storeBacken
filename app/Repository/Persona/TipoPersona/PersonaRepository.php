@@ -120,15 +120,6 @@ class PersonaRepository implements PersonaRepositoryInterface
     }
     function getTypePersona($params)
     {
-        try {
-            $query = DB::table('tipo_cliente_proveedor')->orderByDesc('id')->get();
-            $exepciones = new Exepciones(true, 'Informacion Encontrada', 200, $query);
-            return $exepciones->SendStatus();
-        } catch (\Exception $exception) {
-            $exepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
-            return $exepciones->SendStatus();
-        }
-
     }
     function searchPerson($client, $params)
     {
