@@ -41,7 +41,7 @@ $app->singleton(\GuzzleHttp\Client::class, function () {
         'base_uri' => 'https://dniruc.apisperu.com/api/v1/',
         'headers' => [
             'Content-Type' => "application/json",
-            'Authorization' => "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRlaXZpc2dhcmNpYUB1cGV1LmVkdS5wZSJ9.UwcemqJBjfujl0Sj1dQrZeUyhFm5PoRHWfEB4bI1pUU"
+            'Authorization' => "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImdhcmNpYXhkOTRAZ21haWwuY29tIn0.TwRVMkXgoH9R26OyWPN1vmtv3wwLbY9f43PArLHaAek"
         ],
         'verify' => false
     ]);

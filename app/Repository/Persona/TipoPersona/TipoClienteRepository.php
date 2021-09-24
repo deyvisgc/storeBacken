@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\DB;
 class TipoClienteRepository implements PersonaRepositoryInterface
 {
 
-    function getTypePersona($params)
-    {
-
-    }
-
     function searchPerson($client, $params)
     {
         // TODO: Implement searchPerson() method.

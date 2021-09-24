@@ -11,6 +11,7 @@ use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
+use function PHPUnit\Framework\isNull;
 
 class PersonaRepository implements PersonaRepositoryInterface
 {
@@ -59,11 +60,16 @@ class PersonaRepository implements PersonaRepositoryInterface
             $person = new dtoPersona($idPersona, $nombre, $razonSocial, $tipoDocumento, $numeroDocumento, $fechaCreacion, $codigoInterno, $tipoCliente, $departamento, $provincia, $distrito, $direccion, $telefono, $email, $typePersona);
             $personData = $person->Person($accion);
             if ($idPersona === 0) { // esto es la opcion crear
-                $status = DB::table('persona')->insert($personData);
-                if ($status) {
-                    $exepeciones = new Exepciones(true, 'Información registrada', 200, []);
+                $exist = DB::table('persona')->where('per_numero_documento', $numeroDocumento)->where('per_tipo', $typePersona)->first();
+                if ($exist) {
+                    $exepeciones = new Exepciones(false, 'existe', 23000, []);
                 } else {
-                    $exepeciones = new Exepciones(false, 'Error al registrar', 403, []);
+                    $status = DB::table('persona')->insert($personData);
+                    if ($status) {
+                        $exepeciones = new Exepciones(true, 'Información registrada', 200, []);
+                    } else {
+                        $exepeciones = new Exepciones(false, 'Error al registrar', 403, []);
+                    }
                 }
                 return  $exepeciones->SendStatus();
             } else {
@@ -76,7 +82,6 @@ class PersonaRepository implements PersonaRepositoryInterface
             return $exepeciones->SendStatus();
         }
     }
-
     public function update(array $data, int $id)
     {
         // TODO: Implement update() method.
@@ -110,16 +115,13 @@ class PersonaRepository implements PersonaRepositoryInterface
     {
         try {
             $cliente = $this->obtenerCliente($id, '', '', '', '', '', '', '', '', '');
-            $tipoCliente = $this->getTypePersona([]);
+            $tipoCliente = DB::table('tipo_cliente_proveedor')->orderByDesc('id')->get();
             $excepciones = new Exepciones(false, 'Información encontrada', 200, ['cliente'=>$cliente, 'tipoCliente'=>$tipoCliente]);
             return $excepciones->SendStatus();
         } catch (\Exception $exception) {
             $excepciones = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
             return $excepciones->SendStatus();
         }
-    }
-    function getTypePersona($params)
-    {
     }
     function searchPerson($client, $params)
     {
@@ -142,18 +144,33 @@ class PersonaRepository implements PersonaRepositoryInterface
         try {
             $response = $client->request('get', "$url/". $number);
             $res = json_decode($response->getBody()->getContents());
-            if ($url === 'dni') {
-                $lista =  [
-                    'per_nombre' => $res->nombres.' '.$res->apellidoPaterno. ' '. $res->apellidoMaterno,
-                    'dni' => $res->dni
-                ];
+            if (isset($res->success)) {
+                $message = 'No se encontraron resultados';
+                $lista = [];
+                $status = false;
+                $code = 403;
             } else {
-                $lista = [
-                    'per_razon_social' => $res->razonSocial,
-                    'ruc' => $res->ruc
-                ];
+                if ($url === 'dni') {
+                    if (!$res->nombres) {
+                        $exepeciones = new Exepciones(false, 'No se encontraron resultados', 403, []);
+                        return $exepeciones->SendStatus();
+                    }
+                    $lista =  [
+                        'per_nombre' => $res->nombres.' '.$res->apellidoPaterno. ' '. $res->apellidoMaterno,
+                        'dni' => $res->dni
+                    ];
+
+                } else {
+                    $lista = [
+                        'per_razon_social' => $res->razonSocial,
+                        'ruc' => $res->ruc
+                    ];
+                }
+                $status = true;
+                $code = 200;
+                $message = 'Información encontrada';
             }
-            $exepeciones = new Exepciones(true, 'Proveedor Encontrado', 200, $lista);
+            $exepeciones = new Exepciones($status, $message, $code, $lista);
             return $exepeciones->SendStatus();
 
         } catch (BadResponseException $e) {
