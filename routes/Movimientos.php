@@ -17,5 +17,8 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 $router->group(['prefix'=>'api/v1/'], function ($app) {
-    $app->get('obtener-almacen','Almacen\AlmacenController@read');
+    $app->get('obtener-reposicion-producto', 'Inventario\Movimientos\MovimientosController@getRepocision');
+    $app->get('reposicion-productos-exportar', 'Inventario\Movimientos\MovimientosController@exportar');
+    $app->get('inventario-getMovimiento', 'Inventario\Movimientos\MovimientosController@getMovimiento');
+    $app->post('ajustar-stock','Inventario\Movimientos\MovimientosController@ajustarStock');
 });

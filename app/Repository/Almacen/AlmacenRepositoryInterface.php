@@ -8,6 +8,4 @@ use App\Repository\RepositoryInterface;
 
 interface AlmacenRepositoryInterface extends RepositoryInterface
 {
-    function getHistorial($params);
-    function exportar($params);
 }

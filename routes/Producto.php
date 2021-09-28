@@ -28,7 +28,6 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->delete('delete-producto/{id}','Almacen\Producto\ProductoController@delete');
     $app->get('productos-exportar','Almacen\Producto\ProductoController@Exportar');
     $app->post('search-producto','Almacen\Producto\ProductoController@Search');
-    $app->post('ajustar-stock','Almacen\Producto\ProductoController@ajustarStock');
     $app->get('select-atributos-producto','Almacen\Producto\ProductoController@selectAtributos');
 });
 

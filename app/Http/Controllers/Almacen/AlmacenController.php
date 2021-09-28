@@ -32,10 +32,4 @@ class AlmacenController extends Controller
      public function read(Request $request) {
        return response()->json($this->repository->all($request));
      }
-     public function getHistorial(Request $request) {
-         return response()->json($this->repository->getHistorial($request));
-     }
-     public function exportar(Request $request) {
-         return $this->repository->exportar($request);
-     }
 }

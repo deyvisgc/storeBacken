@@ -13,5 +13,4 @@ interface ProductoRepositoryInterface extends RepositoryInterface
     function edit(int $id);
     function changeStatus($data);
     function selectProducto($params);
-    function ajustarStock($params);
 }

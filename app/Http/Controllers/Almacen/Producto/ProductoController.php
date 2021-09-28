@@ -53,9 +53,6 @@ class ProductoController extends Controller
     function selectProducto(Request $request) {
         return response()->json($this->repository->selectProducto($request));
     }
-    function ajustarStock(Request $request) {
-        return response()->json($this->repository->ajustarStock($request->params));
-    }
     function changeStatus (Request $request) {
         return response()->json($this->repository->changeStatus($request->params));
     }
@@ -80,26 +77,4 @@ class ProductoController extends Controller
     function generarCodigo() {
         return response()->json($this->repository->generarCodigoBarra());
     }
-   /* function SearchxType (Request $request) {
-        $status= '';
-        switch ($request['data'][0]['typesearch']){
-            case 'lote':
-                $status = $this->seachxlote($request['data'][0]['id']);
-                break;
-            case 'clase' :
-                $status = $this->seachxclase($request['data'][0]['id']);
-                break;
-            case 'unidad' :
-                $status = $this->seachxunidad($request['data'][0]['id']);
-                break;
-        }
-        return response()->json($status);
-    }
-    function LastIdProducto () {
-        return response()->json($this->readBridge->__invokeLastId());
-    }
-    function Search(Request $request) {
-        return response()->json($this->readBridge->search($request->params));
-    }
-   */
 }

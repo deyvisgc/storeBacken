@@ -231,7 +231,7 @@ trait QueryTraits
             ->first();
      return [$perfil];
     }
-    function ObtenerProductos($clase, $unidad, $desde, $hasta, $fechaVencimiento) {
+    function ObtenerProductos($clase, $unidad, $desde, $hasta, $fechaVencimiento, $almacen, $codigoInterno, $producto) {
         $query = DB::table('product as pro');
 
         if ($fechaVencimiento) {

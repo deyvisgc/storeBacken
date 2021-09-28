@@ -14,6 +14,8 @@ use App\Repository\Compras\ComprasRepository;
 use App\Repository\Compras\ComprasRepositoryInterface;
 use App\Repository\Compras\Proveedor\ProveedorRepositoryInterface;
 use App\Repository\Compras\Proveedor\TypePersonaRepository;
+use App\Repository\Inventario\Movimientos\MovimientosRepository;
+use App\Repository\Inventario\Movimientos\MovimientosRepositoryInterface;
 use App\Repository\Persona\Direccion\DireccionRepository;
 use App\Repository\Persona\Direccion\DireccionRepositoryInterface;
 use App\Repository\Persona\TipoPersona\PersonaRepository;
@@ -56,6 +58,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             DireccionRepositoryInterface::class,
             DireccionRepository::class
+        );
+        $this->app->bind(
+            MovimientosRepositoryInterface::class,
+            MovimientosRepository::class
         );
     }
 }

@@ -20,7 +20,7 @@ class ProductoRepository implements ProductoRepositoryInterface
         try {
             $fechaDesde = Carbon::make($params->desde)->format('Y-m-d');
             $fechaHasta = Carbon::make($params->hasta)->format('Y-m-d');
-            $lista = $this->ObtenerProductos($params->idClase, $params->idUnidad, $fechaDesde, $fechaHasta, $params->fechaVencimiento);
+            $lista = $this->ObtenerProductos($params->idClase, $params->idUnidad, $fechaDesde, $fechaHasta, $params->fechaVencimiento, '', '', '');
             $excepcion = new Exepciones(true,'Productos Encontrados', 200, $lista);
             return $excepcion->SendStatus();
         } catch (\Exception $exception) {
@@ -233,110 +233,5 @@ class ProductoRepository implements ProductoRepositoryInterface
             $excepcion = new Exepciones(false,$exception->getMessage(), $exception->getCode(),[]);
             return $excepcion->SendStatus();
         }
-    }
-
-    function AjustarStock($params) {
-        try {
-            if (count($params['lote']) === 0) {
-                $history = DB::table('product')->where('id_product', $params['id_product'])->first();
-                if ($history) {
-                    $stockNuevo = (int)$params['pro_stock_inicial'] + (int) $history->pro_stock_inicial;
-                    DB::table('product')->where('id_product', $params['id_product'])
-                        ->update([
-                            'pro_stock_inicial'=> $stockNuevo,
-                            'pro_precio_compra' => $params['pro_precio_compra'],
-                            'pro_precio_venta' => $params['pro_precio_venta'],
-                            'id_almacen' => $params['almacen'],
-                            'pro_fecha_vencimiento' =>$params['pro_fecha_vencimiento']
-                        ]);
-                    $idHistoria = $this->insertarHistorial($history, $stockNuevo);
-                    if ($idHistoria > 0) {
-                        $status = true;
-                        $message = 'Exito al Ajustar Stock';
-                    } else {
-                        $status = false;
-                        $message = 'Error al Insertar en la tabla reposición de productos.';
-                    }
-                } else {
-                    $message = 'El producto no existe.';
-                }
-            } else {
-                $status =  $this->validarAjustarStock($params['lote']);
-                if (count($status) > 0) {
-                    $excepciones = new Exepciones(false,'error', 401, ['error'=>$status]);
-                    return $excepciones->SendStatus();
-                } else {
-                    foreach ($params['lote'] as $item) {
-                        $history = DB::table('product')->where('id_product', $item['id_producto'])->first();
-                        if ($history) {
-                            $stockNuevo = (int)$item['stock_inicial'] + (int) $history->pro_stock_inicial;
-                            DB::table('product')->where('id_product', $item['id_producto'])
-                                ->update([
-                                    'pro_stock_inicial'=> $stockNuevo,
-                                    'pro_precio_compra' => $item['pro_precio_compra'],
-                                    'pro_precio_venta' => $item['pro_precio_venta'],
-                                    'id_almacen' => $item['almacen'],
-                                    'pro_fecha_vencimiento' =>$item['lot_expiration_date']
-                                ]);
-                            $this->insertarHistorial($history, $stockNuevo);
-                        }
-                    }
-                    $message = 'Exito al Ajustar Stock.';
-                }
-            }
-            $excepciones = new Exepciones($status,$message, 200, []);
-            return $excepciones->SendStatus();
-        } catch (\Exception $exception) {
-            $excepciones = new Exepciones(false,$exception->getMessage(), $exception->getCode(), []);
-            return $excepciones->SendStatus();
-        }
-    }
-    function validarAjustarStock($params) {
-        $detalleError = array();
-        foreach ($params as $item) {
-            if ($item['pro_nombre'] === '') {
-                $error = 'El producto  es requerido';
-                array_push($detalleError, $error);
-            }
-            if ($item['codigo_lote'] === '') {
-                $error = 'Lote del producto '.$item['pro_nombre']. ' es requerido';
-                array_push($detalleError, $error);
-            }
-            if ($item['lot_expiration_date'] === '') {
-                $error = 'La fecha de vencimiento del producto '.$item['pro_nombre'].' es requerido';
-                array_push($detalleError, $error);
-            }
-            if ($item['stock_inicial'] === 0 || !$item['stock_inicial']) {
-                $error = 'El stock Inicial del producto '.$item['pro_nombre'].' debe ser mayor a cero';
-                array_push($detalleError, $error);
-            }
-            if ($item['pro_precio_compra'] === 0 || !$item['pro_precio_compra']) {
-                $error = 'El precio de compra del producto '.$item['pro_nombre'].' debe ser mayor a cero';
-                array_push($detalleError, $error);
-            }
-            if ($item['pro_precio_venta'] === 0 || !$item['pro_precio_venta']) {
-                $error = 'El precio de venta del producto '.$item['pro_nombre'].' debe ser mayor a cero';
-                array_push($detalleError, $error);
-            }
-            if (!$item['almacen']) {
-                $error = 'El almacen del producto '.$item['pro_nombre'].' es requerido';
-                array_push($detalleError, $error);
-            }
-        }
-        return $detalleError;
-    }
-    function insertarHistorial($params, $stockNuevo) {
-        $status = DB::table('product_history')->insertGetId([
-            'id_producto' => $params->id_product,
-            'id_lote' => $params->id_lote,
-            'fecha_vencimiento' => $params->pro_fecha_vencimiento,
-            'fecha_creacion' =>  Carbon::now(new \DateTimeZone('America/Lima'))->format('Y-m-d'),
-            'stock_antiguo' => $params->pro_stock_inicial,
-            'stock_nuevo' => $stockNuevo,
-            'almacen'=> $params->id_almacen,
-            'precio_compra' =>$params->pro_precio_compra,
-            'precio_venta' => $params->pro_precio_venta
-        ]);
-        return $status;
     }
 }

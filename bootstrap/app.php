@@ -122,25 +122,26 @@ $app->configure('helpers.php');
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
-    require __DIR__.'/../routes/PrivilegesRoutes.php';
-    require __DIR__.'/../routes/RolRoutes.php';
-    require __DIR__.'/../routes/CajaRoutes.php';
-    require __DIR__.'/../routes/RegistroSanitario.php';
     require __DIR__.'/../routes/Almacen.php';
-    require __DIR__.'/../routes/PersonRoutes.php';
-    require __DIR__.'/../routes/UserRoutes.php';
-    require __DIR__.'/../routes/AuthenticationRoutes.php';
-    require __DIR__.'/../routes/SangriaRoutes.php';
-    require __DIR__.'/../routes/HistorialCajaRoutes.php';
-    require __DIR__.'/../routes/Compras.php';
-    require __DIR__.'/../routes/Reportes.php';
-    require __DIR__.'/../routes/Permisos.php';
+    require __DIR__ . '/../routes/Authentication.php';
+    require __DIR__ . '/../routes/Caja.php';
+    require __DIR__ . '/../routes/HistorialCaja.php';
     require __DIR__.'/../routes/Categorias.php';
-    require __DIR__.'/../routes/Lotes.php';
-    require __DIR__.'/../routes/UnidadMedida.php';
-    require __DIR__.'/../routes/Producto.php';
     require __DIR__.'/../routes/Clientes.php';
+    require __DIR__.'/../routes/Compras.php';
+    require __DIR__.'/../routes/Lotes.php';
+    require __DIR__.'/../routes/Movimientos.php';
+    require __DIR__.'/../routes/Permisos.php';
+    require __DIR__ . '/../routes/Persona.php';
+    require __DIR__ . '/../routes/Privileges.php';
+    require __DIR__ . '/../routes/Rol.php';
+    require __DIR__.'/../routes/Producto.php';
+    require __DIR__.'/../routes/RegistroSanitario.php';
+    require __DIR__.'/../routes/Reportes.php';
+    require __DIR__ . '/../routes/Sangria.php';
+    require __DIR__.'/../routes/UnidadMedida.php';
+    require __DIR__ . '/../routes/Users.php';
+    require __DIR__.'/../routes/web.php';
 });
 
 return $app;
