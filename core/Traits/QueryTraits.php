@@ -256,7 +256,7 @@ trait QueryTraits
             ->select('pro.*', 'cp.clas_name as clasePadre', 'subclase.clas_name as classHijo',
                              'um.um_name as unidad', 'al.descripcion as almacen', 'tp.descripcion as tipo_afectacion',
                              'lo.lot_name as lote')
-            ->orderBy('id_product', 'Asc')
+            ->orderBy('id_product', 'desc')
             ->get();
         return $query->get();
     }

@@ -58,6 +58,13 @@ class ProductoRepository implements ProductoRepositoryInterface
                 $pro_precio_venta, $pro_stock_inicial, $pro_stock_minimo, $tipo_afectacion, $almacen,$lote, $impuesto_igv, $moneda, $impuesto_bolsa);
             if ($producto->getIdProducto() === 0) {
                 $create = DB::table('product')->insertGetId($producto->Create());
+                DB::table('inventario')->insert([
+                    'id_producto' => $create,
+                    'producto' => $pro_nombre,
+                    'stock' => $pro_stock_inicial,
+                    'id_almacen' =>$almacen,
+                    'fecha_creacion' => Carbon::now(new \DateTimeZone('America/Lima'))->format('Y-m-d H:i')
+                ]);
                 $code = DB::select("SELECT concat('P', (LPAD($create, 4, '0'))) as codigo");
                 DB::table('product')->where('id_product', $create)->update(['pro_code'=>$code[0]->codigo]);
                 $message = 'Producto registrado';

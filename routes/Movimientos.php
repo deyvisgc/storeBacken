@@ -20,5 +20,7 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('obtener-reposicion-producto', 'Inventario\Movimientos\MovimientosController@getRepocision');
     $app->get('reposicion-productos-exportar', 'Inventario\Movimientos\MovimientosController@exportar');
     $app->get('inventario-getMovimiento', 'Inventario\Movimientos\MovimientosController@getMovimiento');
+    $app->get('inventario-getMovimiento/{id}', 'Inventario\Movimientos\MovimientosController@getMovimientoXid');
     $app->post('ajustar-stock','Inventario\Movimientos\MovimientosController@ajustarStock');
+    $app->post('inventario-traslado-entre-almacenes','Inventario\Movimientos\MovimientosController@traslado');
 });

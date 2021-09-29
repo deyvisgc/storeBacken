@@ -223,11 +223,11 @@ class dtoProducto
             'pro_name' => ucwords(strtolower($this->getNombre())),//agregar la primera letra en mayuscula
             'pro_description' => ucwords(strtolower($this->getDescripcion())),
             'pro_cod_barra' => $this->getCodigoBarra(),
-            'pro_fecha_creacion' => Carbon::now(new \DateTimeZone('America/Lima'))->format('Y-m-d H:i:s'),
+            'pro_fecha_creacion' => Carbon::now(new \DateTimeZone('America/Lima'))->format('Y-m-d H:i'),
             'pro_status'=> 'active',
             'pro_marca' => $this->getMarca(),
             'pro_modelo' => $this->getModelo(),
-            'pro_fecha_vencimiento' => Carbon::make($this->getFechaVencimiento())->format('Y-m-d H:i:s'),
+            'pro_fecha_vencimiento' => Carbon::make($this->getFechaVencimiento())->format('Y-m-d H:i'),
             'id_unidad_medida' => $this->getUnidadMedida() === 0 ? null: $this->getUnidadMedida(),
             'id_clase_producto' => !$this->getCategoria() ? null : $this->getCategoria(),
             'id_subclase' =>!$this->getSubCategoria() ? null : $this->getSubCategoria(),

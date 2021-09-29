@@ -6,6 +6,7 @@ namespace App\Repository\Inventario\Movimientos;
 
 use App\Exports\Excel\Almacen\ExportHistorial;
 use App\Http\Excepciones\Exepciones;
+use App\Repository\Almacen\Productos\dtoProducto;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Core\Traits\QueryTraits;
@@ -18,7 +19,10 @@ class MovimientosRepository implements MovimientosRepositoryInterface
     public function all($params)
     {
         try {
-            $lista = $this->ObtenerProductos('', '', '', '', '', '', '', '');
+            $lista = DB::table('inventario as in')
+                     ->join('almacen as a', 'in.id_almacen', '=', 'a.id')
+                     ->select('in.*', 'a.descripcion as almacen')
+                     ->get();
             $excepcion = new Exepciones(true, '', 200, $lista);
             return $excepcion->SendStatus();
         } catch (\Exception $exception) {
@@ -26,9 +30,41 @@ class MovimientosRepository implements MovimientosRepositoryInterface
             return $excepcion->SendStatus();
         }
     }
-    public function create($params)
+    public function create($params) // trasladar
     {
-        // TODO: Implement create() method.
+        try {
+            $idInventario = $params['idInventario'];
+            $nombre = $params['producto'];
+            $almacenInicial = $params['idAlmacenOrigen'];
+            $almacenFinal = $params['almacenDestino'];
+            $stockTrasladar = $params['cantidadAtrasladar'];
+            $motivoTraslado = $params['motivoTraslado'];
+            $product = DB::table('inventario')->where('producto', $nombre)->where('id_almacen', $almacenFinal)->first();
+            if ($product) {
+                DB::table('inventario')->where('id', $product->id)->update([
+                    'stock' => DB::raw('stock + '.(int)$stockTrasladar.''),
+                ]);
+                DB::table('inventario')->where('id', $idInventario)->update([
+                    'stock' => DB::raw('stock - '.(int)$stockTrasladar.''),
+                ]);
+            } else {
+                DB::table('inventario')->insert([
+                    'producto' => $nombre,
+                    'stock' => $stockTrasladar,
+                    'id_almacen' =>$almacenFinal,
+                    'fecha_creacion' => Carbon::now(new \DateTimeZone('America/Lima'))->format('Y-m-d H:i')
+                ]);
+                DB::table('inventario')->where('id', (int)$idInventario)->update([
+                    'stock' => DB::raw('stock - '.(int)$stockTrasladar.''),
+                ]);
+
+            }
+            $exepcion = new Exepciones(true,'Traslado entre almacenes exitoso.', 200, []);
+            return $exepcion->SendStatus();
+        } catch (\Exception $exception) {
+            $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $exepcion->SendStatus();
+        }
     }
 
     public function update(array $data, int $id)
@@ -48,7 +84,18 @@ class MovimientosRepository implements MovimientosRepositoryInterface
 
     public function show(int $id)
     {
-        // TODO: Implement show() method.
+        try {
+            $lista = DB::table('inventario as in')
+                ->join('almacen as a', 'in.id_almacen', '=', 'a.id')
+                ->where('in.id', $id)
+                ->select('in.*', 'a.descripcion as almacen')
+                ->get();
+            $excepcion = new Exepciones(true, 'exito', 200, $lista[0]);
+            return $excepcion->SendStatus();
+        } catch (\Exception $exception) {
+            $excepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $excepcion->SendStatus();
+        }
     }
     function exportar($params)
     {

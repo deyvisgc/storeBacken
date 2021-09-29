@@ -22,11 +22,17 @@ class MovimientosController extends Controller
     function getMovimiento(Request $request) {
         return response()->json($this->repository->all($request->params));
     }
-    function ajustarStock(Request $request) {
-        return response()->json($this->repository->ajustarStock($request->params));
+    function getMovimientoXid(int $id) {
+        return response()->json($this->repository->show($id));
     }
     function getRepocision(Request $request) {
         return response()->json($this->repository->getRepocision($request));
+    }
+    function ajustarStock(Request $request) {
+        return response()->json($this->repository->ajustarStock($request->params));
+    }
+    function traslado(Request  $request) {
+        return response()->json($this->repository->create($request->params));
     }
     public function exportar(Request $request) {
         return $this->repository->exportar($request);
