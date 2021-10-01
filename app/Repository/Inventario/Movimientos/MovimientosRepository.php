@@ -32,36 +32,50 @@ class MovimientosRepository implements MovimientosRepositoryInterface
     }
     public function create($params) // trasladar
     {
+        DB::beginTransaction();
         try {
             $idInventario = $params['idInventario'];
             $nombre = $params['producto'];
-            $almacenInicial = $params['idAlmacenOrigen'];
-            $almacenFinal = $params['almacenDestino'];
+            $AlmacenOrigen = $params['almacenOrigen'];
+            $nombreAlmacenOrigen = $params['nombreAlmacenOrigen'];
+            $almacenDestino = (int)$params['almacenDestino'];
+            $nombreAlmacenDestino = $params['nombreAlmacenDestino'];
             $stockTrasladar = $params['cantidadAtrasladar'];
             $motivoTraslado = $params['motivoTraslado'];
-            $product = DB::table('inventario')->where('producto', $nombre)->where('id_almacen', $almacenFinal)->first();
+            $product = DB::table('inventario')->where('producto', $nombre)->where('id_almacen', $almacenDestino)->first();
             if ($product) {
+
                 DB::table('inventario')->where('id', $product->id)->update([
                     'stock' => DB::raw('stock + '.(int)$stockTrasladar.''),
                 ]);
                 DB::table('inventario')->where('id', $idInventario)->update([
                     'stock' => DB::raw('stock - '.(int)$stockTrasladar.''),
                 ]);
+                $this->inserTraslado($nombre, $stockTrasladar, $nombreAlmacenOrigen, $nombreAlmacenDestino, $motivoTraslado, 5);
+
             } else {
+
                 DB::table('inventario')->insert([
-                    'producto' => $nombre,
-                    'stock' => $stockTrasladar,
-                    'id_almacen' =>$almacenFinal,
+                    'producto'       => $nombre,
+                    'stock'          => $stockTrasladar,
+                    'id_almacen'     =>$almacenDestino,
                     'fecha_creacion' => Carbon::now(new \DateTimeZone('America/Lima'))->format('Y-m-d H:i')
                 ]);
+
                 DB::table('inventario')->where('id', (int)$idInventario)->update([
                     'stock' => DB::raw('stock - '.(int)$stockTrasladar.''),
                 ]);
 
+                $this->inserTraslado($nombre, $stockTrasladar, $nombreAlmacenOrigen, $nombreAlmacenDestino, $motivoTraslado, 5);
+
             }
+
+            DB::commit();
             $exepcion = new Exepciones(true,'Traslado entre almacenes exitoso.', 200, []);
             return $exepcion->SendStatus();
+
         } catch (\Exception $exception) {
+            DB::rollback();
             $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
             return $exepcion->SendStatus();
         }
@@ -257,5 +271,19 @@ class MovimientosRepository implements MovimientosRepositoryInterface
             'precio_venta' => $params->pro_precio_venta
         ]);
         return $status;
+    }
+    function inserTraslado($producto, $stock, $nombreAlmacenOrigen, $nombreAlmacenDestino, $motivoTraslado, $cantidadTotalProducto) {
+      $idTraslado =  DB::table('traslado')->insertGetId([
+            'motivo_traslado' => $motivoTraslado,
+            'cantidad_total_producto' => $cantidadTotalProducto,
+            'fecha_creacion' => Carbon::now(new \DateTimeZone('America/Lima'))->format('Y-m-d H:i'),
+            'almacen_origen' => $nombreAlmacenOrigen,
+            'almacen_destino' => $nombreAlmacenDestino
+        ]);
+        DB::table('historial_traslado')->insert([
+            'producto'       => $producto,
+            'stock'          => $stock,
+            'id_traslado'    => $idTraslado
+        ]);
     }
 }

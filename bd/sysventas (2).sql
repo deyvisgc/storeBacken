@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-09-2021 a las 16:00:13
+-- Tiempo de generación: 01-10-2021 a las 04:08:42
 -- Versión del servidor: 10.4.18-MariaDB
 -- Versión de PHP: 7.4.16
 
@@ -167,7 +167,8 @@ CREATE TABLE `almacen` (
 --
 
 INSERT INTO `almacen` (`id`, `descripcion`, `direccion`, `tienda`, `codigo`, `estado`) VALUES
-(2, 'Almacen General', 'Av-lima-peru', NULL, 'AL0001', 'active');
+(2, 'Almacen General', 'Av-lima-peru', NULL, 'AL0001', 'active'),
+(3, 'Almacen 2', 'av-per', NULL, 'Al0002', 'active');
 
 -- --------------------------------------------------------
 
@@ -257,7 +258,7 @@ CREATE TABLE `caja` (
 --
 
 INSERT INTO `caja` (`id_caja`, `ca_name`, `ca_description`, `ca_status`, `id_user`, `ca_fecha_creacion`) VALUES
-(5, 'CAJAOO1', 'DSDSSD', 'active', 13, '2021-04-30 19:38:07');
+(9, 'CAJAOO1', 'DSDSSD', 'active', 59, '2021-04-30 19:38:07');
 
 -- --------------------------------------------------------
 
@@ -665,6 +666,27 @@ INSERT INTO `historial_pagos_credito` (`id`, `montoPagado`, `montoDeuda`, `fecha
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `historial_traslado`
+--
+
+CREATE TABLE `historial_traslado` (
+  `id` int(11) NOT NULL,
+  `producto` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `id_traslado` int(11) DEFAULT NULL,
+  `stock` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `historial_traslado`
+--
+
+INSERT INTO `historial_traslado` (`id`, `producto`, `id_traslado`, `stock`) VALUES
+(1, 'INKA KOLa', 2, 10),
+(2, 'INKA KOLa', 3, 10);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `icon`
 --
 
@@ -714,18 +736,41 @@ CREATE TABLE `impuestos` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `inventario`
+--
+
+CREATE TABLE `inventario` (
+  `id` int(11) NOT NULL,
+  `id_producto` int(11) DEFAULT NULL,
+  `producto` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `stock` int(11) DEFAULT NULL,
+  `id_almacen` int(11) DEFAULT NULL,
+  `fecha_creacion` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `inventario`
+--
+
+INSERT INTO `inventario` (`id`, `id_producto`, `producto`, `stock`, `id_almacen`, `fecha_creacion`) VALUES
+(20, 408, 'INKA KOLa', 90, 2, '2021-09-29 23:19:00'),
+(24, NULL, 'INKA KOLa', 10, 3, '2021-09-30 08:51:00');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `persona`
 --
 
 CREATE TABLE `persona` (
   `id_persona` int(11) NOT NULL,
   `per_tipo_documento` varchar(10) DEFAULT NULL,
-  `per_numero_documento` varchar(20) DEFAULT NULL,
+  `per_numero_documento` varchar(30) DEFAULT NULL,
   `per_nombre` varchar(250) DEFAULT NULL,
   `per_razon_social` text DEFAULT NULL,
   `per_fecha_creacion` date DEFAULT NULL,
   `per_codigo_interno` varchar(50) NOT NULL,
-  `id_tipo_cliente_proveedor` int(11) NOT NULL,
+  `id_tipo_cliente_proveedor` int(11) DEFAULT NULL,
   `id_departamento` varchar(10) DEFAULT NULL,
   `id_provincia` varchar(10) DEFAULT NULL,
   `id_distrito` varchar(10) DEFAULT NULL,
@@ -741,8 +786,13 @@ CREATE TABLE `persona` (
 --
 
 INSERT INTO `persona` (`id_persona`, `per_tipo_documento`, `per_numero_documento`, `per_nombre`, `per_razon_social`, `per_fecha_creacion`, `per_codigo_interno`, `id_tipo_cliente_proveedor`, `id_departamento`, `id_provincia`, `id_distrito`, `per_direccion`, `per_celular`, `per_email`, `per_status`, `per_tipo`) VALUES
-(134, 'dni', '48762828', 'sasasasa', '', '2021-09-16', '22', 0, '', '', '', '', '', '', 'active', 'cliente'),
-(135, 'dni', '48762221', 'asasasa', '', '2021-09-16', '343', 0, '01', '0101', '010101', 'av.periisis', '33333', 'ssdsdsd@gmail.com', 'active', '');
+(164, 'dni', '48762823', 'DEIVIS RONALD GARCIA CERCADO', '', '2021-09-19', '3333', 1, '', '', '', '', '', '', 'active', 'usuario'),
+(196, 'ruc', '10164767421', 'Doig Fernandez Julio Carlos', 'Doig Fernandez Julio Carlos', '2021-09-24', '', NULL, '', '', '', '', '', '', 'active', 'cliente'),
+(198, 'ruc', '10164767421', 'Doig Fernandez Julio Carlos', 'Doig Fernandez Julio Carlos', '2021-09-24', '', NULL, '', '', '', '', '', '', 'active', ''),
+(199, 'ruc', '10164767421', 'Doig Fernandez Julio Carlos', 'Doig Fernandez Julio Carlos', '2021-09-24', '', 1, '', '', '', '', '', '', 'active', 'proveedor'),
+(200, 'ruc', '10164090588', 'Samillan Alache Maria Melania', 'Samillan Alache Maria Melania', '2021-09-24', '', NULL, '', '', '', '', '', '', 'active', 'cliente'),
+(201, 'ruc', '10164090588', 'Samillan Alache Maria Melania', 'Samillan Alache Maria Melania', '2021-09-24', '', 11, '', '', '', '', '', '', 'active', 'proveedor'),
+(202, 'ruc', '10164120517', 'Quiroz De Balcazar Judith Lady', 'Quiroz De Balcazar Judith Lady', '2021-09-24', '8888', 2, '', '', '', '', '', '', 'active', 'proveedor');
 
 -- --------------------------------------------------------
 
@@ -779,22 +829,27 @@ INSERT INTO `privilegio` (`id_privilegio`, `pri_nombre`, `pri_acces`, `pri_group
 (13, 'Perfil', '/Administracion/perfil', 'Administracion', 'active', 'fas fa-money-check-alt', 1),
 (14, 'Productos', '/Almacen/productos', 'Almacen', 'active', 'fas fa-money-check-alt', 2),
 (15, 'Categorias', '/Almacen/categoria', 'Almacen', 'active', 'fas fa-money-check-alt', 2),
-(18, 'Actualizar Stock', '/Almacen/ajustar-stock', 'Almacen', 'active', 'fas fa-money-check-alt', 2),
 (20, 'Nuevo', '/Compras/index', 'Compras', 'active', '', 6),
 (21, 'Listado', '/Compras/historial', 'Compras', 'active', '', 6),
 (22, 'crear venta', '/Ventas/index', 'Ventas', 'active', '', 7),
 (23, 'Compras', '/Reportes/compras', 'Reportes', 'active', '', 9),
 (24, 'Administrar Caja', '/Caja/administracion', 'Caja', 'active', '', 5),
 (25, 'Historial Caja', '/Caja/historial', 'Caja', 'active', '', 5),
-(26, 'Cuentas por Cobrar', '/Reportes/cuentas-cobrar', 'Reportes', 'active', '', 9),
-(27, 'Cuentas por Pagar', '/Reportes/cuentas-pagar', 'Reportes', 'active', '', 9),
-(28, 'Reporte Compras', '/Reportes/compras', 'Reportes', 'active', '', 9),
 (29, 'Salvatore', '/Administracion/salvatore', 'Administracion', 'active', '', 1),
-(30, 'Proveedores', '/Administracion/proveedores', 'Administracion', 'active', '', 1),
-(31, 'Historial', '/Almacen/historial', 'Almacen', 'active', '', 2),
-(32, 'Clientes', '/clientes', 'Clientes', 'active', 'fas fa-user-cog', 0),
-(35, 'Nuevo Cliente', '/Clientes/nuevo-cliente', 'Clientes', 'active', '', 32),
-(36, 'Tipo Cliente', '/Clientes/tipo-cliente', 'Clientes', 'active', '', 32);
+(32, 'Clientes', '/clientes', 'Clientes', 'active', 'fas fa-user-plus', 0),
+(35, 'Cliente', '/Clientes/nuevo-cliente', 'Clientes', 'active', '', 32),
+(36, 'Tipo Cliente', '/Clientes/tipo-cliente', 'Clientes', 'active', '', 32),
+(37, 'Proveedor', '/Compras/proveedor', 'Compras', 'active', '', 6),
+(38, 'Finanzas', '/finanzas', 'Finanzas', 'active', 'fas fa-credit-card', 0),
+(39, 'Cuentas por pagar', '/Finanzas/cuentas-por-pagar', 'Finanzas', 'active', 'fas fa-credit-card', 38),
+(40, 'Cuentas por cobrar', '/Finanzas/cuentas-por-cobrar', 'Finanzas', 'active', 'fas fa-credit-card', 38),
+(41, 'Sangria', '/Finanzas/sangria', 'Finanzas', 'active', 'fas fa-credit-card', 38),
+(42, 'Ganancias', '/Finanzas/ganancias', 'Finanzas', 'active', 'fas fa-credit-card', 38),
+(48, 'Movimientos', '/Inventario/movimientos', 'Inventario', 'active', '', 4),
+(49, 'Traslados', '/Inventario/traslados', 'Inventario', 'active', '', 4),
+(50, 'Devoluciones', '/Inventario/devoluciones', 'Inventario', 'active', 'fas fa-credit-card', 4),
+(51, 'Reporte Inventario', '/Inventario/reporte-inventario', 'Inventario', 'active', '', 4),
+(52, 'Reposición de Productos', '/Inventario/reposicion-productos', 'Inventario', 'active', '', 4);
 
 -- --------------------------------------------------------
 
@@ -834,8 +889,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id_product`, `pro_name`, `pro_status`, `pro_description`, `id_clase_producto`, `id_unidad_medida`, `pro_cod_barra`, `pro_code`, `id_subclase`, `pro_file`, `pro_fecha_creacion`, `id_almacen`, `pro_fecha_vencimiento`, `id_lote`, `pro_marca`, `pro_modelo`, `pro_moneda`, `pro_stock_inicial`, `pro_stock_minimo`, `incluye_igv`, `incluye_bolsa`, `id_afectacion`, `pro_precio_compra`, `pro_precio_venta`) VALUES
-(395, 'Tanques 1100 Ltr Rotoplas Color Arena', 'active', '', 73, 58, '', 'P0395', 80, NULL, '2021-09-03', 2, '2021-09-23', 42, '', '', 'soles', 50, 1, 1, 0, 1, '120.00', '320.00'),
-(396, 'Lavaderos Rojos', 'active', 'Asasa', 73, 58, '', 'P0396', 80, NULL, '2021-09-04', 2, '2021-09-23', 42, '', '', 'soles', 100, 1, 1, 0, 1, '100.00', '300.00');
+(408, 'Inka Kola', 'active', 'Hhhh', NULL, 58, '', 'P0408', NULL, NULL, '2021-09-29', 2, '2021-09-29', NULL, '', '', 'soles', 100, 5, 1, 0, 1, '10.00', '20.00');
 
 -- --------------------------------------------------------
 
@@ -848,22 +902,14 @@ CREATE TABLE `product_history` (
   `id_producto` int(11) DEFAULT NULL,
   `id_lote` int(11) DEFAULT NULL,
   `fecha_vencimiento` date DEFAULT NULL,
-  `fecha_creacion` date DEFAULT NULL,
+  `fecha_creacion` datetime DEFAULT NULL,
   `stock_antiguo` int(11) DEFAULT NULL,
   `stock_nuevo` int(11) DEFAULT NULL,
-  `almacen` int(11) DEFAULT NULL,
+  `stock_total` int(11) DEFAULT NULL,
   `precio_compra` decimal(15,2) DEFAULT NULL,
-  `precio_venta` decimal(15,2) DEFAULT NULL
+  `precio_venta` decimal(15,2) DEFAULT NULL,
+  `almacen` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `product_history`
---
-
-INSERT INTO `product_history` (`id`, `id_producto`, `id_lote`, `fecha_vencimiento`, `fecha_creacion`, `stock_antiguo`, `stock_nuevo`, `almacen`, `precio_compra`, `precio_venta`) VALUES
-(4, 395, 42, '2021-09-04', '2021-09-05', 20, 50, 2, '30.00', '60.00'),
-(5, 396, 42, '2021-09-22', '2021-09-05', 80, 100, 2, '90.00', '120.00'),
-(6, 395, 42, '2021-09-22', '2021-09-05', 50, 50, 2, '100.00', '300.00');
 
 -- --------------------------------------------------------
 
@@ -959,10 +1005,18 @@ INSERT INTO `rol_has_privilegio` (`idrol_has_privilegio`, `id_privilegio`, `id_r
 (26, 15, 2),
 (27, 16, 2),
 (28, 17, 2),
-(30, 30, 1),
-(32, 31, 1),
 (33, 35, 1),
-(34, 36, 1);
+(34, 36, 1),
+(35, 37, 1),
+(36, 39, 1),
+(37, 40, 1),
+(38, 41, 1),
+(39, 42, 1),
+(45, 48, 1),
+(46, 49, 1),
+(47, 50, 1),
+(48, 51, 1),
+(49, 52, 1);
 
 -- --------------------------------------------------------
 
@@ -1032,15 +1086,42 @@ INSERT INTO `tipo_afectacion` (`id`, `tipo_afectacion`, `descripcion`, `monto_af
 CREATE TABLE `tipo_cliente_proveedor` (
   `id` int(11) NOT NULL,
   `descripcion` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
-  `estado` int(11) DEFAULT NULL
+  `tipo_estado` varchar(10) DEFAULT NULL,
+  `tipo_fecha_creacion` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `tipo_cliente_proveedor`
 --
 
-INSERT INTO `tipo_cliente_proveedor` (`id`, `descripcion`, `estado`) VALUES
-(1, 'Interno', 1);
+INSERT INTO `tipo_cliente_proveedor` (`id`, `descripcion`, `tipo_estado`, `tipo_fecha_creacion`) VALUES
+(1, 'Interno', 'active', '2021-09-22'),
+(2, 'Distribuidor', 'active', '2021-09-22'),
+(11, 'Exportaciones', 'disable', '2021-09-22');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `traslado`
+--
+
+CREATE TABLE `traslado` (
+  `id` int(11) NOT NULL,
+  `motivo_traslado` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cantidad_total_producto` int(11) DEFAULT NULL,
+  `fecha_creacion` datetime DEFAULT NULL,
+  `almacen_origen` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `almacen_destino` varchar(100) CHARACTER SET utf8 DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `traslado`
+--
+
+INSERT INTO `traslado` (`id`, `motivo_traslado`, `cantidad_total_producto`, `fecha_creacion`, `almacen_origen`, `almacen_destino`) VALUES
+(1, 'sasasasa', 5, '2021-09-29 23:51:00', 'Almacen General', 'Almacen 2'),
+(2, 'asasa', 5, '2021-09-30 00:21:00', 'Almacen General', 'Almacen 2'),
+(3, '2kjkjkjkj', 5, '2021-09-30 08:51:00', 'Almacen General', 'Almacen 2');
 
 -- --------------------------------------------------------
 
@@ -5152,9 +5233,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `us_usuario`, `us_password`, `us_status`, `id_rol`, `us_token`, `id_persona`, `us_passwor_view`) VALUES
-(13, 'deyvisgc', '$2y$10$y76W0r.tIqm8QAk2iNBztOP/onXWATOrxMHJxw2ocHdpoXIwe2xfK', 'active', 1, 'ZzZLUHJGV2VqUnQybnppdUd3WXVRSlpES01KV1pCT0J5ZWJlclpmcg==', 134, '{\"ciphertext\":\"StAkbKyB+vZ6Lkl33PJ20A==\",\"iv\":\"fd7fc47ce9503885e9e7a694fe96c049\",\"salt\":\"34f176290648fe72be3b2ab8c6e11eec4104fc3b042c83fc0ea91c761e8b29d5b78b30165d28a4ec9f9d2a95c23452c1a536509d08f92441456f536dd1a3f28d9279b3de60bbe7201e2f08eb9c00554bfe0d00d5b1163e58a6e0183b03dc3ea2d427d09991eab57b76ffcfac06975b7effe7835b632dbf4c66068b32c8152a038f386746584369fefa0eb0c6539960b8b1522e40c022b209d9459e6f1a1f3b4053a00f0ee7a66a2b8d0f235aad8a2df5261f5a57cdfeec2bab83f5c80e4f11f975526edcc2e283818ec69f18cbde27c0de236dbb5e0a63d3fb9eca256c5dd573447823c97dde9e6cd7d6f076b6d352f7adc4a3e647df11b7d5a41a78a968987e\"}'),
-(52, 'anibalgc1', '$2y$10$ZmD2ylyJmFTWLrYNw0PSIO9StnX3Eg3NmnTSJ0k5LJRMsZJvbyg5m', 'active', 2, 'UFg2UTg0b01DWDQ1RmxHMmFoaTJ3YWgxMXNVRlNGdXZFa3VjUGVHbUphM2tHQkhSUWw=', 85, '{\"ciphertext\":\"9Z08x1CzaOV7pvO\\/6f0sjQ==\",\"iv\":\"1385d0789d3591315c5c0015b1e6fe13\",\"salt\":\"18330eb9ad7871c29c8fb11a4eb16fa1a4a0c37859ac6fab16b41b2c070b715735d712583fcab3691a755a9ea6552fe1a0ff5401baed5f1fb9802d5669e4936882e11e9655ac3634a4e33b89d39a4d20db607b17e86578222073ffbddfb3f9a01ee466a3329768826ffbbdb3420093a1c36227388e19734c8b799ddfb53a0033c5fe0b4cbd0814f814e2633e3bf0c2464b1c7dc12913c83dd798fd892018862077c351a55197dfce24c46137ff158a7e50605cfe58676794bd1b25f8faffbf29ee0c20cbfd64e15ef3788232c232f99081e1260cd1497803f0f29ea7af5f28ccf3404c5fd7db6812120d9ced2945d45b0a9b65d7a0f7df75d056a97081bf106c\"}'),
-(53, 'deyvis', '$2y$10$vQxCmDXeXZz21wuSUDuoIuMLULC/GWcHV2UzbyerIlnilpU/tNvWq', 'active', 2, 'd0RWMkhvVW1XamNzNEFreXBPZXhzTlV6U2EydTRyYjZ2c2JMZ2VOV3pTc3ZiQlF0UnA=', 98, '{\"ciphertext\":\"5ttR5\\/64PRzhrnKq1wMSJw==\",\"iv\":\"116dd92e784b296e11b87805ef4fe5f1\",\"salt\":\"3cb3bd7e3d1208ba399a9f74d8c2faf726f5301224023caba34d8aac2634218da22904afc37d64fcc9421a51f2f1864637298cca0d5de3d460ef8df4687ddbb5f5b7ac8712ff97bc4b5ea28990c71c4229d8d8ac70f2683a34b7abbfd7d17da6126526e57737d25aab8dac875862e17b1498b67a62ff5b62ce4aa0f75fbf51b34e6e62aa770ddf1596d571ddc8eb9131c6b211599b7b431a581a8211d0a079067d455aab1185d45b05b656a7ee365c0e129a07ab73299f5175b81fb127f263fb42a7b33335d81cbaff6be8cc7648da68f6e7a17616be1132084dad06fa8f88413a29433be30636cc20d74cee8d10e2f8e26022d51af2a26308dd027178aad70f\"}');
+(59, 'deyvisgc', '$2y$10$y76W0r.tIqm8QAk2iNBztOP/onXWATOrxMHJxw2ocHdpoXIwe2xfK', 'active', 1, 'OEd1aUJta0w4RFlXbFBveFk4U01ONzFNRkZXaEdjRHJYdTRzUnBlWg==', 164, '{\"ciphertext\":\"StAkbKyB+vZ6Lkl33PJ20A==\",\"iv\":\"fd7fc47ce9503885e9e7a694fe96c049\",\"salt\":\"34f176290648fe72be3b2ab8c6e11eec4104fc3b042c83fc0ea91c761e8b29d5b78b30165d28a4ec9f9d2a95c23452c1a536509d08f92441456f536dd1a3f28d9279b3de60bbe7201e2f08eb9c00554bfe0d00d5b1163e58a6e0183b03dc3ea2d427d09991eab57b76ffcfac06975b7effe7835b632dbf4c66068b32c8152a038f386746584369fefa0eb0c6539960b8b1522e40c022b209d9459e6f1a1f3b4053a00f0ee7a66a2b8d0f235aad8a2df5261f5a57cdfeec2bab83f5c80e4f11f975526edcc2e283818ec69f18cbde27c0de236dbb5e0a63d3fb9eca256c5dd573447823c97dde9e6cd7d6f076b6d352f7adc4a3e647df11b7d5a41a78a968987e\"}');
 
 -- --------------------------------------------------------
 
@@ -5298,6 +5377,12 @@ ALTER TABLE `historial_pagos_credito`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `historial_traslado`
+--
+ALTER TABLE `historial_traslado`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `icon`
 --
 ALTER TABLE `icon`
@@ -5311,10 +5396,17 @@ ALTER TABLE `impuestos`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `inventario`
+--
+ALTER TABLE `inventario`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `persona`
 --
 ALTER TABLE `persona`
-  ADD PRIMARY KEY (`id_persona`);
+  ADD PRIMARY KEY (`id_persona`),
+  ADD KEY `persona_tipo_cliente_proveedor_id_fk` (`id_tipo_cliente_proveedor`);
 
 --
 -- Indices de la tabla `privilegio`
@@ -5393,6 +5485,12 @@ ALTER TABLE `tipo_cliente_proveedor`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `traslado`
+--
+ALTER TABLE `traslado`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `ubigeo_peru_departments`
 --
 ALTER TABLE `ubigeo_peru_departments`
@@ -5422,7 +5520,8 @@ ALTER TABLE `unidad_medida`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id_user`),
   ADD UNIQUE KEY `users_us_usuario_uindex` (`us_usuario`),
-  ADD KEY `fk_user_rol1_idx` (`id_rol`);
+  ADD KEY `fk_user_rol1_idx` (`id_rol`),
+  ADD KEY `users_id_persona_index` (`id_persona`);
 
 --
 -- Indices de la tabla `venta`
@@ -5439,7 +5538,7 @@ ALTER TABLE `venta`
 -- AUTO_INCREMENT de la tabla `almacen`
 --
 ALTER TABLE `almacen`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `arqueo_caja`
@@ -5457,7 +5556,7 @@ ALTER TABLE `auditoria_universal`
 -- AUTO_INCREMENT de la tabla `caja`
 --
 ALTER TABLE `caja`
-  MODIFY `id_caja` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_caja` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `caja_corte`
@@ -5481,7 +5580,7 @@ ALTER TABLE `caja_corte_semanal`
 -- AUTO_INCREMENT de la tabla `caja_historial`
 --
 ALTER TABLE `caja_historial`
-  MODIFY `id_caja_historial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id_caja_historial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de la tabla `carrito`
@@ -5538,6 +5637,12 @@ ALTER TABLE `historial_pagos_credito`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
+-- AUTO_INCREMENT de la tabla `historial_traslado`
+--
+ALTER TABLE `historial_traslado`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `icon`
 --
 ALTER TABLE `icon`
@@ -5550,28 +5655,34 @@ ALTER TABLE `impuestos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `inventario`
+--
+ALTER TABLE `inventario`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id_persona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
+  MODIFY `id_persona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
 
 --
 -- AUTO_INCREMENT de la tabla `privilegio`
 --
 ALTER TABLE `privilegio`
-  MODIFY `id_privilegio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id_privilegio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de la tabla `product`
 --
 ALTER TABLE `product`
-  MODIFY `id_product` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=397;
+  MODIFY `id_product` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=409;
 
 --
 -- AUTO_INCREMENT de la tabla `product_history`
 --
 ALTER TABLE `product_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `product_por_lotes`
@@ -5595,7 +5706,7 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `rol_has_privilegio`
 --
 ALTER TABLE `rol_has_privilegio`
-  MODIFY `idrol_has_privilegio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `idrol_has_privilegio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT de la tabla `sangria`
@@ -5619,7 +5730,13 @@ ALTER TABLE `tipo_afectacion`
 -- AUTO_INCREMENT de la tabla `tipo_cliente_proveedor`
 --
 ALTER TABLE `tipo_cliente_proveedor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT de la tabla `traslado`
+--
+ALTER TABLE `traslado`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `unidad_medida`
@@ -5631,7 +5748,7 @@ ALTER TABLE `unidad_medida`
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT de la tabla `venta`
@@ -5677,6 +5794,12 @@ ALTER TABLE `documento_persona`
   ADD CONSTRAINT `fk_documento_persona_persona1` FOREIGN KEY (`id_persona`) REFERENCES `persona` (`id_persona`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
+-- Filtros para la tabla `persona`
+--
+ALTER TABLE `persona`
+  ADD CONSTRAINT `persona_tipo_cliente_proveedor_id_fk` FOREIGN KEY (`id_tipo_cliente_proveedor`) REFERENCES `tipo_cliente_proveedor` (`id`);
+
+--
 -- Filtros para la tabla `product`
 --
 ALTER TABLE `product`
@@ -5703,7 +5826,8 @@ ALTER TABLE `sangria`
 -- Filtros para la tabla `users`
 --
 ALTER TABLE `users`
-  ADD CONSTRAINT `fk_user_rol1` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_user_rol1` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `users_persona_id_persona_fk` FOREIGN KEY (`id_persona`) REFERENCES `persona` (`id_persona`);
 
 --
 -- Filtros para la tabla `venta`
