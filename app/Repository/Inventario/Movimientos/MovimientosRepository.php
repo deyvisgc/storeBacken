@@ -22,6 +22,7 @@ class MovimientosRepository implements MovimientosRepositoryInterface
             $lista = DB::table('inventario as in')
                      ->join('almacen as a', 'in.id_almacen', '=', 'a.id')
                      ->select('in.*', 'a.descripcion as almacen')
+                     ->orderByDesc('producto')
                      ->get();
             $excepcion = new Exepciones(true, '', 200, $lista);
             return $excepcion->SendStatus();
