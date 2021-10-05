@@ -34,6 +34,9 @@ class MovimientosController extends Controller
     function traslado(Request  $request) {
         return response()->json($this->repository->create($request->params));
     }
+    function trasladoMultiple(Request  $request) {
+        return response()->json($this->repository->trasladoMultiple($request->params));
+    }
     public function exportar(Request $request) {
         return $this->repository->exportar($request);
     }

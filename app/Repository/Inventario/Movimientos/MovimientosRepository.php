@@ -82,6 +82,48 @@ class MovimientosRepository implements MovimientosRepositoryInterface
         }
     }
 
+    function trasladoMultiple($params)
+    {
+        DB::beginTransaction();
+        try {
+             $size = count($params);
+            foreach ($params as $items) {
+                $product = DB::table('inventario')->where('producto', $items['producto'])->where('id_almacen', $items['id_almacenDestino'])->first();
+
+                if ($product) {
+
+                    DB::table('inventario')->where('id', $product->id)->update([
+                        'stock' => DB::raw('stock + '.(int)$items['stocktrasladar'].''),
+                    ]);
+                    DB::table('inventario')->where('id', $items['id'])->update([
+                        'stock' => DB::raw('stock - '.(int)$items['stocktrasladar'].''),
+                    ]);
+                    $this->inserTraslado($items['producto'], $items['stocktrasladar'], $items['almacen'], $items['nombreAlmacenDestino'], $items['motivoTraslado'], $size);
+                } else {
+
+                    DB::table('inventario')->insert([
+                        'producto'       => $items['producto'],
+                        'stock'          => $items['stocktrasladar'],
+                        'id_almacen'     => $items['id_almacenDestino'],
+                        'fecha_creacion' => Carbon::now(new \DateTimeZone('America/Lima'))->format('Y-m-d H:i')
+                    ]);
+
+                    DB::table('inventario')->where('id', $items['id'])->update([
+                        'stock' => DB::raw('stock - '.(int)$items['stocktrasladar'].''),
+                    ]);
+                    $this->inserTraslado($items['producto'], $items['stocktrasladar'], $items['almacen'], $items['nombreAlmacenDestino'], $items['motivoTraslado'], $size);
+                }
+            }
+            DB::commit();
+            $exepcion = new Exepciones(true,'Traslado entre almacenes exitoso.', 200, []);
+            return $exepcion->SendStatus();
+        } catch (\Exception $exception) {
+            DB::rollback();
+            $exepcion = new Exepciones(false, $exception->getMessage(), $exception->getCode(), []);
+            return $exepcion->SendStatus();
+        }
+    }
+
     public function update(array $data, int $id)
     {
         // TODO: Implement update() method.
@@ -104,6 +146,7 @@ class MovimientosRepository implements MovimientosRepositoryInterface
                 ->join('almacen as a', 'in.id_almacen', '=', 'a.id')
                 ->where('in.id', $id)
                 ->select('in.*', 'a.descripcion as almacen')
+                ->groupBy(['in.producto'])
                 ->get();
             $excepcion = new Exepciones(true, 'exito', 200, $lista[0]);
             return $excepcion->SendStatus();

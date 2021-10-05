@@ -10,4 +10,5 @@ interface MovimientosRepositoryInterface extends RepositoryInterface
 {
    function ajustarStock($params);
    function getRepocision($params);
+   function trasladoMultiple($params);
 }

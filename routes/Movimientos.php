@@ -23,4 +23,6 @@ $router->group(['prefix'=>'api/v1/'], function ($app) {
     $app->get('inventario-getMovimiento/{id}', 'Inventario\Movimientos\MovimientosController@getMovimientoXid');
     $app->post('ajustar-stock','Inventario\Movimientos\MovimientosController@ajustarStock');
     $app->post('inventario-traslado-entre-almacenes','Inventario\Movimientos\MovimientosController@traslado');
+    $app->post('inventario-traslado-entre-almacenes-multiple','Inventario\Movimientos\MovimientosController@trasladoMultiple');
+
 });
