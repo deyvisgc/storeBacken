@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-10-2021 a las 04:08:42
+-- Tiempo de generación: 08-10-2021 a las 21:26:46
 -- Versión del servidor: 10.4.18-MariaDB
 -- Versión de PHP: 7.4.16
 
@@ -673,16 +673,11 @@ CREATE TABLE `historial_traslado` (
   `id` int(11) NOT NULL,
   `producto` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
   `id_traslado` int(11) DEFAULT NULL,
-  `stock` int(11) DEFAULT NULL
+  `stock` int(11) DEFAULT NULL,
+  `almacen_origen` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `almacen_destino` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `motivoTraslado` text COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Volcado de datos para la tabla `historial_traslado`
---
-
-INSERT INTO `historial_traslado` (`id`, `producto`, `id_traslado`, `stock`) VALUES
-(1, 'INKA KOLa', 2, 10),
-(2, 'INKA KOLa', 3, 10);
 
 -- --------------------------------------------------------
 
@@ -742,19 +737,21 @@ CREATE TABLE `impuestos` (
 CREATE TABLE `inventario` (
   `id` int(11) NOT NULL,
   `id_producto` int(11) DEFAULT NULL,
-  `producto` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `stock` int(11) DEFAULT NULL,
-  `id_almacen` int(11) DEFAULT NULL,
-  `fecha_creacion` datetime DEFAULT NULL
+  `stock_minimo` int(11) DEFAULT NULL,
+  `fecha_creacion` datetime DEFAULT NULL,
+  `producto` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `id_almacen` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `inventario`
 --
 
-INSERT INTO `inventario` (`id`, `id_producto`, `producto`, `stock`, `id_almacen`, `fecha_creacion`) VALUES
-(20, 408, 'INKA KOLa', 90, 2, '2021-09-29 23:19:00'),
-(24, NULL, 'INKA KOLa', 10, 3, '2021-09-30 08:51:00');
+INSERT INTO `inventario` (`id`, `id_producto`, `stock`, `stock_minimo`, `fecha_creacion`, `producto`, `id_almacen`) VALUES
+(48, 419, 15, 5, '2021-10-08 12:41:00', 'INKA KOLa', 2),
+(49, 420, 10, 5, '2021-10-08 12:42:00', 'COKA KOLa', 2),
+(50, 421, 30, 5, '2021-10-08 12:42:00', 'Pan', 2);
 
 -- --------------------------------------------------------
 
@@ -875,8 +872,6 @@ CREATE TABLE `product` (
   `pro_marca` varchar(100) DEFAULT NULL,
   `pro_modelo` varchar(100) DEFAULT NULL,
   `pro_moneda` varchar(50) DEFAULT NULL,
-  `pro_stock_inicial` int(11) DEFAULT NULL,
-  `pro_stock_minimo` int(11) DEFAULT NULL,
   `incluye_igv` tinyint(1) DEFAULT NULL,
   `incluye_bolsa` tinyint(1) DEFAULT NULL,
   `id_afectacion` int(11) DEFAULT NULL,
@@ -888,8 +883,10 @@ CREATE TABLE `product` (
 -- Volcado de datos para la tabla `product`
 --
 
-INSERT INTO `product` (`id_product`, `pro_name`, `pro_status`, `pro_description`, `id_clase_producto`, `id_unidad_medida`, `pro_cod_barra`, `pro_code`, `id_subclase`, `pro_file`, `pro_fecha_creacion`, `id_almacen`, `pro_fecha_vencimiento`, `id_lote`, `pro_marca`, `pro_modelo`, `pro_moneda`, `pro_stock_inicial`, `pro_stock_minimo`, `incluye_igv`, `incluye_bolsa`, `id_afectacion`, `pro_precio_compra`, `pro_precio_venta`) VALUES
-(408, 'Inka Kola', 'active', 'Hhhh', NULL, 58, '', 'P0408', NULL, NULL, '2021-09-29', 2, '2021-09-29', NULL, '', '', 'soles', 100, 5, 1, 0, 1, '10.00', '20.00');
+INSERT INTO `product` (`id_product`, `pro_name`, `pro_status`, `pro_description`, `id_clase_producto`, `id_unidad_medida`, `pro_cod_barra`, `pro_code`, `id_subclase`, `pro_file`, `pro_fecha_creacion`, `id_almacen`, `pro_fecha_vencimiento`, `id_lote`, `pro_marca`, `pro_modelo`, `pro_moneda`, `incluye_igv`, `incluye_bolsa`, `id_afectacion`, `pro_precio_compra`, `pro_precio_venta`) VALUES
+(419, 'Inka Kola', 'active', '', 68, 58, '', 'P0419', NULL, NULL, '2021-10-08', 2, '2021-10-08', NULL, '', '', 'soles', 1, 0, 1, '10.00', '20.00'),
+(420, 'Coka Kola', 'active', '', NULL, 58, '', 'P0420', NULL, NULL, '2021-10-08', 2, '2021-10-08', NULL, '', '', 'soles', 1, 0, 1, '10.00', '20.00'),
+(421, 'Pan', 'active', '', NULL, 58, '', 'P0421', NULL, NULL, '2021-10-08', 2, '2021-10-08', NULL, '', '', 'soles', 1, 0, 1, '10.00', '20.00');
 
 -- --------------------------------------------------------
 
@@ -911,6 +908,17 @@ CREATE TABLE `product_history` (
   `almacen` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `product_history`
+--
+
+INSERT INTO `product_history` (`id`, `id_producto`, `id_lote`, `fecha_vencimiento`, `fecha_creacion`, `stock_antiguo`, `stock_nuevo`, `stock_total`, `precio_compra`, `precio_venta`, `almacen`) VALUES
+(23, 420, NULL, '2021-10-08', '2021-10-08 01:59:00', 10, 10, 20, '10.00', '20.00', 2),
+(24, 419, NULL, '2021-10-08', '2021-10-08 02:04:00', 10, 10, 20, '10.00', '20.00', 2),
+(25, 419, NULL, '2021-10-08', '2021-10-08 02:07:00', 10, 10, 20, '10.00', '20.00', 2),
+(26, 421, NULL, '2021-10-08', '2021-10-08 02:09:00', 10, 10, 20, '10.00', '20.00', 2),
+(27, 421, NULL, '2021-10-08', '2021-10-08 02:12:00', 20, 20, 40, '10.00', '20.00', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -924,15 +932,6 @@ CREATE TABLE `product_por_lotes` (
   `lot_code` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Volcado de datos para la tabla `product_por_lotes`
---
-
-INSERT INTO `product_por_lotes` (`id_lote`, `lot_name`, `lot_status`, `lot_code`) VALUES
-(41, 'Lote01', 'active', 'LGAS01'),
-(42, 'Lote01', 'active', 'LHEL01'),
-(43, 'Lote01', 'active', 'LAAA01');
-
 -- --------------------------------------------------------
 
 --
@@ -945,6 +944,30 @@ CREATE TABLE `registro_sanitario` (
   `rs_fecha_vencimiento` datetime NOT NULL,
   `rs_description` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `retiro_almacen`
+--
+
+CREATE TABLE `retiro_almacen` (
+  `id` int(11) NOT NULL,
+  `id_producto` int(11) DEFAULT NULL,
+  `id_almacen` int(11) DEFAULT NULL,
+  `fecha_retiro` datetime DEFAULT NULL,
+  `stock_retirado` int(11) DEFAULT NULL,
+  `motivo_retiro` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `usuario` varchar(50) CHARACTER SET utf8 DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `retiro_almacen`
+--
+
+INSERT INTO `retiro_almacen` (`id`, `id_producto`, `id_almacen`, `fecha_retiro`, `stock_retirado`, `motivo_retiro`, `usuario`) VALUES
+(7, 419, 2, '2021-10-08 14:07:00', 10, 'sasa', 'deyvisgc'),
+(8, 420, 2, '2021-10-08 14:07:00', 10, 'sasas', 'deyvisgc');
 
 -- --------------------------------------------------------
 
@@ -1107,21 +1130,9 @@ INSERT INTO `tipo_cliente_proveedor` (`id`, `descripcion`, `tipo_estado`, `tipo_
 
 CREATE TABLE `traslado` (
   `id` int(11) NOT NULL,
-  `motivo_traslado` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `cantidad_total_producto` int(11) DEFAULT NULL,
-  `fecha_creacion` datetime DEFAULT NULL,
-  `almacen_origen` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
-  `almacen_destino` varchar(100) CHARACTER SET utf8 DEFAULT NULL
+  `fecha_creacion` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Volcado de datos para la tabla `traslado`
---
-
-INSERT INTO `traslado` (`id`, `motivo_traslado`, `cantidad_total_producto`, `fecha_creacion`, `almacen_origen`, `almacen_destino`) VALUES
-(1, 'sasasasa', 5, '2021-09-29 23:51:00', 'Almacen General', 'Almacen 2'),
-(2, 'asasa', 5, '2021-09-30 00:21:00', 'Almacen General', 'Almacen 2'),
-(3, '2kjkjkjkj', 5, '2021-09-30 08:51:00', 'Almacen General', 'Almacen 2');
 
 -- --------------------------------------------------------
 
@@ -5233,7 +5244,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `us_usuario`, `us_password`, `us_status`, `id_rol`, `us_token`, `id_persona`, `us_passwor_view`) VALUES
-(59, 'deyvisgc', '$2y$10$y76W0r.tIqm8QAk2iNBztOP/onXWATOrxMHJxw2ocHdpoXIwe2xfK', 'active', 1, 'OEd1aUJta0w4RFlXbFBveFk4U01ONzFNRkZXaEdjRHJYdTRzUnBlWg==', 164, '{\"ciphertext\":\"StAkbKyB+vZ6Lkl33PJ20A==\",\"iv\":\"fd7fc47ce9503885e9e7a694fe96c049\",\"salt\":\"34f176290648fe72be3b2ab8c6e11eec4104fc3b042c83fc0ea91c761e8b29d5b78b30165d28a4ec9f9d2a95c23452c1a536509d08f92441456f536dd1a3f28d9279b3de60bbe7201e2f08eb9c00554bfe0d00d5b1163e58a6e0183b03dc3ea2d427d09991eab57b76ffcfac06975b7effe7835b632dbf4c66068b32c8152a038f386746584369fefa0eb0c6539960b8b1522e40c022b209d9459e6f1a1f3b4053a00f0ee7a66a2b8d0f235aad8a2df5261f5a57cdfeec2bab83f5c80e4f11f975526edcc2e283818ec69f18cbde27c0de236dbb5e0a63d3fb9eca256c5dd573447823c97dde9e6cd7d6f076b6d352f7adc4a3e647df11b7d5a41a78a968987e\"}');
+(59, 'deyvisgc', '$2y$10$y76W0r.tIqm8QAk2iNBztOP/onXWATOrxMHJxw2ocHdpoXIwe2xfK', 'active', 1, 'T2I0R3JOUFVtSVVoUk1TUG1VY25ZRGwya0NDbG1KZm1JN3M2dGFiMw==', 164, '{\"ciphertext\":\"StAkbKyB+vZ6Lkl33PJ20A==\",\"iv\":\"fd7fc47ce9503885e9e7a694fe96c049\",\"salt\":\"34f176290648fe72be3b2ab8c6e11eec4104fc3b042c83fc0ea91c761e8b29d5b78b30165d28a4ec9f9d2a95c23452c1a536509d08f92441456f536dd1a3f28d9279b3de60bbe7201e2f08eb9c00554bfe0d00d5b1163e58a6e0183b03dc3ea2d427d09991eab57b76ffcfac06975b7effe7835b632dbf4c66068b32c8152a038f386746584369fefa0eb0c6539960b8b1522e40c022b209d9459e6f1a1f3b4053a00f0ee7a66a2b8d0f235aad8a2df5261f5a57cdfeec2bab83f5c80e4f11f975526edcc2e283818ec69f18cbde27c0de236dbb5e0a63d3fb9eca256c5dd573447823c97dde9e6cd7d6f076b6d352f7adc4a3e647df11b7d5a41a78a968987e\"}');
 
 -- --------------------------------------------------------
 
@@ -5445,6 +5456,12 @@ ALTER TABLE `registro_sanitario`
   ADD PRIMARY KEY (`id_registro_sanitario`);
 
 --
+-- Indices de la tabla `retiro_almacen`
+--
+ALTER TABLE `retiro_almacen`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `rol`
 --
 ALTER TABLE `rol`
@@ -5640,7 +5657,7 @@ ALTER TABLE `historial_pagos_credito`
 -- AUTO_INCREMENT de la tabla `historial_traslado`
 --
 ALTER TABLE `historial_traslado`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT de la tabla `icon`
@@ -5658,7 +5675,7 @@ ALTER TABLE `impuestos`
 -- AUTO_INCREMENT de la tabla `inventario`
 --
 ALTER TABLE `inventario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de la tabla `persona`
@@ -5676,13 +5693,13 @@ ALTER TABLE `privilegio`
 -- AUTO_INCREMENT de la tabla `product`
 --
 ALTER TABLE `product`
-  MODIFY `id_product` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=409;
+  MODIFY `id_product` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=422;
 
 --
 -- AUTO_INCREMENT de la tabla `product_history`
 --
 ALTER TABLE `product_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `product_por_lotes`
@@ -5695,6 +5712,12 @@ ALTER TABLE `product_por_lotes`
 --
 ALTER TABLE `registro_sanitario`
   MODIFY `id_registro_sanitario` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `retiro_almacen`
+--
+ALTER TABLE `retiro_almacen`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -5736,7 +5759,7 @@ ALTER TABLE `tipo_cliente_proveedor`
 -- AUTO_INCREMENT de la tabla `traslado`
 --
 ALTER TABLE `traslado`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `unidad_medida`

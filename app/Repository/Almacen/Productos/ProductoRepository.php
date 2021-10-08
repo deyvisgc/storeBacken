@@ -61,7 +61,8 @@ class ProductoRepository implements ProductoRepositoryInterface
                 DB::table('inventario')->insert([
                     'id_producto' => $create,
                     'producto' => $pro_nombre,
-                    'stock' => $pro_stock_inicial,
+                    'stock' =>$pro_stock_inicial,
+                    'stock_minimo' =>$pro_stock_minimo,
                     'id_almacen' =>$almacen,
                     'fecha_creacion' => Carbon::now(new \DateTimeZone('America/Lima'))->format('Y-m-d H:i')
                 ]);

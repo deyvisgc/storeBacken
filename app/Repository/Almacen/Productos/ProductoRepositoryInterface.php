@@ -4,6 +4,7 @@
 namespace App\Repository\Almacen\Productos;
 
 
+use App\Repository\Inventario\Movimientos\Entity\dtoRetiroStockAlmacen;
 use App\Repository\RepositoryInterface;
 
 interface ProductoRepositoryInterface extends RepositoryInterface

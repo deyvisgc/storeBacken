@@ -233,8 +233,6 @@ class dtoProducto
             'id_subclase' =>!$this->getSubCategoria() ? null : $this->getSubCategoria(),
             'pro_precio_compra'=>$this->getPrecioCompra(),
             'pro_precio_venta' =>$this->getPrecioVenta(),
-            'pro_stock_inicial' =>$this->getStockInicial(),
-            'pro_stock_minimo' =>$this->getStockMinimo(),
             'id_afectacion' =>$this->getTipoAfectacion(),
             'id_almacen' => $this->getAlmacen(),
             'id_lote' =>!$this->getLotes() ? null: $this->getLotes(),
