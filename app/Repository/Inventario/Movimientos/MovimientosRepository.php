@@ -20,11 +20,17 @@ class MovimientosRepository implements MovimientosRepositoryInterface
     public function all($params)
     {
         try {
-            $lista = DB::table('inventario as in')
-                     ->join('almacen as a', 'in.id_almacen', '=', 'a.id')
-                     ->select('in.*', 'a.descripcion as almacen')
-                     ->orderByDesc('producto')
-                     ->get();
+            $query = DB::table('inventario as in');
+            if ($params['id_producto']) {
+                $query->where('id_producto', $params['id_producto']);
+            }
+            if ($params['id_almacen']) {
+                $query->where('id_almacen', $params['id_almacen']);
+            }
+            $query->join('almacen as a', 'in.id_almacen', '=', 'a.id')
+                  ->select('in.*', 'a.descripcion as almacen')
+                  ->orderByDesc('producto');
+            $lista = $query->get();
             $excepcion = new Exepciones(true, '', 200, $lista);
             return $excepcion->SendStatus();
         } catch (\Exception $exception) {

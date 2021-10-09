@@ -22,7 +22,7 @@ class MovimientosController extends Controller
         ]]);
     }
     function getMovimiento(Request $request) {
-        return response()->json($this->repository->all($request->params));
+        return response()->json($this->repository->all($request));
     }
     function getMovimientoXid(int $id) {
         return response()->json($this->repository->show($id));
